@@ -116,10 +116,7 @@ class WikiArticlePage extends ConsumerWidget {
           message: 'GSO Guidelines, Event Planning, and Budget Processes will be published here.',
         );
       case 'category-administration':
-        return _PlaceholderCategory(
-          icon: Icons.shield_outlined,
-          message: 'Official Visa Procedures, Emergency Contacts, and IT Helpdesk FAQs will be published here.',
-        );
+        return _AdminCategory(context: context);
       case 'winter-survival':
         return const _WinterSurvivalArticle();
       case 'trash-mastery':
@@ -228,6 +225,39 @@ class WikiArticlePage extends ConsumerWidget {
           objective: 'Evaluate qualities of the successful entrepreneurial profile; determine the steps necessary to open and operate a small business enterprise; identify marketing and financial competencies; and ultimately develop and present a Business Plan.',
           objectiveLabel: 'Learning Objectives',
         );
+      // GSIR subcategory landing pages
+      case 'subcategory-intl-relations':
+        return _SubcategoryPage(
+          description: 'The International Relations Program (IRP) prepares graduates to analyze global political dynamics, security studies, and diplomacy. Students earn an MA in International Relations or MA in Political Science.',
+          courses: const [],
+          context: context,
+          emptyMessage: 'IRP course syllabi will be published here by the GSIR faculty.',
+        );
+      case 'subcategory-intl-development':
+        return _SubcategoryPage(
+          description: 'The International Development Program (IDP) focuses on economic development, poverty reduction, and policy analysis in developing contexts. Graduates earn an MA in International Development or MA in Economics.',
+          courses: const [],
+          context: context,
+          emptyMessage: 'IDP course syllabi will be published here by the GSIR faculty.',
+        );
+      case 'subcategory-public-management':
+        return _SubcategoryPage(
+          description: 'The Public Management and Policy Analysis Program (PMPP) trains future public servants and policy analysts. Graduates earn an MA in Public Management or MA in Public Policy.',
+          courses: const [],
+          context: context,
+          emptyMessage: 'PMPP course syllabi will be published here by the GSIR faculty.',
+        );
+
+      // Administration pages
+      case 'about-iuj':
+        return const _AboutIUJArticle();
+      case 'access-transport':
+        return const _AccessTransportArticle();
+      case 'admissions-overview':
+        return const _AdmissionsArticle();
+      case 'research-centers':
+        return const _ResearchCentersArticle();
+
       default:
         return Text('Content for "$id" is not yet available.', style: const TextStyle(color: Color(0xFF6B7280)));
     }
@@ -326,39 +356,51 @@ class _CoursesCategory extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const Text('Select Specialization', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
-        const SizedBox(height: 12),
+        const Text('GSIM — Graduate School of International Management', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF6B7280), letterSpacing: 0.5)),
+        const SizedBox(height: 8),
         ...[
           ('subcategory-finance', 'Finance', const Color(0xFFEEF2FF), const Color(0xFF4F46E5)),
           ('subcategory-it-operations', 'IT & Operations', const Color(0xFFDBEAFE), const Color(0xFF2563EB)),
           ('subcategory-general-management', 'General Management', const Color(0xFFDCFCE7), const Color(0xFF16A34A)),
-        ].map((item) => GestureDetector(
-          onTap: () => ctx.go('/wiki/${item.$1}'),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(color: item.$3, borderRadius: BorderRadius.circular(8)),
-                  child: Icon(Icons.book_outlined, color: item.$4, size: 18),
-                ),
-                const SizedBox(width: 12),
-                Text(item.$2, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
-                const Spacer(),
-                const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
-              ],
-            ),
-          ),
-        )),
+        ].map((item) => _subcategoryTile(ctx, item.$1, item.$2, item.$3, item.$4)),
+        const SizedBox(height: 16),
+        const Text('GSIR — Graduate School of International Relations', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF6B7280), letterSpacing: 0.5)),
+        const SizedBox(height: 8),
+        ...[
+          ('subcategory-intl-relations', 'International Relations', const Color(0xFFFDF2F8), const Color(0xFF9333EA)),
+          ('subcategory-intl-development', 'International Development', const Color(0xFFFFF7ED), const Color(0xFFEA580C)),
+          ('subcategory-public-management', 'Public Management & Policy', const Color(0xFFF0FDF4), const Color(0xFF15803D)),
+        ].map((item) => _subcategoryTile(ctx, item.$1, item.$2, item.$3, item.$4)),
       ],
+    );
+  }
+
+  Widget _subcategoryTile(BuildContext ctx, String id, String label, Color bg, Color fg) {
+    return GestureDetector(
+      onTap: () => ctx.go('/wiki/$id'),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE5E7EB)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
+              child: Icon(Icons.book_outlined, color: fg, size: 18),
+            ),
+            const SizedBox(width: 12),
+            Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+            const Spacer(),
+            const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -367,11 +409,13 @@ class _SubcategoryPage extends StatelessWidget {
   final String description;
   final List<(String, String)> courses;
   final BuildContext context;
+  final String? emptyMessage;
 
   const _SubcategoryPage({
     required this.description,
     required this.courses,
     required this.context,
+    this.emptyMessage,
   });
 
   @override
@@ -381,26 +425,43 @@ class _SubcategoryPage extends StatelessWidget {
       children: [
         Text(description, style: const TextStyle(fontSize: 14, color: Color(0xFF374151))),
         const SizedBox(height: 16),
-        ...courses.map((c) => GestureDetector(
-          onTap: () => ctx.go('/wiki/${c.$1}'),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 8),
+        if (courses.isEmpty && emptyMessage != null)
+          Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFFF9FAFB),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: const Color(0xFFE5E7EB)),
             ),
             child: Row(
               children: [
-                Expanded(
-                  child: Text(c.$2, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF312E81))),
-                ),
-                const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+                const Icon(Icons.hourglass_empty, color: Color(0xFF9CA3AF), size: 18),
+                const SizedBox(width: 10),
+                Expanded(child: Text(emptyMessage!, style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)))),
               ],
             ),
-          ),
-        )),
+          )
+        else
+          ...courses.map((c) => GestureDetector(
+            onTap: () => ctx.go('/wiki/${c.$1}'),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE5E7EB)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(c.$2, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF312E81))),
+                  ),
+                  const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+                ],
+              ),
+            ),
+          )),
       ],
     );
   }
@@ -859,6 +920,363 @@ class _DeviceCalendarArticle extends StatelessWidget {
           'Because MyIUJ! uses your Google Workspace SSO, your timetable is automatically synced to your device\'s primary calendar. No manual setup is required.',
           style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
         ),
+      ],
+    );
+  }
+}
+
+// ── Administration category ─────────────────────────────────────────────────
+
+class _AdminCategory extends StatelessWidget {
+  final BuildContext context;
+  const _AdminCategory({required this.context});
+
+  @override
+  Widget build(BuildContext ctx) {
+    final pages = [
+      ('about-iuj', Icons.info_outline, 'About IUJ', 'History, mission, and key facts about IUJ.'),
+      ('access-transport', Icons.train_outlined, 'Getting to Campus', 'Urasa Station, Shinkansen, shuttle schedule.'),
+      ('admissions-overview', Icons.school_outlined, 'Admissions Overview', 'Deadlines, requirements, and application steps.'),
+      ('research-centers', Icons.science_outlined, 'Research Centers', 'GLOCOM, Case Center, Research Institute.'),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: pages.map((p) => GestureDetector(
+        onTap: () => ctx.go('/wiki/${p.$1}'),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE5E7EB))),
+          child: Row(
+            children: [
+              Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(8)),
+                child: Icon(p.$2, color: const Color(0xFF4F46E5), size: 18),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(p.$3, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                    Text(p.$4, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+            ],
+          ),
+        ),
+      )).toList(),
+    );
+  }
+}
+
+// ── About IUJ ───────────────────────────────────────────────────────────────
+
+class _AboutIUJArticle extends StatelessWidget {
+  const _AboutIUJArticle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionTitle('Overview'),
+        const SizedBox(height: 8),
+        const Text(
+          'The International University of Japan (IUJ) was established in 1982 in Minami-Uonuma, Niigata, following strong support from leaders in Japan\'s business and academic communities. It was founded with a clear purpose: to develop highly skilled professionals capable of active engagement in the global arena.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('Key Facts'),
+        const SizedBox(height: 8),
+        ...[
+          ('Japan\'s first all-English graduate university', 'IUJ was the first graduate-level university in Japan to offer all programs entirely in English.'),
+          ('60+ nationalities', 'Students from over 60 countries study together on a fully residential campus, creating one of Japan\'s most internationally diverse graduate communities.'),
+          ('Small class sizes', 'Low faculty-to-student ratios enable close mentorship and direct engagement with professors.'),
+          ('Fully residential', 'All students live on campus in Minami-Uonuma — a model that fosters deep intercultural exchange outside the classroom.'),
+          ('~50% international faculty', 'Approximately half the faculty are from overseas, bringing a genuinely global perspective to teaching and research.'),
+        ].map((f) => Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(padding: EdgeInsets.only(top: 5), child: Icon(Icons.circle, size: 6, color: Color(0xFF4F46E5))),
+              const SizedBox(width: 10),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: const TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.5),
+                    children: [
+                      TextSpan(text: '${f.$1}  ', style: const TextStyle(fontWeight: FontWeight.w700)),
+                      TextSpan(text: f.$2),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )),
+        const SizedBox(height: 20),
+        _sectionTitle('Graduate Schools'),
+        const SizedBox(height: 8),
+        ...[
+          ('GSIR', 'Graduate School of International Relations — MA and PhD programs in International Relations, International Development, and Public Management & Policy.'),
+          ('GSIM', 'Graduate School of International Management — MBA, Intensive MBA, Digital Transformation Program (DXP), and International Social Entrepreneurship Program (ISEP).'),
+          ('CLEAR', 'Center for Language Education and Research — English and Japanese language programs supporting all students.'),
+        ].map((s) => Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(color: const Color(0xFFF9FAFB), borderRadius: BorderRadius.circular(10), border: Border.all(color: const Color(0xFFE5E7EB))),
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.5),
+                children: [
+                  TextSpan(text: '${s.$1}  ', style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF4F46E5))),
+                  TextSpan(text: s.$2),
+                ],
+              ),
+            ),
+          ),
+        )),
+      ],
+    );
+  }
+}
+
+// ── Access & Transport ──────────────────────────────────────────────────────
+
+class _AccessTransportArticle extends StatelessWidget {
+  const _AccessTransportArticle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(10)),
+          child: const Row(
+            children: [
+              Icon(Icons.location_on_outlined, color: Color(0xFF4F46E5), size: 18),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  '777 Kokusai-cho, Minami Uonuma-shi, Niigata 949-7277, Japan',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF312E81)),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('From Tokyo — by Shinkansen'),
+        const SizedBox(height: 8),
+        const Text(
+          'Take the Joetsu Shinkansen (Toki SuperExpress) from Tokyo Station to Urasa Station. The journey is approximately 90 minutes. Trains run frequently throughout the day.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('From Niigata City'),
+        const SizedBox(height: 8),
+        const Text(
+          'Take the Joetsu Shinkansen from Niigata Station to Urasa Station — approximately 40 minutes.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('Urasa Station → Campus (IUJ Shuttle)'),
+        const SizedBox(height: 8),
+        const Text(
+          'A free IUJ shuttle bus runs between Urasa Station and campus. The ride takes approximately 10 minutes.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(color: const Color(0xFFFFFBEB), borderRadius: BorderRadius.circular(10), border: Border.all(color: const Color(0xFFFDE68A))),
+          child: const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.warning_amber_rounded, color: Color(0xFFD97706), size: 18),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Shuttle operates hourly, 8:00 AM – 8:00 PM on weekdays. Check OSS for weekend/holiday schedules.',
+                  style: TextStyle(fontSize: 13, color: Color(0xFF92400E)),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('By Car'),
+        const SizedBox(height: 8),
+        const Text(
+          'Use the Kanetsu Expressway, exiting at Muikamachi or Koide. Follow Route 17 toward Urasa Station. Approx. 3.5 hours from Tokyo, 1.5 hours from Niigata City.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('Tokyo Liaison Office'),
+        const SizedBox(height: 8),
+        const Text(
+          'Harks Roppongi Building, 2nd Floor, Roppongi. Accessible via the Hibiya Line or Oedo Line (Roppongi Station).',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Admissions Overview ─────────────────────────────────────────────────────
+
+class _AdmissionsArticle extends StatelessWidget {
+  const _AdmissionsArticle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'IUJ admits students annually for a September intake. Applications are submitted through the IUJ Online Application System.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('Application Deadlines (September 2026 Entry)'),
+        const SizedBox(height: 10),
+        _deadlineTable(),
+        const SizedBox(height: 20),
+        _sectionTitle('GSIM-Specific Requirements'),
+        const SizedBox(height: 8),
+        const Text(
+          'GSIM applicants must provide either official GMAT or GRE scores, or complete the institution\'s own math assessment.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('English Language Proficiency'),
+        const SizedBox(height: 8),
+        const Text(
+          'Applicants are exempt from the English requirement if they were educated for at least four years in an English-speaking country (Australia, Canada, Ireland, New Zealand, UK, USA) or completed a degree at an English-medium institution with supporting documentation.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('Scholarships & Financial Support'),
+        const SizedBox(height: 8),
+        const Text(
+          'IUJ offers generous financial support including the fully funded Sohei Nakayama Memorial Scholarship. A substantial majority of students receive government or corporate sponsorships. Use the scholarship search tool on the IUJ admissions page to find applicable funding.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(color: const Color(0xFFF0FDF4), borderRadius: BorderRadius.circular(10), border: Border.all(color: const Color(0xFFBBF7D0))),
+          child: const Row(
+            children: [
+              Icon(Icons.mail_outline, color: Color(0xFF15803D), size: 18),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Contact admissions@iuj.ac.jp for inquiries about requirements, visas, or special accommodation needs.',
+                  style: TextStyle(fontSize: 13, color: Color(0xFF14532D)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _deadlineTable() {
+    final rows = [
+      ('Master\'s — International', 'Dec 10, 2025', 'Feb 12, 2026', 'Apr 15, 2026'),
+      ('PhD Programs', 'Nov 17, 2025', 'Feb 17, 2026', 'Apr 17, 2026'),
+    ];
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: const Color(0xFFE5E7EB)), borderRadius: BorderRadius.circular(10)),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: const BoxDecoration(color: Color(0xFFF9FAFB), borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+            child: const Row(
+              children: [
+                Expanded(flex: 3, child: Text('Program', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151)))),
+                Expanded(flex: 2, child: Text('1st', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151)))),
+                Expanded(flex: 2, child: Text('2nd', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151)))),
+                Expanded(flex: 2, child: Text('3rd', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151)))),
+              ],
+            ),
+          ),
+          ...rows.map((r) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: const BoxDecoration(border: Border(top: BorderSide(color: Color(0xFFE5E7EB)))),
+            child: Row(
+              children: [
+                Expanded(flex: 3, child: Text(r.$1, style: const TextStyle(fontSize: 12, color: Color(0xFF111827)))),
+                Expanded(flex: 2, child: Text(r.$2, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)))),
+                Expanded(flex: 2, child: Text(r.$3, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)))),
+                Expanded(flex: 2, child: Text(r.$4, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)))),
+              ],
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Research Centers ────────────────────────────────────────────────────────
+
+class _ResearchCentersArticle extends StatelessWidget {
+  const _ResearchCentersArticle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'IUJ supports academic research through several dedicated centers and institutes. Students can access these resources through the Research section on the IUJ website.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+        ),
+        const SizedBox(height: 20),
+        ...[
+          ('Research Institute', Icons.hub_outlined, 'Manages grants, publications, and institutional research support. Maintains an archive of research initiatives and oversees research compliance and ethics guidelines.'),
+          ('GLOCOM', Icons.public_outlined, 'A separate research center focused on globalization and communications research. Accessible via glocom.org.'),
+          ('Case Center', Icons.cases_outlined, 'Dedicated facility for developing and analyzing real-world business case studies. Used extensively in GSIM teaching.'),
+          ('Researchers Information Database', Icons.manage_search_outlined, 'Searchable portal mapping faculty and researcher expertise across IUJ. Available at rmap.iuj.ac.jp.'),
+          ('Matsushita Library (MLIC)', Icons.local_library_outlined, 'The main campus library providing comprehensive academic resources, journal databases, and study spaces. Contact: library@iuj.ac.jp  |  Ext. 4333.'),
+        ].map((r) => Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE5E7EB))),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(8)),
+                child: Icon(r.$2, color: const Color(0xFF4F46E5), size: 18),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(r.$1, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                    const SizedBox(height: 4),
+                    Text(r.$3, style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280), height: 1.5)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )),
       ],
     );
   }
