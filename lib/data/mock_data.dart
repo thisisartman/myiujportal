@@ -68,11 +68,23 @@ const List<String> kEnrolledCourses = [
 ];
 
 final List<DirectoryEntry> kMockDirectory = [
+  // Offices
   const DirectoryEntry(id: 1, name: 'Office of Academic Affairs (OAA)', type: 'Department', email: 'oaa@iuj.ac.jp', phone: 'Ext. 4110'),
-  const DirectoryEntry(id: 2, name: 'Prof. Maurice Thevenet', type: 'Faculty - GSIM', email: 'mthevenet@iuj.ac.jp', phone: 'Ext. 3020'),
-  const DirectoryEntry(id: 3, name: 'Prof. Anne Sophie De Gabriac', type: 'Faculty - GSIM', email: 'adegabriac@iuj.ac.jp', phone: 'Ext. 3025'),
-  const DirectoryEntry(id: 4, name: 'IT Helpdesk', type: 'Support', email: 'helpdesk@iuj.ac.jp', phone: 'Ext. 4222'),
-  const DirectoryEntry(id: 5, name: 'Matsushita Library (MLIC) Front Desk', type: 'Facility', email: 'library@iuj.ac.jp', phone: 'Ext. 4333'),
+  const DirectoryEntry(id: 2, name: 'Office of Student Services (OSS)', type: 'Department', email: 'oss@iuj.ac.jp', phone: 'Ext. 4120'),
+  const DirectoryEntry(id: 3, name: 'Office of General Affairs (OGA)', type: 'Department', email: 'oga@iuj.ac.jp', phone: 'Ext. 4130'),
+  const DirectoryEntry(id: 4, name: 'Admissions Office', type: 'Department', email: 'admissions@iuj.ac.jp', phone: 'Ext. 4100'),
+  const DirectoryEntry(id: 5, name: 'Career Development Center', type: 'Department', email: 'career@iuj.ac.jp', phone: 'Ext. 4140'),
+  // Faculty - GSIM
+  const DirectoryEntry(id: 6, name: 'Prof. Maurice Thevenet', type: 'Faculty - GSIM', email: 'mthevenet@iuj.ac.jp', phone: 'Ext. 3020'),
+  const DirectoryEntry(id: 7, name: 'Prof. Anne Sophie De Gabriac', type: 'Faculty - GSIM', email: 'adegabriac@iuj.ac.jp', phone: 'Ext. 3025'),
+  const DirectoryEntry(id: 8, name: 'Prof. Remy Magnier-Watanabe', type: 'Faculty - GSIM', email: 'rmagnier@iuj.ac.jp', phone: 'Ext. 3030'),
+  const DirectoryEntry(id: 9, name: 'Prof. Zaw Zaw Aung', type: 'Faculty - GSIM', email: 'zaung@iuj.ac.jp', phone: 'Ext. 3035'),
+  const DirectoryEntry(id: 10, name: 'Prof. Wenkai Li', type: 'Faculty - GSIM', email: 'wli@iuj.ac.jp', phone: 'Ext. 3040'),
+  // Support
+  const DirectoryEntry(id: 11, name: 'IT Helpdesk', type: 'Support', email: 'helpdesk@iuj.ac.jp', phone: 'Ext. 4222'),
+  const DirectoryEntry(id: 12, name: 'Matsushita Library (MLIC) Front Desk', type: 'Facility', email: 'library@iuj.ac.jp', phone: 'Ext. 4333'),
+  const DirectoryEntry(id: 13, name: 'Health Center', type: 'Support', email: 'health@iuj.ac.jp', phone: 'Ext. 4200'),
+  const DirectoryEntry(id: 14, name: 'Tokyo Liaison Office (Roppongi)', type: 'Satellite Office', email: 'tokyo@iuj.ac.jp', phone: '+81-3-XXXX-XXXX'),
 ];
 
 final List<WikiCategory> kWikiCategories = [
@@ -80,9 +92,14 @@ final List<WikiCategory> kWikiCategories = [
     id: 'courses',
     name: 'Courses',
     subcategories: [
-      const WikiSubcategory(id: 'finance', name: 'Finance'),
-      const WikiSubcategory(id: 'general-management', name: 'General Management'),
-      const WikiSubcategory(id: 'it-operations', name: 'IT & Operations'),
+      // GSIM
+      const WikiSubcategory(id: 'finance', name: 'Finance (GSIM)'),
+      const WikiSubcategory(id: 'general-management', name: 'General Management (GSIM)'),
+      const WikiSubcategory(id: 'it-operations', name: 'IT & Operations (GSIM)'),
+      // GSIR
+      const WikiSubcategory(id: 'intl-relations', name: 'International Relations (GSIR)'),
+      const WikiSubcategory(id: 'intl-development', name: 'International Development (GSIR)'),
+      const WikiSubcategory(id: 'public-management', name: 'Public Management (GSIR)'),
     ],
   ),
   const WikiCategory(id: 'residential-life', name: 'Residential Life'),
@@ -116,4 +133,15 @@ final Map<String, WikiPage> kWikiPages = {
   'course-mgt1130': const WikiPage(id: 'course-mgt1130', title: 'MGT1130: International Management', category: 'Courses', subcategory: 'General Management', parentPage: 'subcategory-general-management', lastUpdated: 'Winter 2026'),
   'course-mgt1140': const WikiPage(id: 'course-mgt1140', title: 'MGT1140: Business Decision-Making and Control', category: 'Courses', subcategory: 'General Management', parentPage: 'subcategory-general-management', lastUpdated: 'Winter 2026'),
   'course-mgt2120': const WikiPage(id: 'course-mgt2120', title: 'MGT2120: Entrepreneurship & Small Business Dev.', category: 'Courses', subcategory: 'General Management', parentPage: 'subcategory-general-management', lastUpdated: 'Winter 2026'),
+
+  // GSIR subcategory landing pages
+  'subcategory-intl-relations': const WikiPage(id: 'subcategory-intl-relations', title: 'International Relations (IRP)', category: 'Courses', subcategory: 'International Relations (GSIR)', isLandingPage: true, parentPage: 'category-courses', lastUpdated: 'Apr 2026'),
+  'subcategory-intl-development': const WikiPage(id: 'subcategory-intl-development', title: 'International Development (IDP)', category: 'Courses', subcategory: 'International Development (GSIR)', isLandingPage: true, parentPage: 'category-courses', lastUpdated: 'Apr 2026'),
+  'subcategory-public-management': const WikiPage(id: 'subcategory-public-management', title: 'Public Management & Policy (PMPP)', category: 'Courses', subcategory: 'Public Management (GSIR)', isLandingPage: true, parentPage: 'category-courses', lastUpdated: 'Apr 2026'),
+
+  // Administration pages
+  'about-iuj': const WikiPage(id: 'about-iuj', title: 'About IUJ', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
+  'access-transport': const WikiPage(id: 'access-transport', title: 'Getting to Campus', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
+  'admissions-overview': const WikiPage(id: 'admissions-overview', title: 'Admissions Overview', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
+  'research-centers': const WikiPage(id: 'research-centers', title: 'Research Centers & Institutes', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
 };
