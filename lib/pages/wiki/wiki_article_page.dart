@@ -1,0 +1,865 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../data/mock_data.dart';
+import '../../widgets/wiki/breadcrumb_bar.dart';
+import '../../widgets/common/app_modal.dart';
+
+/// Handles all wiki routes: category pages, subcategory pages, and articles.
+class WikiArticlePage extends ConsumerWidget {
+  final String articleId;
+  const WikiArticlePage({super.key, required this.articleId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final page = kWikiPages[articleId];
+
+    if (page == null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Page Not Found', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 12),
+          ElevatedButton(
+            onPressed: () => context.go('/wiki'),
+            child: const Text('Back to Wiki Home'),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BreadcrumbBar(pageId: articleId),
+        // Header
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(page.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Last updated: ${page.lastUpdated}',
+                    style: const TextStyle(fontSize: 12, color: Color(0xFF9CA3AF)),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.edit_outlined, size: 14),
+              label: const Text('Suggest Edit'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF4F46E5),
+                side: const BorderSide(color: Color(0xFF4F46E5)),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              onPressed: () => _showSuggestEdit(context),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        const Divider(),
+        const SizedBox(height: 16),
+        // Page content
+        _buildContent(context, articleId),
+      ],
+    );
+  }
+
+  Widget _buildContent(BuildContext context, String id) {
+    switch (id) {
+      case 'category-courses':
+        return _CoursesCategory(context: context);
+      case 'subcategory-finance':
+        return _SubcategoryPage(
+          description: 'The Finance specialization equips students with analytical tools to navigate global markets, sustainable investing, and emerging fintech applications.',
+          courses: [
+            ('course-fin2090', 'FIN2090: Behavioral Finance'),
+            ('course-fin2080', 'FIN2080: Sustainable Finance & Investment'),
+            ('course-fin3020', 'FIN3020: Finance and Technology'),
+          ],
+          context: context,
+        );
+      case 'subcategory-it-operations':
+        return _SubcategoryPage(
+          description: 'Explore syllabi covering data science, digital transformation (DX), and the management of organizational processes.',
+          courses: [
+            ('course-itc1080', 'ITC1080: Data-Driven Organization'),
+            ('course-itc2080', 'ITC2080: Management for Digital Transformation'),
+            ('course-itc2020', 'ITC2020: Big Data Analytics'),
+            ('course-opr1010', 'OPR1010: Operations Management'),
+          ],
+          context: context,
+        );
+      case 'subcategory-general-management':
+        return _SubcategoryPage(
+          description: 'Core management topics covering international strategy, entrepreneurship, and organizational control.',
+          courses: [
+            ('course-mgt1130', 'MGT1130: International Management'),
+            ('course-mgt1140', 'MGT1140: Business Decision-Making and Control'),
+            ('course-mgt2120', 'MGT2120: Entrepreneurship & Small Business Dev.'),
+          ],
+          context: context,
+        );
+      case 'category-residential-life':
+        return _ResidentialLifeCategory(context: context);
+      case 'category-academics':
+        return _AcademicsCategory(context: context);
+      case 'category-gso':
+        return _PlaceholderCategory(
+          icon: Icons.group_outlined,
+          message: 'GSO Guidelines, Event Planning, and Budget Processes will be published here.',
+        );
+      case 'category-administration':
+        return _PlaceholderCategory(
+          icon: Icons.shield_outlined,
+          message: 'Official Visa Procedures, Emergency Contacts, and IT Helpdesk FAQs will be published here.',
+        );
+      case 'winter-survival':
+        return const _WinterSurvivalArticle();
+      case 'trash-mastery':
+        return const _TrashMasteryArticle();
+      case 'urasa-station':
+        return const _UrasaStationArticle();
+      case 'device-calendar':
+        return const _DeviceCalendarArticle();
+      case 'course-fin2090':
+        return _CourseArticle(
+          instructor: 'Yanghua Shi',
+          schedule: 'Fri 10:30-12:00, 13:00-14:30',
+          credits: '2 Credits',
+          description: 'This course will give you an overview of how psychological biases and cognitive limitations shape financial decisions, market behavior, and investment outcomes, with a focus on real-world applications in business and finance.',
+          objective: 'In today\'s complex financial landscape, understanding how people actually make decisions is critical for designing effective business strategies and financial products. The objective is to provide an overview of key concepts in behavioral finance, including how cognitive biases, emotions, and social influences affect financial decision-making.',
+          objectiveLabel: 'Learning Objectives',
+        );
+      case 'course-fin2080':
+        return _CourseArticle(
+          instructor: 'Chow, Yuen Leng',
+          schedule: 'Tue 2nd & 3rd Period',
+          credits: '2 Credits',
+          description: 'Students will be given an overview of the financial markets and the new investment trends of sustainable finance. This course focuses on three core components: environment, social, and governance (ESG).',
+          objective: 'This course aims to provide students with an understanding of the linkages between global capital markets and funding environment, social and governance (ESG) related projects.',
+          objectiveLabel: 'Learning Objectives',
+        );
+      case 'course-fin3020':
+        return _CourseArticle(
+          instructor: 'Chow, Yuen Leng',
+          schedule: 'Mon 2nd & 3rd Period',
+          credits: '2 Credits',
+          description: 'In this course, you will be given an overview of finance and technology (fintech). What is fintech, when did it originate, what are the major trends going forward. The course will also provide an introduction to digital currencies and blockchain.',
+          objective: 'Fintech is increasingly changing the way for payments and investing. You will gain an understanding of the complex structure of payment methods and financial regulations, and employ strategies in developing a fintech strategy for your business.',
+          objectiveLabel: 'Career Relevance',
+        );
+      case 'course-itc1080':
+        return _CourseArticleWithList(
+          instructor: 'Zaw Zaw Aung',
+          schedule: 'Monday 4th & 5th Period',
+          credits: '2 Credits',
+          description: 'Companies are embracing Digital Transformation (DX) as their main agenda. Yet being more "digital" or collecting more data won\'t get the companies very far if there aren\'t methods and tools to better the management process.',
+          listLabel: 'Core Topics',
+          listItems: [
+            'Creating Data-Driven Organization Culture',
+            'Alignment of Data Strategy with Business Strategy',
+            'Data Engineering, Self-service Data Platform and Data Mesh',
+            'Data Quality, Data Literacy, Data Governance',
+          ],
+        );
+      case 'course-itc2080':
+        return _CourseArticle(
+          instructor: 'Sakurai, Mihoko',
+          schedule: 'Wed 14:40-16:10, 16:20-17:50',
+          credits: '2 Credits',
+          description: 'This course provides essential frameworks and associated keywords that help to understand digital transformation (DX). The course aims to investigate three core topics: DX process, DX structure, and DX culture within an organization.',
+          objective: 'Discussions around these themes are based on the notion of "sociotechnical system" which regards a work system as correlative interacting systems of the social system and the technical system.',
+          objectiveLabel: 'Approach',
+        );
+      case 'course-itc2020':
+        return _CourseArticle(
+          instructor: 'Zaw Zaw Aung',
+          schedule: 'Fri 2nd & 3rd Period',
+          credits: '2 Credits',
+          description: 'This course is for those new to data science and interested in understanding why the Big Data Era has come to be. This course introduces you data-analytic thinking.',
+          objective: 'Recognize different data elements in your own work, explain why your team needs to design a Big Data Infrastructure Plan, select a data model, retrieve data, process patterns, and design an approach leveraging machine learning processes.',
+          objectiveLabel: 'Learning Objectives',
+        );
+      case 'course-opr1010':
+        return _CourseArticle(
+          instructor: 'Wenkai Li',
+          schedule: 'Mon/Tue 14:40 - 17:50',
+          credits: '2 Credits',
+          description: 'Operations is one of three basic functions/pillars in any business organization. Operations Management (OM) is the management of systems or processes that create goods and/or provide services, within an organization.',
+          objective: 'Students will familiarize with basic knowledge of production and processes, including a strategic view of operations management, process thinking, lean thinking, quality management, and inventory management. Japanese way of operations will also be introduced.',
+          objectiveLabel: 'Learning Objectives',
+        );
+      case 'course-mgt1130':
+        return _CourseArticleWithList(
+          instructor: 'Yingying Zhang Zhang',
+          schedule: 'Wed Per 4-5 OR Thu Per 2-3',
+          credits: '2 Credits',
+          description: 'This course of international management is designed to equip students with essential knowledge and skills for effective management within the global business landscape.',
+          listLabel: 'Course Content',
+          listItems: [
+            'Foundations of Global Business',
+            'Analytical Tools for Internationalization',
+            'Navigating International Competitive Environments',
+            'Global Strategic Management',
+          ],
+        );
+      case 'course-mgt1140':
+        return _CourseArticle(
+          instructor: 'Lee, Hyunkoo',
+          schedule: 'Wed 10:30 AM & 1:00 PM',
+          credits: '2 Credits',
+          description: 'This course introduces students to the evolving role of managerial accounting in modern business environments. Topics include cost estimation, cost analysis, activity-based costing, cost-volume-profits analysis, budgets and standards.',
+          objective: 'The course highlights the informational needs of managers in planning, controlling, and decision making, and shows how to take advantage of accounting data in various situations.',
+          objectiveLabel: 'Learning Objectives',
+        );
+      case 'course-mgt2120':
+        return _CourseArticle(
+          instructor: 'Remy Magnier-Watanabe',
+          schedule: 'Thu 14:40 - 17:50',
+          credits: '2 Credits',
+          description: 'This course is particularly useful for students who are interested in starting their own business and want to learn different aspects of business management.',
+          objective: 'Evaluate qualities of the successful entrepreneurial profile; determine the steps necessary to open and operate a small business enterprise; identify marketing and financial competencies; and ultimately develop and present a Business Plan.',
+          objectiveLabel: 'Learning Objectives',
+        );
+      default:
+        return Text('Content for "$id" is not yet available.', style: const TextStyle(color: Color(0xFF6B7280)));
+    }
+  }
+
+  void _showSuggestEdit(BuildContext context) {
+    bool submitted = false;
+    AppModal.show(
+      context,
+      title: 'Suggest an Edit',
+      child: StatefulBuilder(
+        builder: (ctx, setState) => submitted
+            ? const Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.check_circle, color: Color(0xFF4F46E5), size: 48),
+                  SizedBox(height: 12),
+                  Text('Submitted for Moderation', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                  SizedBox(height: 8),
+                  Text('Your suggestion is pending review.', style: TextStyle(color: Color(0xFF6B7280))),
+                ],
+              )
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const TextField(
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      labelText: 'Describe your suggested changes',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Cancel')),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5), foregroundColor: Colors.white),
+                        onPressed: () => setState(() => submitted = true),
+                        child: const Text('Submit'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+}
+
+// ── Content widgets ────────────────────────────────────────────────────────
+
+class _CoursesCategory extends StatelessWidget {
+  final BuildContext context;
+  const _CoursesCategory({required this.context});
+
+  @override
+  Widget build(BuildContext ctx) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Access official syllabi, learning objectives, and materials for courses offered at GSIM and GSIR.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+        ),
+        const SizedBox(height: 16),
+        // RBAC notice
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFFBEB),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFFDE68A)),
+          ),
+          child: const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.warning_amber_rounded, color: Color(0xFFD97706), size: 18),
+              SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Role-Based Access Restriction', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF92400E), fontSize: 13)),
+                    SizedBox(height: 4),
+                    Text(
+                      'Directly adding or publishing new course entries is strictly limited to Professors and OAA Administrators. Students may only use "Suggest Edit".',
+                      style: TextStyle(fontSize: 12, color: Color(0xFF92400E)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+        const Text('Select Specialization', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+        const SizedBox(height: 12),
+        ...[
+          ('subcategory-finance', 'Finance', const Color(0xFFEEF2FF), const Color(0xFF4F46E5)),
+          ('subcategory-it-operations', 'IT & Operations', const Color(0xFFDBEAFE), const Color(0xFF2563EB)),
+          ('subcategory-general-management', 'General Management', const Color(0xFFDCFCE7), const Color(0xFF16A34A)),
+        ].map((item) => GestureDetector(
+          onTap: () => ctx.go('/wiki/${item.$1}'),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE5E7EB)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(color: item.$3, borderRadius: BorderRadius.circular(8)),
+                  child: Icon(Icons.book_outlined, color: item.$4, size: 18),
+                ),
+                const SizedBox(width: 12),
+                Text(item.$2, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                const Spacer(),
+                const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+              ],
+            ),
+          ),
+        )),
+      ],
+    );
+  }
+}
+
+class _SubcategoryPage extends StatelessWidget {
+  final String description;
+  final List<(String, String)> courses;
+  final BuildContext context;
+
+  const _SubcategoryPage({
+    required this.description,
+    required this.courses,
+    required this.context,
+  });
+
+  @override
+  Widget build(BuildContext ctx) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(description, style: const TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        const SizedBox(height: 16),
+        ...courses.map((c) => GestureDetector(
+          onTap: () => ctx.go('/wiki/${c.$1}'),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE5E7EB)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(c.$2, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF312E81))),
+                ),
+                const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+              ],
+            ),
+          ),
+        )),
+      ],
+    );
+  }
+}
+
+class _ResidentialLifeCategory extends StatelessWidget {
+  final BuildContext context;
+  const _ResidentialLifeCategory({required this.context});
+
+  @override
+  Widget build(BuildContext ctx) {
+    final pages = [
+      (Icons.ac_unit_outlined, const Color(0xFFDBEAFE), const Color(0xFF2563EB), 'Winter Survival Guide', 'winter-survival'),
+      (Icons.delete_outline, const Color(0xFFDCFCE7), const Color(0xFF16A34A), 'Trash Separation Mastery', 'trash-mastery'),
+      (Icons.location_on_outlined, const Color(0xFFEEF2FF), const Color(0xFF4F46E5), 'Urasa Station Transit Guide', 'urasa-station'),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Everything you need to know about living on campus.', style: TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        const SizedBox(height: 16),
+        ...pages.map((p) => GestureDetector(
+          onTap: () => ctx.go('/wiki/${p.$5}'),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE5E7EB))),
+            child: Row(
+              children: [
+                Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: p.$2, borderRadius: BorderRadius.circular(8)), child: Icon(p.$1, color: p.$3, size: 18)),
+                const SizedBox(width: 12),
+                Text(p.$4, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                const Spacer(),
+                const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+              ],
+            ),
+          ),
+        )),
+      ],
+    );
+  }
+}
+
+class _AcademicsCategory extends StatelessWidget {
+  final BuildContext context;
+  const _AcademicsCategory({required this.context});
+
+  @override
+  Widget build(BuildContext ctx) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Guides on academic procedures, calendar synchronization, and cross-registration.', style: TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        const SizedBox(height: 16),
+        GestureDetector(
+          onTap: () => ctx.go('/wiki/device-calendar'),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE5E7EB))),
+            child: const Row(
+              children: [
+                Icon(Icons.calendar_today_outlined, color: Color(0xFF4F46E5)),
+                SizedBox(width: 12),
+                Text('Syncing Timetable & Reminders', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                Spacer(),
+                Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PlaceholderCategory extends StatelessWidget {
+  final IconData icon;
+  final String message;
+  const _PlaceholderCategory({required this.icon, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 48),
+        child: Column(
+          children: [
+            Icon(icon, size: 56, color: const Color(0xFFD1D5DB)),
+            const SizedBox(height: 16),
+            Text(message, textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFF6B7280))),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CourseArticle extends StatelessWidget {
+  final String instructor;
+  final String schedule;
+  final String credits;
+  final String description;
+  final String objective;
+  final String objectiveLabel;
+
+  const _CourseArticle({
+    required this.instructor,
+    required this.schedule,
+    required this.credits,
+    required this.description,
+    required this.objective,
+    required this.objectiveLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _metaRow(instructor, schedule, credits),
+        const SizedBox(height: 20),
+        _sectionTitle('Course Description'),
+        const SizedBox(height: 8),
+        Text(description, style: const TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        const SizedBox(height: 20),
+        _sectionTitle(objectiveLabel),
+        const SizedBox(height: 8),
+        Text(objective, style: const TextStyle(fontSize: 14, color: Color(0xFF374151))),
+      ],
+    );
+  }
+}
+
+class _CourseArticleWithList extends StatelessWidget {
+  final String instructor;
+  final String schedule;
+  final String credits;
+  final String description;
+  final String listLabel;
+  final List<String> listItems;
+
+  const _CourseArticleWithList({
+    required this.instructor,
+    required this.schedule,
+    required this.credits,
+    required this.description,
+    required this.listLabel,
+    required this.listItems,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _metaRow(instructor, schedule, credits),
+        const SizedBox(height: 20),
+        _sectionTitle('Course Description'),
+        const SizedBox(height: 8),
+        Text(description, style: const TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        const SizedBox(height: 20),
+        _sectionTitle(listLabel),
+        const SizedBox(height: 8),
+        ...listItems.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 4, left: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('• ', style: TextStyle(fontSize: 14, color: Color(0xFF4F46E5), fontWeight: FontWeight.w700)),
+              Expanded(child: Text(item, style: const TextStyle(fontSize: 14, color: Color(0xFF374151)))),
+            ],
+          ),
+        )),
+      ],
+    );
+  }
+}
+
+Widget _metaRow(String instructor, String schedule, String credits) {
+  return Wrap(
+    spacing: 12,
+    runSpacing: 12,
+    children: [
+      _MetaChip(label: 'Instructor', value: instructor),
+      _MetaChip(label: 'Schedule', value: schedule),
+      _MetaChip(label: 'Credits', value: credits),
+    ],
+  );
+}
+
+Widget _sectionTitle(String title) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+      const Divider(),
+    ],
+  );
+}
+
+class _MetaChip extends StatelessWidget {
+  final String label;
+  final String value;
+  const _MetaChip({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEEF2FF),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFC7D2FE)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label.toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF818CF8), letterSpacing: 0.8)),
+          const SizedBox(height: 4),
+          Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF312E81))),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Article content widgets ────────────────────────────────────────────────
+
+class _WinterSurvivalArticle extends StatelessWidget {
+  const _WinterSurvivalArticle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Minamiuonuma is located in "Snow Country" (Yukiguni). Winters here are exceptionally beautiful but require serious preparation. Snow can exceed 2-3 meters at its peak.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('1. Essential Clothing'),
+        const SizedBox(height: 8),
+        ...[
+          ('Snow Boots', 'Do not rely on regular sneakers. Buy tall, waterproof snow boots with deep treads.'),
+          ('Layering', 'Heattech (from Uniqlo) is highly recommended. Always wear a thermal base layer.'),
+          ('Outerwear', 'A waterproof, windproof jacket is mandatory.'),
+        ].map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 6, left: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('• ', style: TextStyle(fontSize: 14, color: Color(0xFF4F46E5), fontWeight: FontWeight.w700)),
+              Expanded(child: RichText(text: TextSpan(
+                style: const TextStyle(fontSize: 14, color: Color(0xFF374151)),
+                children: [
+                  TextSpan(text: '${item.$1}: ', style: const TextStyle(fontWeight: FontWeight.w700)),
+                  TextSpan(text: item.$2),
+                ],
+              ))),
+            ],
+          ),
+        )),
+        const SizedBox(height: 20),
+        _sectionTitle('2. Dorm Heating & Utilities'),
+        const SizedBox(height: 8),
+        const Text(
+          'Your room\'s AC unit functions as a heater. Use the timer function to turn on the heat 30 minutes before you wake up.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFFBEB),
+            borderRadius: BorderRadius.circular(8),
+            border: const Border(left: BorderSide(color: Color(0xFFFBBF24), width: 4)),
+          ),
+          child: const Text(
+            '⚠️ Emergency Tip: Keep a physical shovel in your room or car. You may need to dig your way out of the parking lot after heavy overnight snowfall!',
+            style: TextStyle(fontSize: 13, color: Color(0xFF92400E), fontWeight: FontWeight.w500),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TrashMasteryArticle extends StatelessWidget {
+  const _TrashMasteryArticle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Japan has strict garbage sorting rules, and Minamiuonuma is no exception. Proper separation in the dormitories (like SD1) is mandatory.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFEF2F2),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFFFCA5A5)),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Burnable (Moeru Gomi)', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFFB91C1C))),
+                    SizedBox(height: 4),
+                    Text('Use the designated RED local bags. Includes food waste, paper that can\'t be recycled, and small plastics.', style: TextStyle(fontSize: 12, color: Color(0xFF7F1D1D))),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEFF6FF),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFF93C5FD)),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Non-Burnable (Moenai Gomi)', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF1D4ED8))),
+                    SizedBox(height: 4),
+                    Text('Use the designated BLUE local bags. Includes ceramics, glass, metals, and hard plastics.', style: TextStyle(fontSize: 12, color: Color(0xFF1E3A8A))),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('PET Bottles & Cans'),
+        const SizedBox(height: 8),
+        const Text(
+          'Caps and labels must be removed from PET bottles. Rinse all cans and bottles before placing them in the designated dorm bins.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+        ),
+      ],
+    );
+  }
+}
+
+class _UrasaStationArticle extends StatelessWidget {
+  const _UrasaStationArticle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Urasa Station is our primary gateway to Tokyo (via the Joetsu Shinkansen) and neighboring towns.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('Shuttle Bus Schedule'),
+        const SizedBox(height: 8),
+        const Text('The IUJ shuttle runs daily between campus and Urasa Station. The ride takes approximately 10-15 minutes.', style: TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        const SizedBox(height: 12),
+        ...[
+          ('Morning Peak', '07:30, 08:15, 08:50'),
+          ('Afternoon', '12:30, 14:00, 16:30'),
+          ('Evening', '18:15, 20:00 (Last bus)'),
+        ].map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 6, left: 8),
+          child: Row(
+            children: [
+              const Text('• ', style: TextStyle(fontSize: 14, color: Color(0xFF4F46E5), fontWeight: FontWeight.w700)),
+              RichText(text: TextSpan(
+                style: const TextStyle(fontSize: 14, color: Color(0xFF374151)),
+                children: [
+                  TextSpan(text: '${item.$1}: ', style: const TextStyle(fontWeight: FontWeight.w700)),
+                  TextSpan(text: item.$2),
+                ],
+              )),
+            ],
+          ),
+        )),
+        const SizedBox(height: 8),
+        const Text('* Schedules are subject to change during holidays and heavy snow days.', style: TextStyle(fontSize: 12, color: Color(0xFF9CA3AF), fontStyle: FontStyle.italic)),
+      ],
+    );
+  }
+}
+
+class _DeviceCalendarArticle extends StatelessWidget {
+  const _DeviceCalendarArticle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Missing classes or assignment deadlines is easy if your schedule isn\'t synced directly to your personal device.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('Device Calendar Integration'),
+        const SizedBox(height: 8),
+        const Text(
+          'For all students, we highly recommend integrating your IUJ schedule directly into your native device calendar for the most reliable notifications.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEEF2FF),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFC7D2FE)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.check_circle_outline, color: Color(0xFF4F46E5), size: 18),
+                  SizedBox(width: 8),
+                  Text('The "10-30-60" Rule', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF312E81))),
+                ],
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'When syncing via the MyIUJ! app to your device, the system automatically generates three cascading reminders:',
+                style: TextStyle(fontSize: 13, color: Color(0xFF312E81)),
+              ),
+              const SizedBox(height: 8),
+              ...['1 Hour before (Get ready / Review notes)', '30 Minutes before (Leave dorm / Walk to main building)', '10 Minutes before (Find your seat)']
+                  .map((item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4, left: 8),
+                    child: Row(children: [
+                      const Text('• ', style: TextStyle(color: Color(0xFF4F46E5), fontWeight: FontWeight.w700)),
+                      Text(item, style: const TextStyle(fontSize: 13, color: Color(0xFF312E81), fontWeight: FontWeight.w500)),
+                    ]),
+                  )),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        _sectionTitle('How it Works'),
+        const SizedBox(height: 8),
+        const Text(
+          'Because MyIUJ! uses your Google Workspace SSO, your timetable is automatically synced to your device\'s primary calendar. No manual setup is required.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+        ),
+      ],
+    );
+  }
+}
