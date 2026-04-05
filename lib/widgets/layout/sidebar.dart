@@ -222,7 +222,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
               child: GestureDetector(
                 onTap: () => setState(() => _wikiExpanded = !_wikiExpanded),
                 child: Icon(
-                  _wikiExpanded ? Icons.chevron_right : Icons.chevron_right,
+                  _wikiExpanded ? Icons.expand_more : Icons.chevron_right,
                   size: 18,
                   color: const Color(0xFF9CA3AF),
                 ),

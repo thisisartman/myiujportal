@@ -23,7 +23,7 @@ class DashboardPage extends ConsumerWidget {
         ),
         const SizedBox(height: 4),
         const Text(
-          'Wednesday, April 1, 2026',
+          'Monday, April 6, 2026',
           style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
         ),
         const SizedBox(height: 24),
