@@ -13,7 +13,7 @@ class WikiArticlePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final page = kWikiPages[articleId];
+    final page = kWikiPages[articleId] ?? kWikiPages['category-$articleId'];
 
     if (page == null) {
       return Column(
@@ -73,7 +73,9 @@ class WikiArticlePage extends ConsumerWidget {
   }
 
   Widget _buildContent(BuildContext context, String id) {
-    switch (id) {
+    // Support both 'courses' and 'category-courses' as the same page
+    final normalizedId = kWikiPages.containsKey(id) ? id : 'category-$id';
+    switch (normalizedId) {
       case 'category-courses':
         return _CoursesCategory(context: context);
       case 'subcategory-finance':
