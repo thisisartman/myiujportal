@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/calendar_provider.dart';
 import '../models/calendar_event.dart';
-import '../data/mock_data.dart';
 import '../widgets/calendar/month_grid.dart';
 import '../widgets/calendar/event_card.dart';
 import '../widgets/common/app_modal.dart';
@@ -174,7 +173,7 @@ class CalendarPage extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             DropdownButtonFormField<CalendarEventType>(
-              value: selectedType,
+              initialValue: selectedType,
               items: CalendarEventType.values.map((t) => DropdownMenuItem(
                 value: t,
                 child: Text(t.label),
