@@ -39,6 +39,7 @@ lib/
 ├── app.dart                         # MaterialApp.router, theme, GoRouter instance
 ├── router/app_router.dart           # GoRouter routes (ShellRoute wraps all pages)
 ├── models/
+│   ├── alert_item.dart              # AlertSeverity enum + AlertItem class
 │   ├── calendar_event.dart          # CalendarEvent, CalendarEventType enum + extensions
 │   ├── facility.dart                # Facility, TimeSlot
 │   └── wiki_page.dart               # WikiPage, WikiCategory, DirectoryEntry
@@ -61,8 +62,10 @@ lib/
     │   ├── sidebar.dart             # Collapsible sidebar with wiki accordion
     │   └── top_nav.dart             # Hamburger, search bar, user avatar
     ├── dashboard/
-    │   ├── calendar_widget.dart     # Date (number) on top, day-of-week below; taps → /calendar
-    │   └── up_next_card.dart        # Next upcoming event
+    │   ├── upcoming_events_widget.dart  # Upcoming events list with tag chips
+    │   ├── quick_links_widget.dart      # 2×2 grid of navigation shortcuts
+    │   ├── alerts_widget.dart           # Expandable IUJ news/alerts feed
+    │   └── digital_id_widget.dart       # Student ID card linking to profile
     ├── calendar/
     │   ├── month_grid.dart          # Dynamic month grid with event dot indicators
     │   └── event_card.dart          # Hover edit/delete; edit modal

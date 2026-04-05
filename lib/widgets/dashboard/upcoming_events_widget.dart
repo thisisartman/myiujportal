@@ -4,13 +4,16 @@ import 'package:go_router/go_router.dart';
 import '../../models/calendar_event.dart';
 import '../../providers/calendar_provider.dart';
 
+/// Mock "today" is April 6, 2026 — kept in sync with mock_data seed.
+const int kMockTodayDay = 6;
+
 class UpcomingEventsWidget extends ConsumerWidget {
   const UpcomingEventsWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final events = ref.watch(calendarEventsProvider);
-    final upcoming = events.where((e) => e.date >= 6).toList()
+    final upcoming = events.where((e) => e.date >= kMockTodayDay).toList()
       ..sort((a, b) {
         if (a.date != b.date) return a.date.compareTo(b.date);
         return a.time.compareTo(b.time);
@@ -48,18 +51,8 @@ class UpcomingEventsWidget extends ConsumerWidget {
               padding: EdgeInsets.all(16),
               child: Text('No upcoming events.', style: TextStyle(fontSize: 13, color: Color(0xFF9CA3AF))),
             )
-          else ...[
-            ...upcoming.take(4).map((e) => _EventRow(event: e)),
-            if (upcoming.length > 4)
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 160),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: upcoming.skip(4).map((e) => _EventRow(event: e)).toList(),
-                  ),
-                ),
-              ),
-          ],
+          else
+            ...upcoming.take(5).map((e) => _EventRow(event: e)),
           const SizedBox(height: 4),
         ],
       ),
