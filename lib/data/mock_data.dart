@@ -1,3 +1,4 @@
+import '../models/alert_item.dart';
 import '../models/calendar_event.dart';
 import '../models/facility.dart';
 import '../models/wiki_page.dart';
@@ -145,3 +146,46 @@ final Map<String, WikiPage> kWikiPages = {
   'admissions-overview': const WikiPage(id: 'admissions-overview', title: 'Admissions Overview', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
   'research-centers': const WikiPage(id: 'research-centers', title: 'Research Centers & Institutes', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
 };
+
+final List<AlertItem> kMockAlerts = [
+  const AlertItem(
+    id: 'a1',
+    title: 'Library Extended Hours — Finals Week',
+    body: 'The Matsushita Library (MLIC) will be open until midnight from Apr 20–30. Quiet study rooms bookable via OSS.',
+    date: 'Apr 6',
+    mailingList: 'all-students',
+    severity: AlertSeverity.info,
+  ),
+  const AlertItem(
+    id: 'a2',
+    title: 'Course Registration Opens Apr 15',
+    body: 'Spring term course registration opens at 9:00 AM on April 15. Log into the Academic Portal to submit your course selections. Contact OAA (oaa@iuj.ac.jp) with any questions.',
+    date: 'Apr 5',
+    mailingList: 'all-students',
+    severity: AlertSeverity.announcement,
+  ),
+  const AlertItem(
+    id: 'a3',
+    title: 'GSIM Career Fair — Volunteer Sign-up',
+    body: 'The GSIM Career Fair is on Apr 20. Students interested in volunteering at the event should sign up via the OSS portal by Apr 12.',
+    date: 'Apr 4',
+    mailingList: 'gsim-only',
+    severity: AlertSeverity.info,
+  ),
+  const AlertItem(
+    id: 'a4',
+    title: 'Campus Shuttle Schedule Change (Golden Week)',
+    body: 'The Urasa Station shuttle will run reduced service May 3–6 (Golden Week). Check the OGA notice board for the modified timetable.',
+    date: 'Apr 3',
+    mailingList: 'all-students',
+    severity: AlertSeverity.warning,
+  ),
+  const AlertItem(
+    id: 'a5',
+    title: 'New Wi-Fi Access Points Installed in CNP',
+    body: 'IT has upgraded wireless coverage in the CNP building. If you experience connectivity issues, contact helpdesk@iuj.ac.jp or Ext. 4222.',
+    date: 'Apr 1',
+    mailingList: 'all-students',
+    severity: AlertSeverity.info,
+  ),
+];
