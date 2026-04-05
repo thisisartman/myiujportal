@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../providers/sidebar_provider.dart';
 import '../../providers/wiki_provider.dart';
 
@@ -71,10 +72,16 @@ class TopNav extends ConsumerWidget {
           ),
           const SizedBox(width: 16),
           // User avatar
-          CircleAvatar(
-            radius: 16,
-            backgroundColor: const Color(0xFF4F46E5),
-            child: const Text('S', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () => context.go('/profile'),
+              child: CircleAvatar(
+                radius: 16,
+                backgroundColor: const Color(0xFF4F46E5),
+                child: const Text('S', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+              ),
+            ),
           ),
         ],
       ),

@@ -8,6 +8,7 @@ import '../pages/calendar_page.dart';
 import '../pages/facilities_page.dart';
 import '../pages/wiki/wiki_home_page.dart';
 import '../pages/wiki/wiki_article_page.dart';
+import '../pages/profile_page.dart';
 import '../providers/auth_provider.dart';
 
 // Bridges Riverpod auth state into a ChangeNotifier so GoRouter can refresh.
@@ -74,6 +75,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                   '${state.pathParameters['category']!}-${state.pathParameters['articleId']!}';
               return NoTransitionPage(child: WikiArticlePage(articleId: articleId));
             },
+          ),
+          GoRoute(
+            path: '/profile',
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: ProfilePage()),
           ),
         ],
       ),
