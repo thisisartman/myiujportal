@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../models/calendar_event.dart';
 import '../providers/calendar_provider.dart';
+import '../widgets/common/hover_card.dart';
 import '../widgets/dashboard/calendar_widget.dart';
 import '../widgets/dashboard/up_next_card.dart';
 
@@ -71,22 +72,15 @@ class DashboardPage extends ConsumerWidget {
       children: actions.map((a) => Expanded(
         child: Padding(
           padding: const EdgeInsets.only(right: 12),
-          child: GestureDetector(
+          child: HoverCard(
             onTap: () => context.go(a.path),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE5E7EB)),
-              ),
-              child: Column(
-                children: [
-                  Icon(a.icon, color: a.color, size: 22),
-                  const SizedBox(height: 6),
-                  Text(a.label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF374151))),
-                ],
-              ),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              children: [
+                Icon(a.icon, color: a.color, size: 22),
+                const SizedBox(height: 6),
+                Text(a.label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF374151))),
+              ],
             ),
           ),
         ),
