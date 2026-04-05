@@ -20,14 +20,13 @@ class AppShell extends ConsumerWidget {
         children: [
           Row(
             children: [
-              // Desktop sidebar
+              // Desktop sidebar — animates width
               if (isDesktop)
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
                   width: isDesktopCollapsed ? 0 : 256,
-                  child: isDesktopCollapsed
-                      ? const SizedBox.shrink()
-                      : const Sidebar(),
+                  child: isDesktopCollapsed ? const SizedBox.shrink() : const Sidebar(),
                 ),
               // Main content
               Expanded(
@@ -45,17 +44,29 @@ class AppShell extends ConsumerWidget {
               ),
             ],
           ),
-          // Mobile drawer overlay
-          if (!isDesktop && isMobileOpen) ...[
-            GestureDetector(
-              onTap: () => ref.read(sidebarOpenProvider.notifier).state = false,
-              child: Container(color: Colors.black54),
+          // Mobile: animated slide-in overlay
+          if (!isDesktop) ...[
+            // Backdrop
+            AnimatedOpacity(
+              opacity: isMobileOpen ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 200),
+              child: IgnorePointer(
+                ignoring: !isMobileOpen,
+                child: GestureDetector(
+                  onTap: () => ref.read(sidebarOpenProvider.notifier).state = false,
+                  child: Container(color: Colors.black54),
+                ),
+              ),
             ),
-            const Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              child: Sidebar(),
+            // Slide-in drawer
+            Positioned(
+              left: 0, top: 0, bottom: 0,
+              child: AnimatedSlide(
+                offset: isMobileOpen ? Offset.zero : const Offset(-1, 0),
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                child: const Sidebar(),
+              ),
             ),
           ],
         ],
