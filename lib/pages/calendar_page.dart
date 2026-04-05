@@ -5,6 +5,7 @@ import '../providers/calendar_provider.dart';
 import '../models/calendar_event.dart';
 import '../widgets/calendar/month_grid.dart';
 import '../widgets/calendar/event_card.dart';
+import '../widgets/calendar/group_meeting_modal.dart';
 import '../widgets/common/app_modal.dart';
 
 class CalendarPage extends ConsumerWidget {
@@ -201,6 +202,18 @@ class CalendarPage extends ConsumerWidget {
               decoration: const InputDecoration(labelText: 'Time (HH:MM)', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 16),
+            const Divider(),
+            const SizedBox(height: 8),
+            TextButton.icon(
+              icon: const Icon(Icons.group_outlined, size: 16),
+              label: const Text('Schedule as Group Meeting instead'),
+              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4F46E5)),
+              onPressed: () {
+                Navigator.of(ctx).pop(); // close Add Event modal
+                GroupMeetingModal.show(context);
+              },
+            ),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
