@@ -69,9 +69,12 @@ class _SidebarState extends ConsumerState<Sidebar> {
                 ),
                 const Spacer(),
                 if (MediaQuery.of(context).size.width < 768)
-                  GestureDetector(
-                    onTap: () => ref.read(sidebarOpenProvider.notifier).state = false,
-                    child: const Icon(Icons.close, color: Color(0xFF6B7280), size: 20),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => ref.read(sidebarOpenProvider.notifier).state = false,
+                      child: const Icon(Icons.close, color: Color(0xFF6B7280), size: 20),
+                    ),
                   ),
               ],
             ),
@@ -107,6 +110,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
               border: Border(top: BorderSide(color: Color(0xFFE5E7EB))),
             ),
             child: InkWell(
+              mouseCursor: SystemMouseCursors.click,
               onTap: () {
                 ref.read(authProvider.notifier).logout();
                 ref.read(sidebarOpenProvider.notifier).state = false;
@@ -152,6 +156,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
 
   Widget _navItem(BuildContext context, String path, IconData icon, String label, bool active) {
     return InkWell(
+      mouseCursor: SystemMouseCursors.click,
       onTap: () => _navigate(context, path),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -183,6 +188,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
 
   Widget _wikiHeader(BuildContext context, bool active) {
     return InkWell(
+      mouseCursor: SystemMouseCursors.click,
       onTap: () {
         _navigate(context, '/wiki');
         setState(() => _wikiExpanded = true);
@@ -211,12 +217,15 @@ class _SidebarState extends ConsumerState<Sidebar> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () => setState(() => _wikiExpanded = !_wikiExpanded),
-              child: Icon(
-                _wikiExpanded ? Icons.chevron_right : Icons.chevron_right,
-                size: 18,
-                color: const Color(0xFF9CA3AF),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () => setState(() => _wikiExpanded = !_wikiExpanded),
+                child: Icon(
+                  _wikiExpanded ? Icons.chevron_right : Icons.chevron_right,
+                  size: 18,
+                  color: const Color(0xFF9CA3AF),
+                ),
               ),
             ),
           ],
@@ -249,6 +258,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
               const SizedBox(height: 8),
               // Category header
               InkWell(
+                mouseCursor: SystemMouseCursors.click,
                 onTap: () {
                   context.go('/wiki/${cat.id}');
                   ref.read(sidebarOpenProvider.notifier).state = false;
@@ -276,17 +286,20 @@ class _SidebarState extends ConsumerState<Sidebar> {
                         ),
                       ),
                       if (cat.subcategories.isNotEmpty)
-                        GestureDetector(
-                          onTap: () {
-                            final notifier = ref.read(expandedCategoriesProvider.notifier);
-                            notifier.update((state) => isExpanded
-                                ? state.where((c) => c != cat.name).toList()
-                                : [...state, cat.name]);
-                          },
-                          child: Icon(
-                            isExpanded ? Icons.expand_more : Icons.chevron_right,
-                            size: 14,
-                            color: const Color(0xFF9CA3AF),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: () {
+                              final notifier = ref.read(expandedCategoriesProvider.notifier);
+                              notifier.update((state) => isExpanded
+                                  ? state.where((c) => c != cat.name).toList()
+                                  : [...state, cat.name]);
+                            },
+                            child: Icon(
+                              isExpanded ? Icons.expand_more : Icons.chevron_right,
+                              size: 14,
+                              color: const Color(0xFF9CA3AF),
+                            ),
                           ),
                         ),
                     ],
@@ -299,6 +312,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
                   return Column(
                     children: [
                       InkWell(
+                        mouseCursor: SystemMouseCursors.click,
                         onTap: () {
                           context.go('/wiki/subcategory-${sub.id}');
                           ref.read(sidebarOpenProvider.notifier).state = false;
@@ -330,6 +344,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
               if (cat.subcategories.isEmpty) ...[
                 // Show leaf pages for residential-life and academics
                 ...(_getCategoryPages(cat.id).map((pageEntry) => InkWell(
+                  mouseCursor: SystemMouseCursors.click,
                   onTap: () {
                     context.go('/wiki/${pageEntry.key}');
                     ref.read(sidebarOpenProvider.notifier).state = false;
