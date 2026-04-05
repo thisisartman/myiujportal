@@ -30,17 +30,6 @@ class CalendarPage extends ConsumerWidget {
                 Text('April 2026', style: TextStyle(fontSize: 14, color: Color(0xFF6B7280))),
               ],
             ),
-            const Spacer(),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.add, size: 16),
-              label: const Text('Add Event'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4F46E5),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              onPressed: () => _showAddEventModal(context, ref),
-            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -78,7 +67,7 @@ class CalendarPage extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Expanded(flex: 2, child: _eventPanel(filteredEvents, selectedDate)),
+                  Expanded(flex: 2, child: _eventPanel(context, ref, filteredEvents, selectedDate)),
                 ],
               )
             : Column(
@@ -93,7 +82,7 @@ class CalendarPage extends ConsumerWidget {
                     child: const MonthGrid(),
                   ),
                   const SizedBox(height: 16),
-                  _eventPanel(filteredEvents, selectedDate),
+                  _eventPanel(context, ref, filteredEvents, selectedDate),
                 ],
               ),
       ],
@@ -123,7 +112,7 @@ class CalendarPage extends ConsumerWidget {
     );
   }
 
-  Widget _eventPanel(List<CalendarEvent> events, int selectedDate) {
+  Widget _eventPanel(BuildContext context, WidgetRef ref, List<CalendarEvent> events, int selectedDate) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -134,6 +123,23 @@ class CalendarPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton.icon(
+                icon: const Icon(Icons.add, size: 16),
+                label: const Text('Add Event'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4F46E5),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                ),
+                onPressed: () => _showAddEventModal(context, ref),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
           Text(
             'April $selectedDate',
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF111827)),
