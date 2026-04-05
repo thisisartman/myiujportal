@@ -123,7 +123,7 @@ class _EventCardState extends ConsumerState<EventCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             DropdownButtonFormField<CalendarEventType>(
-              value: selectedType,
+              initialValue: selectedType,
               items: CalendarEventType.values.map((t) => DropdownMenuItem(
                 value: t,
                 child: Text(t.label),
