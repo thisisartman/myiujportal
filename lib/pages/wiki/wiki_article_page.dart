@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/mock_data.dart';
 import '../../widgets/wiki/breadcrumb_bar.dart';
 import '../../widgets/common/app_modal.dart';
+import '../../widgets/common/hover_card.dart';
 
 /// Handles all wiki routes: category pages, subcategory pages, and articles.
 class WikiArticlePage extends ConsumerWidget {
@@ -376,16 +377,11 @@ class _CoursesCategory extends StatelessWidget {
   }
 
   Widget _subcategoryTile(BuildContext ctx, String id, String label, Color bg, Color fg) {
-    return GestureDetector(
-      onTap: () => ctx.go('/wiki/$id'),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFE5E7EB)),
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: HoverCard(
+        onTap: () => ctx.go('/wiki/$id'),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
         child: Row(
           children: [
             Container(
@@ -442,16 +438,11 @@ class _SubcategoryPage extends StatelessWidget {
             ),
           )
         else
-          ...courses.map((c) => GestureDetector(
-            onTap: () => ctx.go('/wiki/${c.$1}'),
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE5E7EB)),
-              ),
+          ...courses.map((c) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: HoverCard(
+              onTap: () => ctx.go('/wiki/${c.$1}'),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               child: Row(
                 children: [
                   Expanded(
@@ -483,12 +474,11 @@ class _ResidentialLifeCategory extends StatelessWidget {
       children: [
         const Text('Everything you need to know about living on campus.', style: TextStyle(fontSize: 14, color: Color(0xFF374151))),
         const SizedBox(height: 16),
-        ...pages.map((p) => GestureDetector(
-          onTap: () => ctx.go('/wiki/${p.$5}'),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE5E7EB))),
+        ...pages.map((p) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: HoverCard(
+            onTap: () => ctx.go('/wiki/${p.$5}'),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             child: Row(
               children: [
                 Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: p.$2, borderRadius: BorderRadius.circular(8)), child: Icon(p.$1, color: p.$3, size: 18)),
@@ -516,20 +506,17 @@ class _AcademicsCategory extends StatelessWidget {
       children: [
         const Text('Guides on academic procedures, calendar synchronization, and cross-registration.', style: TextStyle(fontSize: 14, color: Color(0xFF374151))),
         const SizedBox(height: 16),
-        GestureDetector(
+        HoverCard(
           onTap: () => ctx.go('/wiki/device-calendar'),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE5E7EB))),
-            child: const Row(
-              children: [
-                Icon(Icons.calendar_today_outlined, color: Color(0xFF4F46E5)),
-                SizedBox(width: 12),
-                Text('Syncing Timetable & Reminders', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
-                Spacer(),
-                Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
-              ],
-            ),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: const Row(
+            children: [
+              Icon(Icons.calendar_today_outlined, color: Color(0xFF4F46E5)),
+              SizedBox(width: 12),
+              Text('Syncing Timetable & Reminders', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+              Spacer(),
+              Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+            ],
           ),
         ),
       ],
@@ -941,12 +928,11 @@ class _AdminCategory extends StatelessWidget {
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: pages.map((p) => GestureDetector(
-        onTap: () => ctx.go('/wiki/${p.$1}'),
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE5E7EB))),
+      children: pages.map((p) => Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: HoverCard(
+          onTap: () => ctx.go('/wiki/${p.$1}'),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
           child: Row(
             children: [
               Container(
