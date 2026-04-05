@@ -9,43 +9,74 @@ class MonthGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewDate = ref.watch(currentViewDateProvider);
+    final displayed = ref.watch(displayedMonthProvider);
     final selectedDate = ref.watch(selectedDateProvider);
     final monthEvents = ref.watch(monthEventsProvider);
-    final isMockMonth = viewDate.month == 4 && viewDate.year == 2026;
+    final isMockMonth = displayed.month == 4 && displayed.year == 2026;
 
-    final daysInMonth = DateTime(viewDate.year, viewDate.month + 1, 0).day;
-    int firstWeekday = DateTime(viewDate.year, viewDate.month, 1).weekday; // 1=Mon
+    final daysInMonth = DateTime(displayed.year, displayed.month + 1, 0).day;
+    int firstWeekday = DateTime(displayed.year, displayed.month, 1).weekday; // 1=Mon
     final leadingBlanks = firstWeekday - 1; // 0 = starts on Monday
 
     const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+    final monthName = DateFormat('MMMM').format(displayed);
+    final year = displayed.year;
+
     return Column(
       children: [
-        // Month navigation
+        // Month navigation with tappable month and year
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              icon: const Icon(Icons.chevron_left),
-              onPressed: () => ref.read(currentViewDateProvider.notifier).update(
-                    (d) => DateTime(d.year, d.month - 1, 1),
-                  ),
+              icon: const Icon(Icons.chevron_left, size: 20),
+              onPressed: () {
+                final cur = ref.read(displayedMonthProvider);
+                ref.read(displayedMonthProvider.notifier).state =
+                    DateTime(cur.year, cur.month - 1);
+              },
             ),
-            Expanded(
-              child: Text(
-                DateFormat('MMMM yyyy').format(viewDate),
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFF111827)),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () => _showMonthPicker(context, ref, displayed),
+                child: Text(
+                  monthName,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF111827),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () => _showYearPicker(context, ref, displayed),
+                child: Text(
+                  '$year',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF4F46E5),
+                  ),
+                ),
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.chevron_right),
-              onPressed: () => ref.read(currentViewDateProvider.notifier).update(
-                    (d) => DateTime(d.year, d.month + 1, 1),
-                  ),
+              icon: const Icon(Icons.chevron_right, size: 20),
+              onPressed: () {
+                final cur = ref.read(displayedMonthProvider);
+                ref.read(displayedMonthProvider.notifier).state =
+                    DateTime(cur.year, cur.month + 1);
+              },
             ),
             TextButton(
               onPressed: () {
+                ref.read(displayedMonthProvider.notifier).state = DateTime(2026, 4);
                 ref.read(currentViewDateProvider.notifier).state = DateTime(2026, 4, 1);
                 ref.read(selectedDateProvider.notifier).state = 1;
               },
@@ -58,7 +89,14 @@ class MonthGrid extends ConsumerWidget {
         Row(
           children: dayLabels.map((d) => Expanded(
             child: Center(
-              child: Text(d, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF6B7280))),
+              child: Text(
+                d,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF6B7280),
+                ),
+              ),
             ),
           )).toList(),
         ),
@@ -84,7 +122,9 @@ class MonthGrid extends ConsumerWidget {
               child: Container(
                 margin: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF4F46E5) : (isToday ? const Color(0xFFEEF2FF) : null),
+                  color: isSelected
+                      ? const Color(0xFF4F46E5)
+                      : (isToday ? const Color(0xFFEEF2FF) : null),
                   borderRadius: BorderRadius.circular(8),
                   border: isToday && !isSelected
                       ? Border.all(color: const Color(0xFF4F46E5), width: 1.5)
@@ -123,4 +163,129 @@ class MonthGrid extends ConsumerWidget {
       ],
     );
   }
+}
+
+void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
+  final months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+  showDialog(
+    context: context,
+    builder: (_) => Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Select Month',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 16),
+            GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 1.8,
+              ),
+              itemCount: 12,
+              itemBuilder: (_, i) {
+                final isSelected = current.month == i + 1;
+                return MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      ref.read(displayedMonthProvider.notifier).state =
+                          DateTime(current.year, i + 1);
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? const Color(0xFF4F46E5)
+                            : const Color(0xFFF3F4F6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        months[i],
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected ? Colors.white : const Color(0xFF374151),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+void _showYearPicker(BuildContext context, WidgetRef ref, DateTime current) {
+  final years = List.generate(10, (i) => current.year - 3 + i);
+  showDialog(
+    context: context,
+    builder: (_) => Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Select Year',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: years.map((y) {
+                final isSelected = current.year == y;
+                return MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      ref.read(displayedMonthProvider.notifier).state =
+                          DateTime(y, current.month);
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      width: 72,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? const Color(0xFF4F46E5)
+                            : const Color(0xFFF3F4F6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '$y',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected ? Colors.white : const Color(0xFF374151),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }

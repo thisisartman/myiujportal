@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../providers/calendar_provider.dart';
 import '../models/calendar_event.dart';
 import '../widgets/calendar/month_grid.dart';
@@ -14,6 +15,7 @@ class CalendarPage extends ConsumerWidget {
     final filteredEvents = ref.watch(filteredEventsProvider);
     final filter = ref.watch(calendarFilterProvider);
     final selectedDate = ref.watch(selectedDateProvider);
+    final displayed = ref.watch(displayedMonthProvider);
     final isWide = MediaQuery.of(context).size.width >= 900;
 
     return Column(
@@ -22,11 +24,11 @@ class CalendarPage extends ConsumerWidget {
         // Header row
         Row(
           children: [
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Calendar', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
-                Text('April 2026', style: TextStyle(fontSize: 14, color: Color(0xFF6B7280))),
+                const Text('Calendar', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
+                Text(DateFormat('MMMM yyyy').format(displayed), style: const TextStyle(fontSize: 14, color: Color(0xFF6B7280))),
               ],
             ),
           ],
@@ -112,6 +114,8 @@ class CalendarPage extends ConsumerWidget {
   }
 
   Widget _eventPanel(BuildContext context, WidgetRef ref, List<CalendarEvent> events, int selectedDate) {
+    final displayed = ref.watch(displayedMonthProvider);
+    final monthName = DateFormat('MMMM').format(displayed);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -140,7 +144,7 @@ class CalendarPage extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'April $selectedDate',
+            '$monthName $selectedDate',
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF111827)),
           ),
           const SizedBox(height: 12),

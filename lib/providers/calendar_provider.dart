@@ -62,6 +62,11 @@ final filteredEventsProvider = Provider<List<CalendarEvent>>((ref) {
   return dayEvents;
 });
 
+// Tracks which month/year the calendar grid is showing (independent of selected date)
+final displayedMonthProvider = StateProvider<DateTime>(
+  (ref) => DateTime(2026, 4), // April 2026 default
+);
+
 // All events for the current view month (for dot indicators)
 final monthEventsProvider = Provider<Map<int, List<CalendarEvent>>>((ref) {
   final events = ref.watch(calendarEventsProvider);
