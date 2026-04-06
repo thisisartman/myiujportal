@@ -5,6 +5,7 @@ import '../models/wiki_page.dart';
 import 'package:flutter/material.dart';
 
 final List<Facility> kFacilities = [
+  // Classrooms
   const Facility(
     id: 'f1',
     name: 'Classroom G.30',
@@ -15,6 +16,23 @@ final List<Facility> kFacilities = [
   ),
   const Facility(
     id: 'f2',
+    name: 'Classroom P.103',
+    category: FacilityCategory.classroom,
+    authority: 'OAA',
+    bgColor: Color(0xFFDBEAFE),
+    iconColor: Color(0xFF2563EB),
+  ),
+  const Facility(
+    id: 'f3',
+    name: 'Seminar Room G.21',
+    category: FacilityCategory.classroom,
+    authority: 'OAA',
+    bgColor: Color(0xFFDBEAFE),
+    iconColor: Color(0xFF2563EB),
+  ),
+  // Lounges
+  const Facility(
+    id: 'f4',
     name: 'CNP Snack Lounge',
     category: FacilityCategory.lounge,
     authority: 'OGA',
@@ -22,30 +40,43 @@ final List<Facility> kFacilities = [
     iconColor: Color(0xFFEA580C),
   ),
   const Facility(
-    id: 'f3',
+    id: 'f5',
+    name: 'BBQ Area',
+    category: FacilityCategory.lounge,
+    authority: 'OSS',
+    bgColor: Color(0xFFFFEDD5),
+    iconColor: Color(0xFFEA580C),
+  ),
+  const Facility(
+    id: 'f6',
+    name: 'Student Lounge (CNP B1)',
+    category: FacilityCategory.lounge,
+    authority: 'OSS',
+    bgColor: Color(0xFFFFEDD5),
+    iconColor: Color(0xFFEA580C),
+  ),
+  // Gymnasium
+  const Facility(
+    id: 'f7',
     name: 'Main Gymnasium',
     category: FacilityCategory.gymnasium,
     authority: 'OSS',
     bgColor: Color(0xFFDCFCE7),
     iconColor: Color(0xFF16A34A),
   ),
-  const Facility(
-    id: 'f4',
-    name: 'MLIC Study Room A',
-    category: FacilityCategory.classroom,
-    authority: 'Library Admin',
-    bgColor: Color(0xFFF3E8FF),
-    iconColor: Color(0xFF9333EA),
-  ),
 ];
 
+// Days in April 2026 that have at least one available slot (after mock today Apr 6)
+const Set<int> kAvailableDays = {7, 8, 10, 11, 14, 15, 17, 21, 22, 24, 28, 29};
+
+// Default time slots for any available day
 final List<TimeSlot> kMockSlots = [
-  const TimeSlot(time: '09:00 AM - 10:30 AM', available: false),
-  const TimeSlot(time: '10:40 AM - 12:10 PM', available: true),
-  const TimeSlot(time: '13:15 PM - 14:45 PM', available: true),
-  const TimeSlot(time: '14:55 PM - 16:25 PM', available: false),
-  const TimeSlot(time: '16:30 PM - 18:00 PM', available: true),
-  const TimeSlot(time: '18:15 PM - 19:45 PM', available: true),
+  const TimeSlot(time: '09:00 – 10:30', available: false),
+  const TimeSlot(time: '10:40 – 12:10', available: true),
+  const TimeSlot(time: '13:15 – 14:45', available: true),
+  const TimeSlot(time: '14:55 – 16:25', available: false),
+  const TimeSlot(time: '16:30 – 18:00', available: true),
+  const TimeSlot(time: '18:15 – 19:45', available: true),
 ];
 
 final List<CalendarEvent> kInitialCalendarEvents = [
@@ -86,6 +117,17 @@ final List<DirectoryEntry> kMockDirectory = [
   const DirectoryEntry(id: 12, name: 'Matsushita Library (MLIC) Front Desk', type: 'Facility', email: 'library@iuj.ac.jp', phone: 'Ext. 4333'),
   const DirectoryEntry(id: 13, name: 'Health Center', type: 'Support', email: 'health@iuj.ac.jp', phone: 'Ext. 4200'),
   const DirectoryEntry(id: 14, name: 'Tokyo Liaison Office (Roppongi)', type: 'Satellite Office', email: 'tokyo@iuj.ac.jp', phone: '+81-3-XXXX-XXXX'),
+  // Students
+  const DirectoryEntry(id: 15, name: 'Subhanshu Biswas', type: 'Student', email: 'sbiswas@iuj.ac.jp', phone: '', studentId: 'IUJ-2026-0001'),
+  const DirectoryEntry(id: 16, name: 'Yuki Tanaka', type: 'Student', email: 'ytanaka@iuj.ac.jp', phone: '', studentId: 'IUJ-2026-0042'),
+  const DirectoryEntry(id: 17, name: 'Maria Santos', type: 'Student', email: 'msantos@iuj.ac.jp', phone: '', studentId: 'IUJ-2026-0078'),
+  const DirectoryEntry(id: 18, name: 'Ahmed Al-Rashid', type: 'Student', email: 'aalrashid@iuj.ac.jp', phone: '', studentId: 'IUJ-2025-0134'),
+  const DirectoryEntry(id: 19, name: 'Liu Wei', type: 'Student', email: 'lwei@iuj.ac.jp', phone: '', studentId: 'IUJ-2025-0099'),
+  // Organizations
+  const DirectoryEntry(id: 20, name: 'Graduate Student Organization (GSO)', type: 'Organization', email: 'gso@iuj.ac.jp', phone: 'Ext. 4300', coordinator: 'Maria Santos'),
+  const DirectoryEntry(id: 21, name: 'GSIM Student Council', type: 'Organization', email: 'gsim-council@iuj.ac.jp', phone: 'Ext. 4301', coordinator: 'Subhanshu Biswas'),
+  const DirectoryEntry(id: 22, name: 'GSIR Student Council', type: 'Organization', email: 'gsir-council@iuj.ac.jp', phone: 'Ext. 4302', coordinator: 'Yuki Tanaka'),
+  const DirectoryEntry(id: 23, name: 'IUJ Photography Club', type: 'Organization', email: 'photo-club@iuj.ac.jp', phone: '', coordinator: 'Liu Wei'),
 ];
 
 final List<WikiCategory> kWikiCategories = [
@@ -188,4 +230,12 @@ final List<AlertItem> kMockAlerts = [
     mailingList: 'all-students',
     severity: AlertSeverity.info,
   ),
+];
+
+// Library mock data
+final List<({String title, String dueDate, bool overdue})> kMockLibraryLoans = [
+  (title: 'International Business Strategy', dueDate: 'Apr 15, 2026', overdue: false),
+  (title: 'Global Supply Chain Management', dueDate: 'Apr 3, 2026', overdue: true),
+  (title: 'Comparative Management Systems', dueDate: 'Apr 20, 2026', overdue: false),
+  (title: 'The Oxford Handbook of International Business', dueDate: 'Apr 25, 2026', overdue: false),
 ];
