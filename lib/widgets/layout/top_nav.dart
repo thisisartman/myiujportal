@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/sidebar_provider.dart';
 import '../../providers/wiki_provider.dart';
+import '../../theme/app_colors.dart';
 
 class TopNav extends ConsumerWidget {
   const TopNav({super.key});
@@ -13,57 +14,54 @@ class TopNav extends ConsumerWidget {
     final searchQuery = ref.watch(wikiSearchQueryProvider);
 
     return Container(
-      height: 56,
+      height: 60,
       decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Color(0xFFE5E7EB))),
+        color: AppColors.surface,
+        border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          // Hamburger (mobile) or collapse button (desktop)
-          if (!isDesktop)
-            IconButton(
-              icon: const Icon(Icons.menu, color: Color(0xFF374151)),
-              onPressed: () => ref.read(sidebarOpenProvider.notifier).state = true,
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.menu, color: Color(0xFF374151)),
-              onPressed: () => ref.read(desktopCollapsedProvider.notifier).update((s) => !s),
-            ),
+          IconButton(
+            icon: const Icon(Icons.menu, color: AppColors.textSecondary),
+            onPressed: isDesktop
+                ? () => ref.read(desktopCollapsedProvider.notifier).update((s) => !s)
+                : () => ref.read(sidebarOpenProvider.notifier).state = true,
+          ),
           const SizedBox(width: 8),
-          // Search bar
+          // Pill search bar
           Expanded(
             child: Container(
-              height: 36,
+              height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFFF9FAFB),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFE5E7EB)),
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(24),
               ),
               child: Row(
                 children: [
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(Icons.search, size: 16, color: Color(0xFF9CA3AF)),
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    child: Icon(Icons.search, size: 16, color: AppColors.textMuted),
                   ),
                   Expanded(
                     child: TextField(
                       onChanged: (v) => ref.read(wikiSearchQueryProvider.notifier).state = v,
-                      style: const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
                       decoration: const InputDecoration(
                         hintText: 'Search wiki...',
-                        hintStyle: TextStyle(color: Color(0xFF9CA3AF), fontSize: 14),
+                        hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
                         border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
                         isDense: true,
                         contentPadding: EdgeInsets.zero,
+                        filled: false,
                       ),
                     ),
                   ),
                   if (searchQuery.isNotEmpty)
                     IconButton(
-                      icon: const Icon(Icons.close, size: 16, color: Color(0xFF9CA3AF)),
+                      icon: const Icon(Icons.close, size: 16, color: AppColors.textMuted),
                       onPressed: () => ref.read(wikiSearchQueryProvider.notifier).state = '',
                     ),
                 ],
@@ -76,10 +74,15 @@ class TopNav extends ConsumerWidget {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () => context.go('/profile'),
-              child: CircleAvatar(
-                radius: 16,
-                backgroundColor: const Color(0xFF4F46E5),
-                child: const Text('S', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+              child: Container(
+                width: 36, height: 36,
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Text('S', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                ),
               ),
             ),
           ),

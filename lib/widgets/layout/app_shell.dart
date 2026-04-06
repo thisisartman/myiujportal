@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/sidebar_provider.dart';
 import 'sidebar.dart';
 import 'top_nav.dart';
+import '../../theme/app_colors.dart';
 
 class AppShell extends ConsumerWidget {
   final Widget child;
@@ -15,12 +16,11 @@ class AppShell extends ConsumerWidget {
     final isDesktop = MediaQuery.of(context).size.width >= 768;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
           Row(
             children: [
-              // Desktop sidebar — animates width
               if (isDesktop)
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
@@ -28,7 +28,6 @@ class AppShell extends ConsumerWidget {
                   width: isDesktopCollapsed ? 0 : 256,
                   child: isDesktopCollapsed ? const SizedBox.shrink() : const Sidebar(),
                 ),
-              // Main content
               Expanded(
                 child: Column(
                   children: [
@@ -44,9 +43,7 @@ class AppShell extends ConsumerWidget {
               ),
             ],
           ),
-          // Mobile: animated slide-in overlay
           if (!isDesktop) ...[
-            // Backdrop
             AnimatedOpacity(
               opacity: isMobileOpen ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 200),
@@ -58,7 +55,6 @@ class AppShell extends ConsumerWidget {
                 ),
               ),
             ),
-            // Slide-in drawer
             Positioned(
               left: 0, top: 0, bottom: 0,
               child: AnimatedSlide(
