@@ -5,7 +5,10 @@ import '../pages/login_page.dart';
 import '../widgets/layout/app_shell.dart';
 import '../pages/dashboard_page.dart';
 import '../pages/calendar_page.dart';
-import '../pages/facilities_page.dart';
+import '../pages/facilities_hub_page.dart';
+import '../pages/facilities/room_booking_page.dart';
+import '../pages/facilities/library_page.dart';
+import '../pages/facilities/campus_directory_page.dart';
 import '../pages/wiki/wiki_home_page.dart';
 import '../pages/wiki/wiki_article_page.dart';
 import '../pages/profile_page.dart';
@@ -54,7 +57,24 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/facilities',
             pageBuilder: (context, state) =>
-                const NoTransitionPage(child: FacilitiesPage()),
+                const NoTransitionPage(child: FacilitiesHubPage()),
+            routes: [
+              GoRoute(
+                path: 'room-booking',
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: RoomBookingPage()),
+              ),
+              GoRoute(
+                path: 'library',
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: LibraryPage()),
+              ),
+              GoRoute(
+                path: 'directory',
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: CampusDirectoryPage()),
+              ),
+            ],
           ),
           GoRoute(
             path: '/wiki',
