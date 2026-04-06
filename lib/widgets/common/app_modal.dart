@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_colors.dart';
 
 /// Reusable modal constrained to max-width 448px (Tailwind max-w-md equivalent)
 class AppModal extends StatelessWidget {
@@ -21,13 +22,15 @@ class AppModal extends StatelessWidget {
   }) {
     return showDialog<T>(
       context: context,
-      builder: (_) => AppModal(title: title, child: child, actions: actions),
+      builder: (_) => AppModal(title: title, actions: actions, child: child),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 448),
         child: Padding(
@@ -43,14 +46,17 @@ class AppModal extends StatelessWidget {
                       title,
                       style: const TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF111827),
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close, size: 20),
-                    onPressed: () => Navigator.of(context).pop(),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Icon(Icons.close, size: 20, color: AppColors.textMuted),
+                    ),
                   ),
                 ],
               ),
