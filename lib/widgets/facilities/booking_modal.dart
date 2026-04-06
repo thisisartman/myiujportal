@@ -25,7 +25,7 @@ class _BookingModalState extends ConsumerState<BookingModal> {
   Set<String> _selectedSlots = {};
 
   List<TimeSlot> _effectiveSlots() {
-    final booked = ref.read(bookedSlotsProvider)[widget.facility.id] ?? {};
+    final booked = ref.watch(bookedSlotsProvider)[widget.facility.id] ?? {};
     return kMockSlots.map((s) {
       if (booked.contains(s.time)) return TimeSlot(time: s.time, available: false);
       return s;
