@@ -5,6 +5,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/sidebar_provider.dart';
 import '../../providers/wiki_provider.dart';
 import '../../data/mock_data.dart';
+import '../../theme/app_colors.dart';
 
 class Sidebar extends ConsumerStatefulWidget {
   const Sidebar({super.key});
@@ -43,25 +44,31 @@ class _SidebarState extends ConsumerState<Sidebar> {
     return Container(
       width: 256,
       decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(right: BorderSide(color: Color(0xFFE5E7EB))),
+        color: AppColors.sidebarBg,
       ),
       child: Column(
         children: [
           // Logo
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
             decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Color(0xFFF3F4F6))),
+              border: Border(bottom: BorderSide(color: AppColors.sidebarDivider)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.menu_book_rounded, color: Color(0xFF4F46E5), size: 24),
-                const SizedBox(width: 8),
-                Text(
+                Container(
+                  width: 32, height: 32,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.menu_book_rounded, color: Colors.white, size: 18),
+                ),
+                const SizedBox(width: 10),
+                const Text(
                   'MyIUJ!',
                   style: TextStyle(
-                    color: const Color(0xFF4338CA),
+                    color: Colors.white,
                     fontWeight: FontWeight.w800,
                     fontSize: 20,
                     letterSpacing: -0.5,
@@ -73,7 +80,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
                       onTap: () => ref.read(sidebarOpenProvider.notifier).state = false,
-                      child: const Icon(Icons.close, color: Color(0xFF6B7280), size: 20),
+                      child: const Icon(Icons.close, color: AppColors.sidebarInactive, size: 20),
                     ),
                   ),
               ],
@@ -91,9 +98,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
                   _navItem(context, '/calendar', Icons.calendar_today_outlined, 'Calendar', isActive('/calendar')),
                   _navItem(context, '/facilities', Icons.business_outlined, 'Facilities', isActive('/facilities')),
                   const SizedBox(height: 8),
-                  // Wiki accordion header
                   _wikiHeader(context, isActive('/wiki')),
-                  // Wiki accordion body
                   AnimatedCrossFade(
                     firstChild: const SizedBox.shrink(),
                     secondChild: _wikiAccordion(context, expandedCategories, expandedSubcategories, location),
@@ -107,26 +112,27 @@ class _SidebarState extends ConsumerState<Sidebar> {
           // Logout
           Container(
             decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Color(0xFFE5E7EB))),
+              border: Border(top: BorderSide(color: AppColors.sidebarDivider)),
             ),
             child: InkWell(
               mouseCursor: SystemMouseCursors.click,
+              hoverColor: AppColors.sidebarHover,
               onTap: () {
                 ref.read(authProvider.notifier).logout();
                 ref.read(sidebarOpenProvider.notifier).state = false;
               },
               child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 child: Row(
                   children: [
-                    Icon(Icons.logout, size: 18, color: Color(0xFF6B7280)),
+                    Icon(Icons.logout, size: 18, color: AppColors.sidebarInactive),
                     SizedBox(width: 12),
                     Text(
                       'Sign out',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF4B5563),
+                        color: AppColors.sidebarInactive,
                       ),
                     ),
                   ],
@@ -141,13 +147,13 @@ class _SidebarState extends ConsumerState<Sidebar> {
 
   Widget _sectionLabel(String label) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 6),
       child: Text(
         label.toUpperCase(),
         style: const TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF9CA3AF),
+          color: AppColors.sidebarSubtext,
           letterSpacing: 1,
         ),
       ),
@@ -158,26 +164,27 @@ class _SidebarState extends ConsumerState<Sidebar> {
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
       onTap: () => _navigate(context, path),
+      hoverColor: AppColors.sidebarHover,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: active ? const Color(0xFFEEF2FF) : Colors.transparent,
-          border: Border(
-            right: active
-                ? const BorderSide(color: Color(0xFF4F46E5), width: 3)
-                : BorderSide.none,
-          ),
+          color: active ? AppColors.sidebarActiveBg : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: active
+              ? const Border(left: BorderSide(color: AppColors.sidebarActive, width: 3))
+              : null,
         ),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: active ? const Color(0xFF4F46E5) : const Color(0xFF6B7280)),
+            Icon(icon, size: 18, color: active ? AppColors.sidebarActive : AppColors.sidebarInactive),
             const SizedBox(width: 12),
             Text(
               label,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: active ? const Color(0xFF4F46E5) : const Color(0xFF4B5563),
+                color: active ? AppColors.sidebarActive : AppColors.sidebarInactive,
               ),
             ),
           ],
@@ -189,23 +196,25 @@ class _SidebarState extends ConsumerState<Sidebar> {
   Widget _wikiHeader(BuildContext context, bool active) {
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
+      hoverColor: AppColors.sidebarHover,
       onTap: () {
         _navigate(context, '/wiki');
         setState(() => _wikiExpanded = true);
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: active ? const Color(0xFFEEF2FF) : Colors.transparent,
-          border: Border(
-            right: active
-                ? const BorderSide(color: Color(0xFF4F46E5), width: 3)
-                : BorderSide.none,
-          ),
+          color: active ? AppColors.sidebarActiveBg : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: active
+              ? const Border(left: BorderSide(color: AppColors.sidebarActive, width: 3))
+              : null,
         ),
         child: Row(
           children: [
-            Icon(Icons.local_library_outlined, size: 18, color: active ? const Color(0xFF4F46E5) : const Color(0xFF6B7280)),
+            Icon(Icons.local_library_outlined, size: 18,
+                color: active ? AppColors.sidebarActive : AppColors.sidebarInactive),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -213,7 +222,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: active ? const Color(0xFF4F46E5) : const Color(0xFF4B5563),
+                  color: active ? AppColors.sidebarActive : AppColors.sidebarInactive,
                 ),
               ),
             ),
@@ -224,7 +233,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
                 child: Icon(
                   _wikiExpanded ? Icons.expand_more : Icons.chevron_right,
                   size: 18,
-                  color: const Color(0xFF9CA3AF),
+                  color: AppColors.sidebarSubtext,
                 ),
               ),
             ),
@@ -241,11 +250,10 @@ class _SidebarState extends ConsumerState<Sidebar> {
     String location,
   ) {
     return Container(
-      margin: const EdgeInsets.only(left: 16, right: 8),
+      margin: const EdgeInsets.only(left: 20, right: 12),
       decoration: const BoxDecoration(
-        color: Color(0xFFFAFAFA),
         border: Border(
-          left: BorderSide(color: Color(0xFFC7D2FE), width: 2),
+          left: BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
       child: Column(
@@ -256,7 +264,6 @@ class _SidebarState extends ConsumerState<Sidebar> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 8),
-              // Category header
               InkWell(
                 mouseCursor: SystemMouseCursors.click,
                 onTap: () {
@@ -280,8 +287,8 @@ class _SidebarState extends ConsumerState<Sidebar> {
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.8,
                             color: location.contains(cat.id)
-                                ? const Color(0xFF4F46E5)
-                                : const Color(0xFF9CA3AF),
+                                ? AppColors.sidebarActive
+                                : AppColors.sidebarInactive,
                           ),
                         ),
                       ),
@@ -298,7 +305,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
                             child: Icon(
                               isExpanded ? Icons.expand_more : Icons.chevron_right,
                               size: 14,
-                              color: const Color(0xFF9CA3AF),
+                              color: AppColors.sidebarSubtext,
                             ),
                           ),
                         ),
@@ -306,43 +313,30 @@ class _SidebarState extends ConsumerState<Sidebar> {
                   ),
                 ),
               ),
-              // Subcategories
               if (cat.subcategories.isNotEmpty && isExpanded)
                 ...cat.subcategories.map((sub) {
-                  return Column(
-                    children: [
-                      InkWell(
-                        mouseCursor: SystemMouseCursors.click,
-                        onTap: () {
-                          context.go('/wiki/subcategory-${sub.id}');
-                          ref.read(sidebarOpenProvider.notifier).state = false;
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 4, 12, 4),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  sub.name,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: location.contains(sub.id)
-                                        ? const Color(0xFF4F46E5)
-                                        : const Color(0xFF6B7280),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                  return InkWell(
+                    mouseCursor: SystemMouseCursors.click,
+                    onTap: () {
+                      context.go('/wiki/subcategory-${sub.id}');
+                      ref.read(sidebarOpenProvider.notifier).state = false;
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 4, 12, 4),
+                      child: Text(
+                        sub.name,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: location.contains(sub.id)
+                              ? AppColors.sidebarActive
+                              : AppColors.sidebarInactive,
                         ),
                       ),
-                    ],
+                    ),
                   );
                 }),
-              // Non-subcategory pages (residential life, academics, etc.)
-              if (cat.subcategories.isEmpty) ...[
-                // Show leaf pages for residential-life and academics
+              if (cat.subcategories.isEmpty)
                 ...(_getCategoryPages(cat.id).map((pageEntry) => InkWell(
                   mouseCursor: SystemMouseCursors.click,
                   onTap: () {
@@ -356,13 +350,12 @@ class _SidebarState extends ConsumerState<Sidebar> {
                       style: TextStyle(
                         fontSize: 12,
                         color: location.contains(pageEntry.key)
-                            ? const Color(0xFF4F46E5)
-                            : const Color(0xFF6B7280),
+                            ? AppColors.sidebarActive
+                            : AppColors.sidebarInactive,
                       ),
                     ),
                   ),
                 ))),
-              ],
             ],
           );
         }).toList(),
