@@ -1,9 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/facility.dart';
 
-final selectedFacilityProvider = StateProvider<Facility?>((ref) => null);
-final selectedSlotProvider = StateProvider<TimeSlot?>((ref) => null);
-final bookingReasonProvider = StateProvider<String>((ref) => '');
-
-enum BookingStatus { idle, confirmed }
-final bookingStatusProvider = StateProvider<BookingStatus>((ref) => BookingStatus.idle);
+/// Maps facilityId → set of slot time strings that have been booked this session.
+final bookedSlotsProvider = StateProvider<Map<String, Set<String>>>((ref) => {});
