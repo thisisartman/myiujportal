@@ -27,7 +27,7 @@ class CampusDirectoryPage extends ConsumerWidget {
     }).toList();
 
     final mainEntries = filtered.where((e) => e.type != 'Organization').toList();
-    final orgs = kMockDirectory.where((e) => e.type == 'Organization').toList();
+    final orgs = filtered.where((e) => e.type == 'Organization').toList();
     final showOrgs = filter == 'All' || filter == 'Organization';
 
     return Column(
