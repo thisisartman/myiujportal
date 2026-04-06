@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/alert_item.dart';
 import '../../providers/alerts_provider.dart';
+import '../../theme/app_colors.dart';
 
 class AlertsWidget extends ConsumerWidget {
   const AlertsWidget({super.key});
@@ -11,9 +12,9 @@ class AlertsWidget extends ConsumerWidget {
     final alerts = ref.watch(alertsProvider);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,16 +23,16 @@ class AlertsWidget extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
             child: Row(
               children: [
-                const Icon(Icons.notifications_none_outlined, size: 18, color: Color(0xFF4F46E5)),
+                const Icon(Icons.notifications_none_outlined, size: 18, color: AppColors.primary),
                 const SizedBox(width: 6),
-                const Text('Alerts & News', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                const Text('Alerts & News', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
                 const Spacer(),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                  decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(12)),
+                  decoration: BoxDecoration(color: AppColors.primaryLight, borderRadius: BorderRadius.circular(12)),
                   child: Text(
                     '${alerts.length}',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF4F46E5)),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
                   ),
                 ),
               ],
@@ -89,9 +90,9 @@ class _AlertRowState extends State<_AlertRow> {
                         Row(
                           children: [
                             Expanded(
-                              child: Text(a.title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF111827))),
+                              child: Text(a.title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
                             ),
-                            Text(a.date, style: const TextStyle(fontSize: 11, color: Color(0xFF9CA3AF))),
+                            Text(a.date, style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
                           ],
                         ),
                         const SizedBox(height: 2),
@@ -103,7 +104,7 @@ class _AlertRowState extends State<_AlertRow> {
                       ],
                     ),
                   ),
-                  Icon(_expanded ? Icons.expand_less : Icons.expand_more, size: 16, color: const Color(0xFF9CA3AF)),
+                  Icon(_expanded ? Icons.expand_less : Icons.expand_more, size: 16, color: AppColors.textMuted),
                 ],
               ),
             ),
@@ -112,7 +113,7 @@ class _AlertRowState extends State<_AlertRow> {
         if (_expanded)
           Padding(
             padding: const EdgeInsets.fromLTRB(52, 0, 14, 10),
-            child: Text(a.body, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280), height: 1.5)),
+            child: Text(a.body, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary, height: 1.5)),
           ),
         const Divider(height: 1),
       ],

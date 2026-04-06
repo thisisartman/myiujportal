@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../models/calendar_event.dart';
 import '../../providers/calendar_provider.dart';
+import '../../theme/app_colors.dart';
 
 /// Mock "today" is April 6, 2026 — kept in sync with mock_data seed.
 const int kMockTodayDay = 6;
@@ -21,9 +22,9 @@ class UpcomingEventsWidget extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,12 +33,12 @@ class UpcomingEventsWidget extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
             child: Row(
               children: [
-                const Text('Upcoming Events', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                const Text('Upcoming Events', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
                 const Spacer(),
                 TextButton(
                   onPressed: () => context.go('/calendar'),
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF4F46E5),
+                    foregroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                   ),
                   child: const Text('View all', style: TextStyle(fontSize: 12)),
@@ -49,7 +50,7 @@ class UpcomingEventsWidget extends ConsumerWidget {
           if (upcoming.isEmpty)
             const Padding(
               padding: EdgeInsets.all(16),
-              child: Text('No upcoming events.', style: TextStyle(fontSize: 13, color: Color(0xFF9CA3AF))),
+              child: Text('No upcoming events.', style: TextStyle(fontSize: 13, color: AppColors.textMuted)),
             )
           else
             ...upcoming.take(5).map((e) => _EventRow(event: e)),
@@ -75,11 +76,11 @@ class _EventRow extends StatelessWidget {
             children: [
               _chip(event.type.label, event.type.color, event.type.bgColor, () => context.go('/calendar')),
               const SizedBox(width: 6),
-              Text('Apr ${event.date}  ${event.time}', style: const TextStyle(fontSize: 11, color: Color(0xFF6B7280))),
+              Text('Apr ${event.date}  ${event.time}', style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
             ],
           ),
           const SizedBox(height: 3),
-          Text(event.title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF111827))),
+          Text(event.title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
           const SizedBox(height: 4),
           Wrap(
             spacing: 4,
@@ -88,7 +89,7 @@ class _EventRow extends StatelessWidget {
           ),
           const Padding(
             padding: EdgeInsets.only(top: 8),
-            child: Divider(height: 1, color: Color(0xFFF3F4F6)),
+            child: Divider(height: 1, color: AppColors.border),
           ),
         ],
       ),
@@ -99,7 +100,7 @@ class _EventRow extends StatelessWidget {
     final parts = detail.split('|').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
     return parts.map((part) {
       final isCourseCode = RegExp(r'^[A-Z]{2,4}\d{4}$').hasMatch(part.replaceAll('-', '').replaceAll(' ', ''));
-      return _chip(part, const Color(0xFF6B7280), const Color(0xFFF3F4F6), () {
+      return _chip(part, AppColors.textSecondary, AppColors.background, () {
         if (isCourseCode) {
           context.go('/wiki');
         } else {
