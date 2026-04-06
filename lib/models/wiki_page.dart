@@ -43,6 +43,8 @@ class DirectoryEntry {
   final String type;
   final String email;
   final String phone;
+  final String? studentId;
+  final String? coordinator;
 
   const DirectoryEntry({
     required this.id,
@@ -50,5 +52,7 @@ class DirectoryEntry {
     required this.type,
     required this.email,
     required this.phone,
+    this.studentId,
+    this.coordinator,
   });
 }
