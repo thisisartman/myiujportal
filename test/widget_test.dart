@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myiuj_portal/app.dart';
 import 'package:myiuj_portal/providers/alerts_provider.dart';
+import 'package:myiuj_portal/providers/directory_provider.dart';
 import 'package:myiuj_portal/widgets/dashboard/alerts_widget.dart';
 import 'package:myiuj_portal/models/alert_item.dart';
 
@@ -28,5 +29,16 @@ void main() {
       child: const MaterialApp(home: Scaffold(body: AlertsWidget())),
     ));
     expect(find.text('Test Alert'), findsOneWidget);
+  });
+
+  testWidgets('directoryFilterProvider defaults to All', (tester) async {
+    late WidgetRef capturedRef;
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(builder: (_, ref, __) {
+        capturedRef = ref;
+        return const SizedBox();
+      }),
+    ));
+    expect(capturedRef.read(directoryFilterProvider), 'All');
   });
 }
