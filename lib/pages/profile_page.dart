@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 
 class ProfilePage extends ConsumerWidget {
@@ -38,6 +39,34 @@ class ProfilePage extends ConsumerWidget {
           ('Adviser', 'Prof. Remy Magnier-Watanabe'),
           ('Campus Address', 'Dorm A, Room 201'),
         ]),
+        const SizedBox(height: 16),
+        GestureDetector(
+          onTap: () => context.go('/facilities/library'),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE5E7EB)),
+            ),
+            child: const Row(
+              children: [
+                Icon(Icons.local_library_outlined, color: Color(0xFF9333EA), size: 22),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('My Library', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                      Text('View your loans and library resources', style: TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+              ],
+            ),
+          ),
+        ),
         const SizedBox(height: 32),
         SizedBox(
           width: double.infinity,
