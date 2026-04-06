@@ -8,7 +8,7 @@ final List<Facility> kFacilities = [
   const Facility(
     id: 'f1',
     name: 'Classroom G.30',
-    type: 'Academic',
+    category: FacilityCategory.classroom,
     authority: 'OAA',
     bgColor: Color(0xFFDBEAFE),
     iconColor: Color(0xFF2563EB),
@@ -16,7 +16,7 @@ final List<Facility> kFacilities = [
   const Facility(
     id: 'f2',
     name: 'CNP Snack Lounge',
-    type: 'Social',
+    category: FacilityCategory.lounge,
     authority: 'OGA',
     bgColor: Color(0xFFFFEDD5),
     iconColor: Color(0xFFEA580C),
@@ -24,7 +24,7 @@ final List<Facility> kFacilities = [
   const Facility(
     id: 'f3',
     name: 'Main Gymnasium',
-    type: 'Sports',
+    category: FacilityCategory.gymnasium,
     authority: 'OSS',
     bgColor: Color(0xFFDCFCE7),
     iconColor: Color(0xFF16A34A),
@@ -32,7 +32,7 @@ final List<Facility> kFacilities = [
   const Facility(
     id: 'f4',
     name: 'MLIC Study Room A',
-    type: 'Library',
+    category: FacilityCategory.classroom,
     authority: 'Library Admin',
     bgColor: Color(0xFFF3E8FF),
     iconColor: Color(0xFF9333EA),
