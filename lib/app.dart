@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'router/app_router.dart';
+import 'theme/app_theme.dart';
 
 class MyIUJApp extends ConsumerWidget {
   const MyIUJApp({super.key});
@@ -13,19 +13,7 @@ class MyIUJApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'MyIUJ!',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4F46E5),
-          brightness: Brightness.light,
-        ),
-        textTheme: GoogleFonts.interTextTheme(),
-        scaffoldBackgroundColor: const Color(0xFFF9FAFB),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        ),
-      ),
+      theme: AppTheme.light(),
       routerConfig: router,
     );
   }
