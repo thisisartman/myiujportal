@@ -3,6 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/facility.dart';
 import '../../providers/facilities_provider.dart';
 
+String _getCategoryLabel(FacilityCategory category) {
+  switch (category) {
+    case FacilityCategory.classroom:
+      return 'Classroom';
+    case FacilityCategory.lounge:
+      return 'Lounge';
+    case FacilityCategory.gymnasium:
+      return 'Gymnasium';
+  }
+}
+
 class FacilityCard extends ConsumerWidget {
   final Facility facility;
   const FacilityCard({super.key, required this.facility});
@@ -50,7 +61,7 @@ class FacilityCard extends ConsumerWidget {
                   const SizedBox(height: 2),
                   Row(
                     children: [
-                      _Chip(label: facility.type, color: const Color(0xFF6366F1)),
+                      _Chip(label: _getCategoryLabel(facility.category), color: const Color(0xFF6366F1)),
                       const SizedBox(width: 6),
                       _Chip(label: facility.authority, color: const Color(0xFF6B7280)),
                     ],
