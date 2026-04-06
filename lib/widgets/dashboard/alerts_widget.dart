@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../data/mock_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/alert_item.dart';
+import '../../providers/alerts_provider.dart';
 
-class AlertsWidget extends StatelessWidget {
+class AlertsWidget extends ConsumerWidget {
   const AlertsWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final alerts = ref.watch(alertsProvider);
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -28,7 +30,7 @@ class AlertsWidget extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                   decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(12)),
                   child: Text(
-                    '${kMockAlerts.length}',
+                    '${alerts.length}',
                     style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF4F46E5)),
                   ),
                 ),
@@ -40,7 +42,7 @@ class AlertsWidget extends StatelessWidget {
             constraints: const BoxConstraints(maxHeight: 260),
             child: SingleChildScrollView(
               child: Column(
-                children: kMockAlerts.map((alert) => _AlertRow(alert: alert)).toList(),
+                children: alerts.map((alert) => _AlertRow(alert: alert)).toList(),
               ),
             ),
           ),
