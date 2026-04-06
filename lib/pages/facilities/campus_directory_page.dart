@@ -81,7 +81,7 @@ class CampusDirectoryPage extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 16),
-        if (mainEntries.isEmpty && !showOrgs)
+        if (mainEntries.isEmpty && orgs.isEmpty)
           const Center(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 32),
