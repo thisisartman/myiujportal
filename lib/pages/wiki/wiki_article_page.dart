@@ -5,6 +5,7 @@ import '../../data/mock_data.dart';
 import '../../widgets/wiki/breadcrumb_bar.dart';
 import '../../widgets/common/app_modal.dart';
 import '../../widgets/common/hover_card.dart';
+import '../../theme/app_colors.dart';
 
 /// Handles all wiki routes: category pages, subcategory pages, and articles.
 class WikiArticlePage extends ConsumerWidget {
@@ -41,11 +42,11 @@ class WikiArticlePage extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(page.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
+                  Text(page.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
                   const SizedBox(height: 4),
                   Text(
                     'Last updated: ${page.lastUpdated}',
-                    style: const TextStyle(fontSize: 12, color: Color(0xFF9CA3AF)),
+                    style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
                   ),
                 ],
               ),
@@ -55,8 +56,8 @@ class WikiArticlePage extends ConsumerWidget {
               icon: const Icon(Icons.edit_outlined, size: 14),
               label: const Text('Suggest Edit'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF4F46E5),
-                side: const BorderSide(color: Color(0xFF4F46E5)),
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               onPressed: () => _showSuggestEdit(context),
@@ -262,7 +263,7 @@ class WikiArticlePage extends ConsumerWidget {
         return const _ResearchCentersArticle();
 
       default:
-        return Text('Content for "$id" is not yet available.', style: const TextStyle(color: Color(0xFF6B7280)));
+        return Text('Content for "$id" is not yet available.', style: const TextStyle(color: AppColors.textSecondary));
     }
   }
 
@@ -276,11 +277,11 @@ class WikiArticlePage extends ConsumerWidget {
             ? const Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle, color: Color(0xFF4F46E5), size: 48),
+                  Icon(Icons.check_circle, color: AppColors.primary, size: 48),
                   SizedBox(height: 12),
                   Text('Submitted for Moderation', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
                   SizedBox(height: 8),
-                  Text('Your suggestion is pending review.', style: TextStyle(color: Color(0xFF6B7280))),
+                  Text('Your suggestion is pending review.', style: TextStyle(color: AppColors.textSecondary)),
                 ],
               )
             : Column(
@@ -300,7 +301,7 @@ class WikiArticlePage extends ConsumerWidget {
                       TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Cancel')),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5), foregroundColor: Colors.white),
+                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
                         onPressed: () => setState(() => submitted = true),
                         child: const Text('Submit'),
                       ),
@@ -326,7 +327,7 @@ class _CoursesCategory extends StatelessWidget {
       children: [
         const Text(
           'Access official syllabi, learning objectives, and materials for courses offered at GSIM and GSIR.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
         ),
         const SizedBox(height: 16),
         // RBAC notice
@@ -359,15 +360,15 @@ class _CoursesCategory extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const Text('GSIM — Graduate School of International Management', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF6B7280), letterSpacing: 0.5)),
+        const Text('GSIM — Graduate School of International Management', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textSecondary, letterSpacing: 0.5)),
         const SizedBox(height: 8),
         ...[
-          ('subcategory-finance', 'Finance', const Color(0xFFEEF2FF), const Color(0xFF4F46E5)),
+          ('subcategory-finance', 'Finance', AppColors.primaryLight, AppColors.primary),
           ('subcategory-it-operations', 'IT & Operations', const Color(0xFFDBEAFE), const Color(0xFF2563EB)),
           ('subcategory-general-management', 'General Management', const Color(0xFFDCFCE7), const Color(0xFF16A34A)),
         ].map((item) => _subcategoryTile(ctx, item.$1, item.$2, item.$3, item.$4)),
         const SizedBox(height: 16),
-        const Text('GSIR — Graduate School of International Relations', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF6B7280), letterSpacing: 0.5)),
+        const Text('GSIR — Graduate School of International Relations', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textSecondary, letterSpacing: 0.5)),
         const SizedBox(height: 8),
         ...[
           ('subcategory-intl-relations', 'International Relations', const Color(0xFFFDF2F8), const Color(0xFF9333EA)),
@@ -393,9 +394,9 @@ class _CoursesCategory extends StatelessWidget {
               child: Icon(Icons.book_outlined, color: fg, size: 18),
             ),
             const SizedBox(width: 12),
-            Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+            Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
             const Spacer(),
-            const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+            const Icon(Icons.chevron_right, color: AppColors.textMuted),
           ],
         ),
       ),
@@ -421,21 +422,21 @@ class _SubcategoryPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(description, style: const TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        Text(description, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
         const SizedBox(height: 16),
         if (courses.isEmpty && emptyMessage != null)
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFFF9FAFB),
+              color: AppColors.background,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
+              border: Border.all(color: AppColors.border),
             ),
             child: Row(
               children: [
-                const Icon(Icons.hourglass_empty, color: Color(0xFF9CA3AF), size: 18),
+                const Icon(Icons.hourglass_empty, color: AppColors.textMuted, size: 18),
                 const SizedBox(width: 10),
-                Expanded(child: Text(emptyMessage!, style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)))),
+                Expanded(child: Text(emptyMessage!, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary))),
               ],
             ),
           )
@@ -450,7 +451,7 @@ class _SubcategoryPage extends StatelessWidget {
                   Expanded(
                     child: Text(c.$2, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF312E81))),
                   ),
-                  const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+                  const Icon(Icons.chevron_right, color: AppColors.textMuted),
                 ],
               ),
             ),
@@ -469,12 +470,12 @@ class _ResidentialLifeCategory extends StatelessWidget {
     final pages = [
       (Icons.ac_unit_outlined, const Color(0xFFDBEAFE), const Color(0xFF2563EB), 'Winter Survival Guide', 'winter-survival'),
       (Icons.delete_outline, const Color(0xFFDCFCE7), const Color(0xFF16A34A), 'Trash Separation Mastery', 'trash-mastery'),
-      (Icons.location_on_outlined, const Color(0xFFEEF2FF), const Color(0xFF4F46E5), 'Urasa Station Transit Guide', 'urasa-station'),
+      (Icons.location_on_outlined, AppColors.primaryLight, AppColors.primary, 'Urasa Station Transit Guide', 'urasa-station'),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Everything you need to know about living on campus.', style: TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        const Text('Everything you need to know about living on campus.', style: TextStyle(fontSize: 14, color: AppColors.textPrimary)),
         const SizedBox(height: 16),
         ...pages.map((p) => Padding(
           padding: const EdgeInsets.only(bottom: 8),
@@ -485,9 +486,9 @@ class _ResidentialLifeCategory extends StatelessWidget {
               children: [
                 Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: p.$2, borderRadius: BorderRadius.circular(8)), child: Icon(p.$1, color: p.$3, size: 18)),
                 const SizedBox(width: 12),
-                Text(p.$4, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                Text(p.$4, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
                 const Spacer(),
-                const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+                const Icon(Icons.chevron_right, color: AppColors.textMuted),
               ],
             ),
           ),
@@ -506,18 +507,18 @@ class _AcademicsCategory extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Guides on academic procedures, calendar synchronization, and cross-registration.', style: TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        const Text('Guides on academic procedures, calendar synchronization, and cross-registration.', style: TextStyle(fontSize: 14, color: AppColors.textPrimary)),
         const SizedBox(height: 16),
         HoverCard(
           onTap: () => ctx.go('/wiki/device-calendar'),
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
           child: const Row(
             children: [
-              Icon(Icons.calendar_today_outlined, color: Color(0xFF4F46E5)),
+              Icon(Icons.calendar_today_outlined, color: AppColors.primary),
               SizedBox(width: 12),
-              Text('Syncing Timetable & Reminders', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+              Text('Syncing Timetable & Reminders', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
               Spacer(),
-              Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+              Icon(Icons.chevron_right, color: AppColors.textMuted),
             ],
           ),
         ),
@@ -540,7 +541,7 @@ class _PlaceholderCategory extends StatelessWidget {
           children: [
             Icon(icon, size: 56, color: const Color(0xFFD1D5DB)),
             const SizedBox(height: 16),
-            Text(message, textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFF6B7280))),
+            Text(message, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.textSecondary)),
           ],
         ),
       ),
@@ -574,11 +575,11 @@ class _CourseArticle extends StatelessWidget {
         const SizedBox(height: 20),
         _sectionTitle('Course Description'),
         const SizedBox(height: 8),
-        Text(description, style: const TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        Text(description, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
         const SizedBox(height: 20),
         _sectionTitle(objectiveLabel),
         const SizedBox(height: 8),
-        Text(objective, style: const TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        Text(objective, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
       ],
     );
   }
@@ -610,7 +611,7 @@ class _CourseArticleWithList extends StatelessWidget {
         const SizedBox(height: 20),
         _sectionTitle('Course Description'),
         const SizedBox(height: 8),
-        Text(description, style: const TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        Text(description, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
         const SizedBox(height: 20),
         _sectionTitle(listLabel),
         const SizedBox(height: 8),
@@ -619,8 +620,8 @@ class _CourseArticleWithList extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('• ', style: TextStyle(fontSize: 14, color: Color(0xFF4F46E5), fontWeight: FontWeight.w700)),
-              Expanded(child: Text(item, style: const TextStyle(fontSize: 14, color: Color(0xFF374151)))),
+              const Text('• ', style: TextStyle(fontSize: 14, color: AppColors.primary, fontWeight: FontWeight.w700)),
+              Expanded(child: Text(item, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary))),
             ],
           ),
         )),
@@ -645,7 +646,7 @@ Widget _sectionTitle(String title) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+      Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
       const Divider(),
     ],
   );
@@ -661,7 +662,7 @@ class _MetaChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFEEF2FF),
+        color: AppColors.primaryLight,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFC7D2FE)),
       ),
@@ -689,7 +690,7 @@ class _WinterSurvivalArticle extends StatelessWidget {
       children: [
         const Text(
           'Minamiuonuma is located in "Snow Country" (Yukiguni). Winters here are exceptionally beautiful but require serious preparation. Snow can exceed 2-3 meters at its peak.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
         ),
         const SizedBox(height: 20),
         _sectionTitle('1. Essential Clothing'),
@@ -703,9 +704,9 @@ class _WinterSurvivalArticle extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('• ', style: TextStyle(fontSize: 14, color: Color(0xFF4F46E5), fontWeight: FontWeight.w700)),
+              const Text('• ', style: TextStyle(fontSize: 14, color: AppColors.primary, fontWeight: FontWeight.w700)),
               Expanded(child: RichText(text: TextSpan(
-                style: const TextStyle(fontSize: 14, color: Color(0xFF374151)),
+                style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
                 children: [
                   TextSpan(text: '${item.$1}: ', style: const TextStyle(fontWeight: FontWeight.w700)),
                   TextSpan(text: item.$2),
@@ -719,7 +720,7 @@ class _WinterSurvivalArticle extends StatelessWidget {
         const SizedBox(height: 8),
         const Text(
           'Your room\'s AC unit functions as a heater. Use the timer function to turn on the heat 30 minutes before you wake up.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
         ),
         const SizedBox(height: 12),
         Container(
@@ -749,7 +750,7 @@ class _TrashMasteryArticle extends StatelessWidget {
       children: [
         const Text(
           'Japan has strict garbage sorting rules, and Minamiuonuma is no exception. Proper separation in the dormitories (like SD1) is mandatory.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
         ),
         const SizedBox(height: 16),
         Row(
@@ -798,7 +799,7 @@ class _TrashMasteryArticle extends StatelessWidget {
         const SizedBox(height: 8),
         const Text(
           'Caps and labels must be removed from PET bottles. Rinse all cans and bottles before placing them in the designated dorm bins.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
         ),
       ],
     );
@@ -815,12 +816,12 @@ class _UrasaStationArticle extends StatelessWidget {
       children: [
         const Text(
           'Urasa Station is our primary gateway to Tokyo (via the Joetsu Shinkansen) and neighboring towns.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
         ),
         const SizedBox(height: 20),
         _sectionTitle('Shuttle Bus Schedule'),
         const SizedBox(height: 8),
-        const Text('The IUJ shuttle runs daily between campus and Urasa Station. The ride takes approximately 10-15 minutes.', style: TextStyle(fontSize: 14, color: Color(0xFF374151))),
+        const Text('The IUJ shuttle runs daily between campus and Urasa Station. The ride takes approximately 10-15 minutes.', style: TextStyle(fontSize: 14, color: AppColors.textPrimary)),
         const SizedBox(height: 12),
         ...[
           ('Morning Peak', '07:30, 08:15, 08:50'),
@@ -830,9 +831,9 @@ class _UrasaStationArticle extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 6, left: 8),
           child: Row(
             children: [
-              const Text('• ', style: TextStyle(fontSize: 14, color: Color(0xFF4F46E5), fontWeight: FontWeight.w700)),
+              const Text('• ', style: TextStyle(fontSize: 14, color: AppColors.primary, fontWeight: FontWeight.w700)),
               RichText(text: TextSpan(
-                style: const TextStyle(fontSize: 14, color: Color(0xFF374151)),
+                style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
                 children: [
                   TextSpan(text: '${item.$1}: ', style: const TextStyle(fontWeight: FontWeight.w700)),
                   TextSpan(text: item.$2),
@@ -842,7 +843,7 @@ class _UrasaStationArticle extends StatelessWidget {
           ),
         )),
         const SizedBox(height: 8),
-        const Text('* Schedules are subject to change during holidays and heavy snow days.', style: TextStyle(fontSize: 12, color: Color(0xFF9CA3AF), fontStyle: FontStyle.italic)),
+        const Text('* Schedules are subject to change during holidays and heavy snow days.', style: TextStyle(fontSize: 12, color: AppColors.textMuted, fontStyle: FontStyle.italic)),
       ],
     );
   }
@@ -858,20 +859,20 @@ class _DeviceCalendarArticle extends StatelessWidget {
       children: [
         const Text(
           'Missing classes or assignment deadlines is easy if your schedule isn\'t synced directly to your personal device.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
         ),
         const SizedBox(height: 20),
         _sectionTitle('Device Calendar Integration'),
         const SizedBox(height: 8),
         const Text(
           'For all students, we highly recommend integrating your IUJ schedule directly into your native device calendar for the most reliable notifications.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
         ),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFFEEF2FF),
+            color: AppColors.primaryLight,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: const Color(0xFFC7D2FE)),
           ),
@@ -880,7 +881,7 @@ class _DeviceCalendarArticle extends StatelessWidget {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.check_circle_outline, color: Color(0xFF4F46E5), size: 18),
+                  Icon(Icons.check_circle_outline, color: AppColors.primary, size: 18),
                   SizedBox(width: 8),
                   Text('The "10-30-60" Rule', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF312E81))),
                 ],
@@ -895,7 +896,7 @@ class _DeviceCalendarArticle extends StatelessWidget {
                   .map((item) => Padding(
                     padding: const EdgeInsets.only(bottom: 4, left: 8),
                     child: Row(children: [
-                      const Text('• ', style: TextStyle(color: Color(0xFF4F46E5), fontWeight: FontWeight.w700)),
+                      const Text('• ', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700)),
                       Text(item, style: const TextStyle(fontSize: 13, color: Color(0xFF312E81), fontWeight: FontWeight.w500)),
                     ]),
                   )),
@@ -907,7 +908,7 @@ class _DeviceCalendarArticle extends StatelessWidget {
         const SizedBox(height: 8),
         const Text(
           'Because MyIUJ! uses your Google Workspace SSO, your timetable is automatically synced to your device\'s primary calendar. No manual setup is required.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
         ),
       ],
     );
@@ -939,20 +940,20 @@ class _AdminCategory extends StatelessWidget {
             children: [
               Container(
                 width: 36, height: 36,
-                decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(8)),
-                child: Icon(p.$2, color: const Color(0xFF4F46E5), size: 18),
+                decoration: BoxDecoration(color: AppColors.primaryLight, borderRadius: BorderRadius.circular(8)),
+                child: Icon(p.$2, color: AppColors.primary, size: 18),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(p.$3, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
-                    Text(p.$4, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                    Text(p.$3, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                    Text(p.$4, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+              const Icon(Icons.chevron_right, color: AppColors.textMuted),
             ],
           ),
         ),
@@ -975,7 +976,7 @@ class _AboutIUJArticle extends StatelessWidget {
         const SizedBox(height: 8),
         const Text(
           'The International University of Japan (IUJ) was established in 1982 in Minami-Uonuma, Niigata, following strong support from leaders in Japan\'s business and academic communities. It was founded with a clear purpose: to develop highly skilled professionals capable of active engagement in the global arena.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 20),
         _sectionTitle('Key Facts'),
@@ -991,12 +992,12 @@ class _AboutIUJArticle extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(padding: EdgeInsets.only(top: 5), child: Icon(Icons.circle, size: 6, color: Color(0xFF4F46E5))),
+              const Padding(padding: EdgeInsets.only(top: 5), child: Icon(Icons.circle, size: 6, color: AppColors.primary)),
               const SizedBox(width: 10),
               Expanded(
                 child: RichText(
                   text: TextSpan(
-                    style: const TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.5),
+                    style: const TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.5),
                     children: [
                       TextSpan(text: '${f.$1}  ', style: const TextStyle(fontWeight: FontWeight.w700)),
                       TextSpan(text: f.$2),
@@ -1018,12 +1019,12 @@ class _AboutIUJArticle extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 10),
           child: Container(
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(color: const Color(0xFFF9FAFB), borderRadius: BorderRadius.circular(10), border: Border.all(color: const Color(0xFFE5E7EB))),
+            decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.border)),
             child: RichText(
               text: TextSpan(
-                style: const TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.5),
+                style: const TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.5),
                 children: [
-                  TextSpan(text: '${s.$1}  ', style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF4F46E5))),
+                  TextSpan(text: '${s.$1}  ', style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.primary)),
                   TextSpan(text: s.$2),
                 ],
               ),
@@ -1047,10 +1048,10 @@ class _AccessTransportArticle extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(10)),
+          decoration: BoxDecoration(color: AppColors.primaryLight, borderRadius: BorderRadius.circular(10)),
           child: const Row(
             children: [
-              Icon(Icons.location_on_outlined, color: Color(0xFF4F46E5), size: 18),
+              Icon(Icons.location_on_outlined, color: AppColors.primary, size: 18),
               SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -1066,21 +1067,21 @@ class _AccessTransportArticle extends StatelessWidget {
         const SizedBox(height: 8),
         const Text(
           'Take the Joetsu Shinkansen (Toki SuperExpress) from Tokyo Station to Urasa Station. The journey is approximately 90 minutes. Trains run frequently throughout the day.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 20),
         _sectionTitle('From Niigata City'),
         const SizedBox(height: 8),
         const Text(
           'Take the Joetsu Shinkansen from Niigata Station to Urasa Station — approximately 40 minutes.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 20),
         _sectionTitle('Urasa Station → Campus (IUJ Shuttle)'),
         const SizedBox(height: 8),
         const Text(
           'A free IUJ shuttle bus runs between Urasa Station and campus. The ride takes approximately 10 minutes.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 12),
         Container(
@@ -1105,14 +1106,14 @@ class _AccessTransportArticle extends StatelessWidget {
         const SizedBox(height: 8),
         const Text(
           'Use the Kanetsu Expressway, exiting at Muikamachi or Koide. Follow Route 17 toward Urasa Station. Approx. 3.5 hours from Tokyo, 1.5 hours from Niigata City.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 20),
         _sectionTitle('Tokyo Liaison Office'),
         const SizedBox(height: 8),
         const Text(
           'Harks Roppongi Building, 2nd Floor, Roppongi. Accessible via the Hibiya Line or Oedo Line (Roppongi Station).',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
       ],
     );
@@ -1131,7 +1132,7 @@ class _AdmissionsArticle extends StatelessWidget {
       children: [
         const Text(
           'IUJ admits students annually for a September intake. Applications are submitted through the IUJ Online Application System.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 20),
         _sectionTitle('Application Deadlines (September 2026 Entry)'),
@@ -1142,21 +1143,21 @@ class _AdmissionsArticle extends StatelessWidget {
         const SizedBox(height: 8),
         const Text(
           'GSIM applicants must provide either official GMAT or GRE scores, or complete the institution\'s own math assessment.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 20),
         _sectionTitle('English Language Proficiency'),
         const SizedBox(height: 8),
         const Text(
           'Applicants are exempt from the English requirement if they were educated for at least four years in an English-speaking country (Australia, Canada, Ireland, New Zealand, UK, USA) or completed a degree at an English-medium institution with supporting documentation.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 20),
         _sectionTitle('Scholarships & Financial Support'),
         const SizedBox(height: 8),
         const Text(
           'IUJ offers generous financial support including the fully funded Sohei Nakayama Memorial Scholarship. A substantial majority of students receive government or corporate sponsorships. Use the scholarship search tool on the IUJ admissions page to find applicable funding.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 12),
         Container(
@@ -1185,30 +1186,30 @@ class _AdmissionsArticle extends StatelessWidget {
       ('PhD Programs', 'Nov 17, 2025', 'Feb 17, 2026', 'Apr 17, 2026'),
     ];
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: const Color(0xFFE5E7EB)), borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(border: Border.all(color: AppColors.border), borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: const BoxDecoration(color: Color(0xFFF9FAFB), borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+            decoration: const BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
             child: const Row(
               children: [
-                Expanded(flex: 3, child: Text('Program', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151)))),
-                Expanded(flex: 2, child: Text('1st', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151)))),
-                Expanded(flex: 2, child: Text('2nd', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151)))),
-                Expanded(flex: 2, child: Text('3rd', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151)))),
+                Expanded(flex: 3, child: Text('Program', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textPrimary))),
+                Expanded(flex: 2, child: Text('1st', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textPrimary))),
+                Expanded(flex: 2, child: Text('2nd', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textPrimary))),
+                Expanded(flex: 2, child: Text('3rd', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textPrimary))),
               ],
             ),
           ),
           ...rows.map((r) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: const BoxDecoration(border: Border(top: BorderSide(color: Color(0xFFE5E7EB)))),
+            decoration: const BoxDecoration(border: Border(top: BorderSide(color: AppColors.border))),
             child: Row(
               children: [
-                Expanded(flex: 3, child: Text(r.$1, style: const TextStyle(fontSize: 12, color: Color(0xFF111827)))),
-                Expanded(flex: 2, child: Text(r.$2, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)))),
-                Expanded(flex: 2, child: Text(r.$3, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)))),
-                Expanded(flex: 2, child: Text(r.$4, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)))),
+                Expanded(flex: 3, child: Text(r.$1, style: const TextStyle(fontSize: 12, color: AppColors.textPrimary))),
+                Expanded(flex: 2, child: Text(r.$2, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary))),
+                Expanded(flex: 2, child: Text(r.$3, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary))),
+                Expanded(flex: 2, child: Text(r.$4, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary))),
               ],
             ),
           )),
@@ -1230,7 +1231,7 @@ class _ResearchCentersArticle extends StatelessWidget {
       children: [
         const Text(
           'IUJ supports academic research through several dedicated centers and institutes. Students can access these resources through the Research section on the IUJ website.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF374151), height: 1.6),
+          style: TextStyle(fontSize: 14, color: AppColors.textPrimary, height: 1.6),
         ),
         const SizedBox(height: 20),
         ...[
@@ -1242,23 +1243,23 @@ class _ResearchCentersArticle extends StatelessWidget {
         ].map((r) => Container(
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE5E7EB))),
+          decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 width: 36, height: 36,
-                decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(8)),
-                child: Icon(r.$2, color: const Color(0xFF4F46E5), size: 18),
+                decoration: BoxDecoration(color: AppColors.primaryLight, borderRadius: BorderRadius.circular(8)),
+                child: Icon(r.$2, color: AppColors.primary, size: 18),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(r.$1, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                    Text(r.$1, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
                     const SizedBox(height: 4),
-                    Text(r.$3, style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280), height: 1.5)),
+                    Text(r.$3, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary, height: 1.5)),
                   ],
                 ),
               ),

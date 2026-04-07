@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/wiki_provider.dart';
 import '../../widgets/common/app_modal.dart';
+import '../../theme/app_colors.dart';
 
 class WikiHomePage extends ConsumerWidget {
   const WikiHomePage({super.key});
@@ -19,11 +20,11 @@ class WikiHomePage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Wiki Knowledge Base', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
+        const Text('Wiki Knowledge Base', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
         const SizedBox(height: 8),
         const Text(
           'Find procedures, guides, course syllabi, and student-curated knowledge all in one place.',
-          style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+          style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
         ),
         const SizedBox(height: 24),
         // Action buttons
@@ -34,7 +35,7 @@ class WikiHomePage extends ConsumerWidget {
                 icon: const Icon(Icons.add_circle_outline, size: 18),
                 label: const Text('Create New Topic'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4F46E5),
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -45,8 +46,8 @@ class WikiHomePage extends ConsumerWidget {
             const SizedBox(width: 12),
             Expanded(
               child: OutlinedButton.icon(
-                icon: const Icon(Icons.edit_outlined, size: 18, color: Color(0xFF4F46E5)),
-                label: const Text('Edit Existing Topic', style: TextStyle(color: Color(0xFF374151))),
+                icon: const Icon(Icons.edit_outlined, size: 18, color: AppColors.primary),
+                label: const Text('Edit Existing Topic', style: TextStyle(color: AppColors.textPrimary)),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -58,7 +59,7 @@ class WikiHomePage extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 32),
-        const Text('Explore Categories', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+        const Text('Explore Categories', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
         const Divider(height: 24),
         _categoryGrid(context),
       ],
@@ -120,9 +121,9 @@ class WikiHomePage extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE5E7EB)),
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           children: [
@@ -136,12 +137,12 @@ class WikiHomePage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(c.title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
-                Text(c.subtitle, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                Text(c.title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                Text(c.subtitle, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
               ],
             ),
             const Spacer(),
-            const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+            const Icon(Icons.chevron_right, color: AppColors.textMuted),
           ],
         ),
       ),
@@ -152,7 +153,7 @@ class WikiHomePage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${results.length} result(s) found', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+        Text('${results.length} result(s) found', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
         const SizedBox(height: 12),
         ...results.map((entry) => GestureDetector(
           onTap: () => context.go('/wiki/${entry.key}'),
@@ -160,19 +161,19 @@ class WikiHomePage extends ConsumerWidget {
             margin: const EdgeInsets.only(bottom: 8),
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
+              border: Border.all(color: AppColors.border),
             ),
             child: Row(
               children: [
-                const Icon(Icons.article_outlined, color: Color(0xFF4F46E5)),
+                const Icon(Icons.article_outlined, color: AppColors.primary),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(entry.value.title, style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF111827))),
-                    Text(entry.value.category, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                    Text(entry.value.title, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                    Text(entry.value.category, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                   ],
                 ),
               ],
@@ -196,7 +197,7 @@ class WikiHomePage extends ConsumerWidget {
             return const Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.check_circle, color: Color(0xFF4F46E5), size: 48),
+                Icon(Icons.check_circle, color: AppColors.primary, size: 48),
                 SizedBox(height: 12),
                 Text(
                   'Submitted for Moderation',
@@ -206,7 +207,7 @@ class WikiHomePage extends ConsumerWidget {
                 Text(
                   'Your submission is pending review by an OAA administrator.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Color(0xFF6B7280)),
+                  style: TextStyle(color: AppColors.textSecondary),
                 ),
               ],
             );
@@ -255,7 +256,7 @@ class WikiHomePage extends ConsumerWidget {
                   const SizedBox(width: 8),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4F46E5),
+                      backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                     ),
                     onPressed: () => setState(() => submitted = true),

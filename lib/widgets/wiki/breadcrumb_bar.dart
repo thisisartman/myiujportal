@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../data/mock_data.dart';
+import '../../theme/app_colors.dart';
 
 class BreadcrumbBar extends StatelessWidget {
   final String pageId;
@@ -21,7 +22,7 @@ class BreadcrumbBar extends StatelessWidget {
         icon: const Icon(Icons.arrow_back, size: 16),
         label: Text('Back to ${parent.title}'),
         style: TextButton.styleFrom(
-          foregroundColor: const Color(0xFF4F46E5),
+          foregroundColor: AppColors.primary,
           padding: const EdgeInsets.symmetric(horizontal: 8),
         ),
       ),
