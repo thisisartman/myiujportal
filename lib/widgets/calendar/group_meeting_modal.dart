@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../common/app_modal.dart';
+import '../../theme/app_colors.dart';
 
 class GroupMeetingModal extends StatefulWidget {
   const GroupMeetingModal({super.key});
@@ -36,7 +37,7 @@ class _GroupMeetingModalState extends State<GroupMeetingModal> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('1. Select days you are free', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF374151))),
+        const Text('1. Select days you are free', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
         const SizedBox(height: 10),
         // Day grid (remaining April days)
         Wrap(
@@ -54,7 +55,7 @@ class _GroupMeetingModalState extends State<GroupMeetingModal> {
                   duration: const Duration(milliseconds: 100),
                   width: 38, height: 38,
                   decoration: BoxDecoration(
-                    color: selected ? const Color(0xFF4F46E5) : const Color(0xFFF3F4F6),
+                    color: selected ? AppColors.primary : AppColors.background,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   alignment: Alignment.center,
@@ -62,7 +63,7 @@ class _GroupMeetingModalState extends State<GroupMeetingModal> {
                     '$day',
                     style: TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w600,
-                      color: selected ? Colors.white : const Color(0xFF374151),
+                      color: selected ? Colors.white : AppColors.textPrimary,
                     ),
                   ),
                 ),
@@ -71,7 +72,7 @@ class _GroupMeetingModalState extends State<GroupMeetingModal> {
           }).toList(),
         ),
         const SizedBox(height: 16),
-        const Text('2. Select available time slots', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF374151))),
+        const Text('2. Select available time slots', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
         const SizedBox(height: 10),
         ..._slots.map((slot) {
           final selected = _selectedSlots.contains(slot);
@@ -87,15 +88,15 @@ class _GroupMeetingModalState extends State<GroupMeetingModal> {
                   duration: const Duration(milliseconds: 100),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: selected ? const Color(0xFFEEF2FF) : const Color(0xFFF9FAFB),
+                    color: selected ? AppColors.primaryLight : AppColors.background,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: selected ? const Color(0xFF4F46E5) : const Color(0xFFE5E7EB)),
+                    border: Border.all(color: selected ? AppColors.primary : AppColors.border),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.access_time_outlined, size: 14, color: selected ? const Color(0xFF4F46E5) : const Color(0xFF9CA3AF)),
+                      Icon(Icons.access_time_outlined, size: 14, color: selected ? AppColors.primary : AppColors.textMuted),
                       const SizedBox(width: 8),
-                      Text(slot, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: selected ? const Color(0xFF4F46E5) : const Color(0xFF374151))),
+                      Text(slot, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: selected ? AppColors.primary : AppColors.textPrimary)),
                     ],
                   ),
                 ),
@@ -110,7 +111,7 @@ class _GroupMeetingModalState extends State<GroupMeetingModal> {
             TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
             const SizedBox(width: 8),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5), foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
               onPressed: _selectedDays.isEmpty || _selectedSlots.isEmpty ? null : _generateLink,
               child: const Text('Generate Link'),
             ),
@@ -132,24 +133,24 @@ class _GroupMeetingModalState extends State<GroupMeetingModal> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(Icons.check_circle, color: Color(0xFF4F46E5), size: 48),
+        const Icon(Icons.check_circle, color: AppColors.primary, size: 48),
         const SizedBox(height: 12),
         const Text('Meeting link created!', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
         const SizedBox(height: 8),
-        const Text('Share this link with your group. They can select their available slots on top of yours.', style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)), textAlign: TextAlign.center),
+        const Text('Share this link with your group. They can select their available slots on top of yours.', style: TextStyle(fontSize: 13, color: AppColors.textSecondary), textAlign: TextAlign.center),
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(color: const Color(0xFFF3F4F6), borderRadius: BorderRadius.circular(8)),
+          decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(8)),
           child: Row(
             children: [
-              Expanded(child: Text(_generatedLink!, style: const TextStyle(fontSize: 12, color: Color(0xFF374151)), overflow: TextOverflow.ellipsis)),
+              Expanded(child: Text(_generatedLink!, style: const TextStyle(fontSize: 12, color: AppColors.textPrimary), overflow: TextOverflow.ellipsis)),
               const SizedBox(width: 8),
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: () => Clipboard.setData(ClipboardData(text: _generatedLink!)),
-                  child: const Icon(Icons.copy_outlined, size: 18, color: Color(0xFF4F46E5)),
+                  child: const Icon(Icons.copy_outlined, size: 18, color: AppColors.primary),
                 ),
               ),
             ],
@@ -159,7 +160,7 @@ class _GroupMeetingModalState extends State<GroupMeetingModal> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5), foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('Done'),
           ),
