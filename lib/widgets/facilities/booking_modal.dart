@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/facility.dart';
+import '../../theme/app_colors.dart';
 import '../../data/mock_data.dart';
 import '../../providers/facilities_provider.dart';
 import 'booking_calendar.dart';
@@ -82,14 +83,14 @@ class _BookingModalState extends ConsumerState<BookingModal> {
       children: [
         Text(
           'Step $_step of 3',
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF6B7280)),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: LinearProgressIndicator(
             value: _step / 3,
-            backgroundColor: const Color(0xFFE5E7EB),
-            color: const Color(0xFF4F46E5),
+            backgroundColor: AppColors.border,
+            color: AppColors.primary,
             minHeight: 4,
             borderRadius: BorderRadius.circular(2),
           ),

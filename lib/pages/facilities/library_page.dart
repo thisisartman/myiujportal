@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../data/mock_data.dart';
+import '../../../theme/app_colors.dart';
 
 class LibraryPage extends StatelessWidget {
   const LibraryPage({super.key});
@@ -15,23 +16,23 @@ class LibraryPage extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () => context.go('/facilities'),
-              child: const Icon(Icons.arrow_back_ios, size: 16, color: Color(0xFF6B7280)),
+              child: const Icon(Icons.arrow_back_ios, size: 16, color: AppColors.textSecondary),
             ),
             const SizedBox(width: 6),
-            const Text('Library', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
+            const Text('Library', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
           ],
         ),
         const SizedBox(height: 4),
-        const Text('Matsushita Library & Information Center (MLIC)', style: TextStyle(fontSize: 14, color: Color(0xFF6B7280))),
+        const Text('Matsushita Library & Information Center (MLIC)', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
         const SizedBox(height: 24),
         // My Loans section
-        const Text('My Loans', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF374151))),
+        const Text('My Loans', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE5E7EB)),
+            border: Border.all(color: AppColors.border),
           ),
           child: Column(
             children: kMockLibraryLoans.indexed.map((entry) {
@@ -39,18 +40,18 @@ class LibraryPage extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  border: i == 0 ? null : const Border(top: BorderSide(color: Color(0xFFF3F4F6))),
+                  border: i == 0 ? null : const Border(top: BorderSide(color: AppColors.border)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.book_outlined, size: 18, color: Color(0xFF6B7280)),
+                    const Icon(Icons.book_outlined, size: 18, color: AppColors.textSecondary),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(loan.title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF111827))),
-                          Text('Due: ${loan.dueDate}', style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                          Text(loan.title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                          Text('Due: ${loan.dueDate}', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                         ],
                       ),
                     ),
@@ -77,16 +78,16 @@ class LibraryPage extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         // Library Resources section
-        const Text('Library Resources', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF374151))),
+        const Text('Library Resources', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
         const SizedBox(height: 12),
         ..._resources.map((r) => Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
+              border: Border.all(color: AppColors.border),
             ),
             child: Row(
               children: [
@@ -100,8 +101,8 @@ class LibraryPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(r.$2, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF111827))),
-                      Text(r.$3, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                      Text(r.$2, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                      Text(r.$3, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                     ],
                   ),
                 ),
@@ -117,7 +118,7 @@ class LibraryPage extends StatelessWidget {
             icon: const Icon(Icons.search, size: 18),
             label: const Text('Search MLIC Catalogue'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF4F46E5),
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -132,7 +133,7 @@ class LibraryPage extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         const Center(
-          child: Text('Full catalogue integration coming soon.', style: TextStyle(fontSize: 12, color: Color(0xFF9CA3AF))),
+          child: Text('Full catalogue integration coming soon.', style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
         ),
       ],
     );
