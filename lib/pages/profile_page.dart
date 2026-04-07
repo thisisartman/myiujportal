@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
+import '../theme/app_colors.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -11,19 +12,19 @@ class ProfilePage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Profile', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
+        const Text('Profile', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
         const SizedBox(height: 24),
         Center(
           child: Column(
             children: [
               const CircleAvatar(
                 radius: 40,
-                backgroundColor: Color(0xFF4F46E5),
-                child: Text('S', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.w700)),
+                backgroundColor: AppColors.primary,
+                child: Text('S', style: TextStyle(color: AppColors.surface, fontSize: 32, fontWeight: FontWeight.w700)),
               ),
               const SizedBox(height: 16),
-              const Text('Student', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
-              const Text('student@iuj.ac.jp', style: TextStyle(fontSize: 14, color: Color(0xFF6B7280))),
+              const Text('Student', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+              const Text('student@iuj.ac.jp', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
             ],
           ),
         ),
@@ -45,9 +46,9 @@ class ProfilePage extends ConsumerWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
+              border: Border.all(color: AppColors.border),
             ),
             child: const Row(
               children: [
@@ -57,12 +58,12 @@ class ProfilePage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('My Library', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
-                      Text('View your loans and library resources', style: TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                      Text('My Library', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                      Text('View your loans and library resources', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                     ],
                   ),
                 ),
-                Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+                Icon(Icons.chevron_right, color: AppColors.textMuted),
               ],
             ),
           ),
@@ -89,9 +90,9 @@ class ProfilePage extends ConsumerWidget {
   Widget _infoCard(List<(String, String)> rows) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         children: rows.indexed.map((entry) {
@@ -99,15 +100,15 @@ class ProfilePage extends ConsumerWidget {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              border: i == 0 ? null : const Border(top: BorderSide(color: Color(0xFFF3F4F6))),
+              border: i == 0 ? null : const Border(top: BorderSide(color: AppColors.border)),
             ),
             child: Row(
               children: [
                 SizedBox(
                   width: 120,
-                  child: Text(row.$1, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF6B7280))),
+                  child: Text(row.$1, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
                 ),
-                Expanded(child: Text(row.$2, style: const TextStyle(fontSize: 13, color: Color(0xFF111827)))),
+                Expanded(child: Text(row.$2, style: const TextStyle(fontSize: 13, color: AppColors.textPrimary))),
               ],
             ),
           );
