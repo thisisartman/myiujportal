@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../providers/calendar_provider.dart';
 import '../../models/calendar_event.dart';
+import '../../theme/app_colors.dart';
 
 class MonthGrid extends ConsumerWidget {
   const MonthGrid({super.key});
@@ -46,7 +47,7 @@ class MonthGrid extends ConsumerWidget {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF111827),
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
@@ -61,7 +62,7 @@ class MonthGrid extends ConsumerWidget {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF4F46E5),
+                    color: AppColors.primary,
                   ),
                 ),
               ),
@@ -80,7 +81,7 @@ class MonthGrid extends ConsumerWidget {
                 ref.read(currentViewDateProvider.notifier).state = DateTime(2026, 4, 1);
                 ref.read(selectedDateProvider.notifier).state = 1;
               },
-              child: const Text('Today', style: TextStyle(color: Color(0xFF4F46E5))),
+              child: const Text('Today', style: TextStyle(color: AppColors.primary)),
             ),
           ],
         ),
@@ -94,7 +95,7 @@ class MonthGrid extends ConsumerWidget {
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF6B7280),
+                  color: AppColors.textSecondary,
                 ),
               ),
             ),
@@ -123,11 +124,11 @@ class MonthGrid extends ConsumerWidget {
                 margin: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? const Color(0xFF4F46E5)
-                      : (isToday ? const Color(0xFFEEF2FF) : null),
+                      ? AppColors.primary
+                      : (isToday ? AppColors.primaryLight : null),
                   borderRadius: BorderRadius.circular(8),
                   border: isToday && !isSelected
-                      ? Border.all(color: const Color(0xFF4F46E5), width: 1.5)
+                      ? Border.all(color: AppColors.primary, width: 1.5)
                       : null,
                 ),
                 child: Column(
@@ -138,7 +139,7 @@ class MonthGrid extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: isSelected ? Colors.white : const Color(0xFF111827),
+                        color: isSelected ? Colors.white : AppColors.textPrimary,
                       ),
                     ),
                     if (dayEvents.isNotEmpty)
@@ -206,8 +207,8 @@ void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
                     child: Container(
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color(0xFF4F46E5)
-                            : const Color(0xFFF3F4F6),
+                            ? AppColors.primary
+                            : AppColors.border,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       alignment: Alignment.center,
@@ -216,7 +217,7 @@ void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: isSelected ? Colors.white : const Color(0xFF374151),
+                          color: isSelected ? Colors.white : AppColors.textPrimary,
                         ),
                       ),
                     ),
@@ -265,8 +266,8 @@ void _showYearPicker(BuildContext context, WidgetRef ref, DateTime current) {
                       height: 36,
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color(0xFF4F46E5)
-                            : const Color(0xFFF3F4F6),
+                            ? AppColors.primary
+                            : AppColors.border,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       alignment: Alignment.center,
@@ -275,7 +276,7 @@ void _showYearPicker(BuildContext context, WidgetRef ref, DateTime current) {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: isSelected ? Colors.white : const Color(0xFF374151),
+                          color: isSelected ? Colors.white : AppColors.textPrimary,
                         ),
                       ),
                     ),

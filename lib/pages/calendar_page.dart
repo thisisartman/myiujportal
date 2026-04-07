@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../providers/calendar_provider.dart';
 import '../models/calendar_event.dart';
+import '../theme/app_colors.dart';
 import '../widgets/calendar/month_grid.dart';
 import '../widgets/calendar/event_card.dart';
 import '../widgets/calendar/group_meeting_modal.dart';
@@ -28,8 +29,8 @@ class CalendarPage extends ConsumerWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Calendar', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
-                Text(DateFormat('MMMM yyyy').format(displayed), style: const TextStyle(fontSize: 14, color: Color(0xFF6B7280))),
+                const Text('Calendar', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+                Text(DateFormat('MMMM yyyy').format(displayed), style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
               ],
             ),
           ],
@@ -61,9 +62,9 @@ class CalendarPage extends ConsumerWidget {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFE5E7EB)),
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.border),
                       ),
                       child: const MonthGrid(),
                     ),
@@ -77,9 +78,9 @@ class CalendarPage extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.border),
                     ),
                     child: const MonthGrid(),
                   ),
@@ -98,16 +99,16 @@ class CalendarPage extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
-          color: active ? const Color(0xFF4F46E5) : Colors.white,
+          color: active ? AppColors.primaryLight : AppColors.surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: active ? const Color(0xFF4F46E5) : const Color(0xFFD1D5DB)),
+          border: Border.all(color: active ? AppColors.primary : AppColors.border),
         ),
         child: Text(
           label,
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: active ? Colors.white : const Color(0xFF4B5563),
+            color: active ? AppColors.primary : AppColors.textSecondary,
           ),
         ),
       ),
@@ -120,9 +121,9 @@ class CalendarPage extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,7 +135,7 @@ class CalendarPage extends ConsumerWidget {
                 icon: const Icon(Icons.add, size: 16),
                 label: const Text('Add Event'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4F46E5),
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -146,14 +147,14 @@ class CalendarPage extends ConsumerWidget {
           const SizedBox(height: 10),
           Text(
             '$monthName $selectedDate',
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF111827)),
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
           ),
           const SizedBox(height: 12),
           if (events.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
               child: Center(
-                child: Text('No events for this day', style: TextStyle(color: Color(0xFF9CA3AF))),
+                child: Text('No events for this day', style: TextStyle(color: AppColors.textMuted)),
               ),
             )
           else
@@ -207,7 +208,7 @@ class CalendarPage extends ConsumerWidget {
             TextButton.icon(
               icon: const Icon(Icons.group_outlined, size: 16),
               label: const Text('Schedule as Group Meeting instead'),
-              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4F46E5)),
+              style: TextButton.styleFrom(foregroundColor: AppColors.primary),
               onPressed: () {
                 Navigator.of(ctx).pop(); // close Add Event modal
                 GroupMeetingModal.show(context);
@@ -224,7 +225,7 @@ class CalendarPage extends ConsumerWidget {
                 const SizedBox(width: 8),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4F46E5),
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                   ),
                   onPressed: () {
