@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../models/wiki_page.dart';
 import '../../providers/directory_provider.dart';
+import '../../theme/app_colors.dart';
 
 class DirectoryCard extends ConsumerWidget {
   final DirectoryEntry entry;
@@ -23,10 +24,10 @@ class DirectoryCard extends ConsumerWidget {
         duration: const Duration(milliseconds: 150),
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isExpanded ? const Color(0xFF4F46E5) : const Color(0xFFE5E7EB),
+            color: isExpanded ? AppColors.primary : AppColors.border,
             width: isExpanded ? 1.5 : 1,
           ),
         ),
@@ -42,13 +43,13 @@ class DirectoryCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(entry.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF111827))),
+                        Text(entry.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
                         const SizedBox(height: 3),
                         _TypeChip(type: entry.type),
                       ],
                     ),
                   ),
-                  Icon(isExpanded ? Icons.expand_less : Icons.expand_more, color: const Color(0xFF9CA3AF), size: 18),
+                  Icon(isExpanded ? Icons.expand_less : Icons.expand_more, color: AppColors.textMuted, size: 18),
                 ],
               ),
             ),
@@ -93,10 +94,10 @@ class _ExpandedDetails extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280), fontWeight: FontWeight.w500)),
+            child: Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.w500)),
           ),
           Expanded(
-            child: Text(value, style: const TextStyle(fontSize: 12, color: Color(0xFF111827))),
+            child: Text(value, style: const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
           ),
         ],
       ),
@@ -122,9 +123,9 @@ class _WikiLink extends StatelessWidget {
       onTap: () => context.go('/wiki/${_wikiId()}'),
       child: const Row(
         children: [
-          Icon(Icons.open_in_new, size: 14, color: Color(0xFF4F46E5)),
+          Icon(Icons.open_in_new, size: 14, color: AppColors.primary),
           SizedBox(width: 6),
-          Text('View Wiki page', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF4F46E5))),
+          Text('View Wiki page', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary)),
         ],
       ),
     );
@@ -146,8 +147,8 @@ class _Avatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 22,
-      backgroundColor: const Color(0xFFEEF2FF),
-      child: Text(_initials, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF4F46E5))),
+      backgroundColor: AppColors.primaryLight,
+      child: Text(_initials, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary)),
     );
   }
 }
@@ -161,7 +162,7 @@ class _TypeChip extends StatelessWidget {
     if (type == 'Student') return const Color(0xFF2563EB);
     if (type == 'Organization') return const Color(0xFF16A34A);
     if (type == 'Department') return const Color(0xFFD97706);
-    return const Color(0xFF6B7280);
+    return AppColors.textSecondary;
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/mock_data.dart';
+import '../../theme/app_colors.dart';
 
 class BookingCalendar extends StatelessWidget {
   final String facilityId;
@@ -25,7 +26,7 @@ class BookingCalendar extends StatelessWidget {
         const Center(
           child: Text(
             'April 2026',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF111827)),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
           ),
         ),
         const SizedBox(height: 12),
@@ -33,7 +34,7 @@ class BookingCalendar extends StatelessWidget {
           children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) =>
             Expanded(
               child: Center(
-                child: Text(d, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF9CA3AF))),
+                child: Text(d, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted)),
               ),
             ),
           ).toList(),
@@ -83,15 +84,15 @@ class _DayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color bg = Colors.transparent;
-    Color textColor = const Color(0xFF111827);
+    Color textColor = AppColors.textPrimary;
 
     if (isPast) {
-      textColor = const Color(0xFFD1D5DB);
+      textColor = AppColors.textMuted;
     } else if (tappable) {
-      bg = const Color(0xFFEEF2FF);
-      textColor = const Color(0xFF4F46E5);
+      bg = AppColors.primaryLight;
+      textColor = AppColors.primary;
     } else {
-      textColor = const Color(0xFFD1D5DB);
+      textColor = AppColors.textMuted;
     }
 
     return GestureDetector(

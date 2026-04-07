@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/facility.dart';
+import '../../theme/app_colors.dart';
 
 typedef BookingFormData = Map<String, String>;
 
@@ -53,7 +54,7 @@ class _BookingFormState extends State<BookingForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Booking Details', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF374151))),
+        const Text('Booking Details', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
         const SizedBox(height: 12),
         _field(_reasonCtrl, 'Reason for Booking', 'Brief description of your planned use...', maxLines: 3),
         if (_isExtendedForm) ...[
@@ -71,7 +72,7 @@ class _BookingFormState extends State<BookingForm> {
             const Spacer(),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4F46E5),
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),

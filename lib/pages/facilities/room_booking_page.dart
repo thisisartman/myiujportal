@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../models/facility.dart';
+import '../../../theme/app_colors.dart';
 import '../../models/alert_item.dart';
 import '../../data/mock_data.dart';
 import '../../providers/facilities_provider.dart';
@@ -29,14 +30,14 @@ class RoomBookingPage extends ConsumerWidget {
           children: [
             GestureDetector(
               onTap: () => context.go('/facilities'),
-              child: const Icon(Icons.arrow_back_ios, size: 16, color: Color(0xFF6B7280)),
+              child: const Icon(Icons.arrow_back_ios, size: 16, color: AppColors.textSecondary),
             ),
             const SizedBox(width: 6),
-            const Text('Room Booking', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
+            const Text('Room Booking', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
           ],
         ),
         const SizedBox(height: 4),
-        const Text('Select a space to begin your booking', style: TextStyle(fontSize: 14, color: Color(0xFF6B7280))),
+        const Text('Select a space to begin your booking', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
         const SizedBox(height: 24),
         _sectionHeader('Classrooms & Lounges'),
         const SizedBox(height: 12),
@@ -56,7 +57,7 @@ class RoomBookingPage extends ConsumerWidget {
   }
 
   Widget _sectionHeader(String title) {
-    return Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF374151)));
+    return Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary));
   }
 
   Future<void> _openBookingModal(BuildContext context, WidgetRef ref, Facility facility) async {
@@ -106,9 +107,9 @@ class _RoomCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE5E7EB)),
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           children: [
@@ -122,13 +123,13 @@ class _RoomCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(facility.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF111827))),
+                  Text(facility.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
                   const SizedBox(height: 2),
                   _AuthorityChip(label: facility.authority),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF), size: 18),
+            const Icon(Icons.chevron_right, color: AppColors.textMuted, size: 18),
           ],
         ),
       ),
@@ -145,10 +146,10 @@ class _AuthorityChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFF6B7280).withValues(alpha: 0.1),
+        color: AppColors.textSecondary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF6B7280), fontWeight: FontWeight.w500)),
+      child: Text(label, style: const TextStyle(fontSize: 11, color: AppColors.textSecondary, fontWeight: FontWeight.w500)),
     );
   }
 }

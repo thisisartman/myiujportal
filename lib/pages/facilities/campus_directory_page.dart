@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../data/mock_data.dart';
+import '../../../theme/app_colors.dart';
 import '../../providers/directory_provider.dart';
 import '../../widgets/directory/directory_card.dart';
 
@@ -37,10 +38,10 @@ class CampusDirectoryPage extends ConsumerWidget {
           children: [
             GestureDetector(
               onTap: () => context.go('/facilities'),
-              child: const Icon(Icons.arrow_back_ios, size: 16, color: Color(0xFF6B7280)),
+              child: const Icon(Icons.arrow_back_ios, size: 16, color: AppColors.textSecondary),
             ),
             const SizedBox(width: 6),
-            const Text('Campus Directory', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF111827))),
+            const Text('Campus Directory', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
           ],
         ),
         const SizedBox(height: 16),
@@ -68,11 +69,11 @@ class CampusDirectoryPage extends ConsumerWidget {
                     ref.read(directoryFilterProvider.notifier).state = chip;
                     ref.read(expandedDirectoryEntryProvider.notifier).state = null;
                   },
-                  selectedColor: const Color(0xFFEEF2FF),
-                  checkmarkColor: const Color(0xFF4F46E5),
+                  selectedColor: AppColors.primaryLight,
+                  checkmarkColor: AppColors.primary,
                   labelStyle: TextStyle(
                     fontSize: 13,
-                    color: isActive ? const Color(0xFF4F46E5) : const Color(0xFF374151),
+                    color: isActive ? AppColors.primary : AppColors.textSecondary,
                     fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                   ),
                 ),
@@ -85,14 +86,14 @@ class CampusDirectoryPage extends ConsumerWidget {
           const Center(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 32),
-              child: Text('No results found.', style: TextStyle(color: Color(0xFF9CA3AF))),
+              child: Text('No results found.', style: TextStyle(color: AppColors.textMuted)),
             ),
           )
         else ...[
           ...mainEntries.map((e) => DirectoryCard(entry: e)),
           if (showOrgs && orgs.isNotEmpty) ...[
             const SizedBox(height: 16),
-            const Text('Organisations', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF374151))),
+            const Text('Organisations', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
             const SizedBox(height: 12),
             ...orgs.map((e) => DirectoryCard(entry: e)),
           ],
