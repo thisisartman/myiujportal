@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/calendar_event.dart';
 import '../../providers/calendar_provider.dart';
+import '../../theme/app_colors.dart';
 import '../common/app_modal.dart';
 
 class EventCard extends ConsumerStatefulWidget {
@@ -65,7 +66,7 @@ class _EventCardState extends ConsumerState<EventCard> {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      Text(e.time, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                      Text(e.time, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                       const Spacer(),
                       // Action buttons — always present, animate opacity on hover
                       AnimatedOpacity(
@@ -79,7 +80,7 @@ class _EventCardState extends ConsumerState<EventCard> {
                               child: IconButton(
                                 padding: EdgeInsets.zero,
                                 icon: const Icon(Icons.edit_outlined, size: 14),
-                                color: const Color(0xFF6B7280),
+                                color: AppColors.textSecondary,
                                 onPressed: () => _showEditModal(context, e),
                               ),
                             ),
@@ -98,8 +99,8 @@ class _EventCardState extends ConsumerState<EventCard> {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(e.title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF111827))),
-                  Text(e.detail, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
+                  Text(e.title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                  Text(e.detail, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                 ],
               ),
             ),
@@ -156,7 +157,7 @@ class _EventCardState extends ConsumerState<EventCard> {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5), foregroundColor: Colors.white),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
                   onPressed: () {
                     ref.read(calendarEventsProvider.notifier).updateEvent(
                       event.copyWith(
