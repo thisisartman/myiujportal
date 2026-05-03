@@ -14,7 +14,7 @@ class DashboardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isWide = MediaQuery.of(context).size.width >= 900;
-    final header = _DashboardHeader(today: DateTime.now());
+    const header = _DashboardHeader();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +41,7 @@ class DashboardPage extends ConsumerWidget {
               )
             : const Column(
                 children: [
-                  _DashboardHeader(today: null),
+                  _DashboardHeader(),
                   SizedBox(height: 16),
                   UpcomingEventsWidget(),
                   SizedBox(height: 16),
@@ -56,13 +56,11 @@ class DashboardPage extends ConsumerWidget {
 }
 
 class _DashboardHeader extends StatelessWidget {
-  final DateTime? today;
-
-  const _DashboardHeader({required this.today});
+  const _DashboardHeader();
 
   @override
   Widget build(BuildContext context) {
-    final effectiveToday = today ?? DateTime.now();
+    final effectiveToday = DateTime.now();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,

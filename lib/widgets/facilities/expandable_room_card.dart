@@ -54,9 +54,11 @@ class _ExpandableRoomCardState extends ConsumerState<ExpandableRoomCard> {
               slots: _effectiveSlots(),
               selectedSlots: _selectedSlots,
               onToggle: (slot) => setState(() {
-                _selectedSlots.contains(slot)
-                    ? _selectedSlots.remove(slot)
-                    : _selectedSlots.add(slot);
+                final nextSlots = Set<String>.from(_selectedSlots);
+                nextSlots.contains(slot)
+                    ? nextSlots.remove(slot)
+                    : nextSlots.add(slot);
+                _selectedSlots = nextSlots;
               }),
               onBack: () => setState(() {
                 _selectedDay = null;
@@ -141,38 +143,44 @@ class _ExpandableRoomCardState extends ConsumerState<ExpandableRoomCard> {
   }
 
   Future<void> _openBookingDetails() async {
-    await AppModal.show<void>(
+    final selectedDay = _selectedDay;
+    if (selectedDay == null || _selectedSlots.isEmpty) return;
+    final selectedSlots = Set<String>.from(_selectedSlots);
+
+    final data = await AppModal.show<Map<String, String>>(
       context,
       title: 'Booking Details',
       child: BookingForm(
         facility: widget.facility,
         category: widget.facility.category,
-        selectedDay: _selectedDay!,
-        selectedSlots: _selectedSlots,
+        selectedDay: selectedDay,
+        selectedSlots: selectedSlots,
         onSubmit: (data) {
-          Navigator.of(context).pop();
-          ref.read(bookedSlotsProvider.notifier).update((state) {
-            final updated = Map<String, Set<String>>.from(state);
-            updated[widget.facility.id] = {
-              ...(state[widget.facility.id] ?? {}),
-              ..._selectedSlots,
-            };
-            return updated;
-          });
-          _simulateEmail(widget.facility, _selectedDay!, _selectedSlots, data);
-          showToast(
-            context,
-            'Your request has been submitted. You will be notified about the outcome shortly.',
-            type: ToastType.success,
-          );
-          setState(() {
-            _expanded = false;
-            _selectedDay = null;
-            _selectedSlots = {};
-          });
+          Navigator.of(context).pop(data);
         },
       ),
     );
+    if (!mounted || data == null) return;
+
+    ref.read(bookedSlotsProvider.notifier).update((state) {
+      final updated = Map<String, Set<String>>.from(state);
+      updated[widget.facility.id] = {
+        ...(state[widget.facility.id] ?? {}),
+        ...selectedSlots,
+      };
+      return updated;
+    });
+    _simulateEmail(widget.facility, selectedDay, selectedSlots, data);
+    showToast(
+      context,
+      'Your request has been submitted. You will be notified about the outcome shortly.',
+      type: ToastType.success,
+    );
+    setState(() {
+      _expanded = false;
+      _selectedDay = null;
+      _selectedSlots = {};
+    });
   }
 
   void _simulateEmail(

@@ -244,12 +244,8 @@ void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
 }
 
 void _showYearPicker(BuildContext context, WidgetRef ref, DateTime current) {
-  const enrollmentYear = 2025;
-  const graduationYear = 2027;
-  final years = List.generate(
-    graduationYear - enrollmentYear + 1,
-    (i) => enrollmentYear + i,
-  );
+  final currentYear = DateTime.now().year;
+  final years = List.generate(3, (i) => currentYear - 1 + i);
   showDialog(
     context: context,
     builder: (_) => Dialog(
