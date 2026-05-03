@@ -51,7 +51,7 @@ class _ProfileChipState extends ConsumerState<ProfileChip> {
                 radius: 14,
                 backgroundColor: AppColors.primary,
                 child: Text(
-                  'S',
+                  'A',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
@@ -61,7 +61,7 @@ class _ProfileChipState extends ConsumerState<ProfileChip> {
               ),
               SizedBox(width: 8),
               Text(
-                'Student',
+                'Apoorv',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -181,7 +181,7 @@ class _DropdownCard extends StatelessWidget {
                   radius: 20,
                   backgroundColor: AppColors.primary,
                   child: Text(
-                    'S',
+                    'A',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w800,
@@ -194,7 +194,7 @@ class _DropdownCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Student',
+                        'Apoorv Terwadkar',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w800,
@@ -202,7 +202,7 @@ class _DropdownCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'student@iuj.ac.jp',
+                        'apoorv.terwadkar@iuj.ac.jp',
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,

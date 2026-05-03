@@ -1,89 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../providers/dashboard_provider.dart';
 import '../../theme/app_colors.dart';
+import '../common/dashboard_card.dart';
 
-class QuickLinksWidget extends StatelessWidget {
-  const QuickLinksWidget({super.key});
+class QuickLinksWidget extends ConsumerWidget {
+  final String? style;
+
+  const QuickLinksWidget({super.key, this.style});
 
   @override
-  Widget build(BuildContext context) {
-    final links = [
-      _Link(
-        Icons.calendar_today_outlined,
-        'Calendar',
-        AppColors.primary,
-        AppColors.primaryLight,
-        '/calendar',
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String effectiveStyle = style ?? ref.watch(quickLinkStyleProvider);
+    final links = _links;
+    return DashboardCard(
+      label: const DashboardCardLabel(
+        icon: Icons.apps_outlined,
+        text: 'Quick links',
       ),
-      _Link(
-        Icons.business_outlined,
-        'Facilities',
-        const Color(0xFF0891B2),
-        const Color(0xFFCFFAFE),
-        '/facilities',
-      ),
-      _Link(
-        Icons.local_library_outlined,
-        'Wiki',
-        const Color(0xFF7C3AED),
-        const Color(0xFFF5F3FF),
-        '/wiki',
-      ),
-      _Link(
-        Icons.badge_outlined,
-        'Digital ID',
-        AppColors.accent,
-        const Color(0xFFFFF7ED),
-        '/profile',
-      ),
-    ];
-
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Quick Links',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 12),
-          GridView.count(
-            crossAxisCount: 2,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final config = _QuickLinkStyleConfig.from(effectiveStyle);
+          final count = (constraints.maxWidth / config.minWidth).floor();
+          return GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            childAspectRatio: 1.1,
-            children: links.map((l) => _LinkTile(link: l)).toList(),
-          ),
-        ],
+            itemCount: links.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: count < 1 ? 1 : count,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              mainAxisExtent: config.tileHeight,
+            ),
+            itemBuilder: (context, index) {
+              return _LinkTile(link: links[index], style: effectiveStyle);
+            },
+          );
+        },
       ),
     );
   }
 }
 
+final _links = [
+  const _Link(Icons.calendar_today_outlined, 'Calendar', '/calendar'),
+  const _Link(Icons.business_outlined, 'Facilities', '/facilities'),
+  const _Link(Icons.local_library_outlined, 'Wiki', '/wiki'),
+  const _Link(Icons.badge_outlined, 'Digital ID', '/profile'),
+  const _Link(Icons.groups_2_outlined, 'Meetings', '/meeting/SD1SYNC'),
+  const _Link(Icons.menu_book_outlined, 'Library', '/facilities/library'),
+];
+
 class _Link {
   final IconData icon;
   final String label;
-  final Color fg;
-  final Color bg;
   final String path;
-  const _Link(this.icon, this.label, this.fg, this.bg, this.path);
+
+  const _Link(this.icon, this.label, this.path);
+}
+
+class _QuickLinkStyleConfig {
+  final double minWidth;
+  final double tileHeight;
+
+  const _QuickLinkStyleConfig(this.minWidth, this.tileHeight);
+
+  factory _QuickLinkStyleConfig.from(String style) {
+    return switch (style) {
+      'icon-only' => const _QuickLinkStyleConfig(58, 56),
+      'cards' => const _QuickLinkStyleConfig(140, 60),
+      _ => const _QuickLinkStyleConfig(100, 80),
+    };
+  }
 }
 
 class _LinkTile extends StatefulWidget {
   final _Link link;
-  const _LinkTile({required this.link});
+  final String style;
+
+  const _LinkTile({required this.link, required this.style});
+
   @override
   State<_LinkTile> createState() => _LinkTileState();
 }
@@ -93,40 +90,92 @@ class _LinkTileState extends State<_LinkTile> {
 
   @override
   Widget build(BuildContext context) {
-    final l = widget.link;
+    final isCards = widget.style == 'cards';
+    final isIconOnly = widget.style == 'icon-only';
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovering = true),
       onExit: (_) => setState(() => _hovering = false),
       child: GestureDetector(
-        onTap: () => context.go(l.path),
+        onTap: () => context.go(widget.link.path),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          transform: Matrix4.translationValues(0, _hovering ? -1 : 0, 0),
+          padding: EdgeInsets.symmetric(
+            horizontal: isCards ? 10 : 8,
+            vertical: 8,
+          ),
           decoration: BoxDecoration(
-            color: _hovering ? l.bg : AppColors.background,
+            color: _hovering ? AppColors.tealTint2 : AppColors.bgSunken,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: _hovering ? l.fg : AppColors.border),
+            border: Border.all(
+              color: _hovering ? AppColors.primary : AppColors.ruleSofter,
+            ),
+            boxShadow: _hovering
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.06),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(l.icon, color: l.fg, size: 16),
-              const SizedBox(height: 6),
-              Text(
-                l.label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: _hovering ? l.fg : AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
+          child: isCards ? _cardsLayout() : _iconLayout(showLabel: !isIconOnly),
         ),
       ),
+    );
+  }
+
+  Widget _iconLayout({required bool showLabel}) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(widget.link.icon, size: 28, color: AppColors.tealInk),
+        if (showLabel) ...[
+          const SizedBox(height: 7),
+          Text(
+            widget.link.label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: AppColors.ink2,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _cardsLayout() {
+    return Row(
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: AppColors.tealTint2,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(widget.link.icon, size: 20, color: AppColors.tealInk),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            widget.link.label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: AppColors.ink2,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

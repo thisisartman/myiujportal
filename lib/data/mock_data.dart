@@ -2,7 +2,7 @@ import '../models/alert_item.dart';
 import '../models/calendar_event.dart';
 import '../models/facility.dart';
 import '../models/wiki_page.dart';
-import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 final List<Facility> kFacilities = [
   // Classrooms
@@ -11,24 +11,24 @@ final List<Facility> kFacilities = [
     name: 'Classroom G.30',
     category: FacilityCategory.classroom,
     authority: 'OAA',
-    bgColor: Color(0xFFDBEAFE),
-    iconColor: Color(0xFF2563EB),
+    bgColor: AppColors.primaryLight,
+    iconColor: AppColors.primary,
   ),
   const Facility(
     id: 'f2',
     name: 'Classroom P.103',
     category: FacilityCategory.classroom,
     authority: 'OAA',
-    bgColor: Color(0xFFDBEAFE),
-    iconColor: Color(0xFF2563EB),
+    bgColor: AppColors.primaryLight,
+    iconColor: AppColors.primary,
   ),
   const Facility(
     id: 'f3',
     name: 'Seminar Room G.21',
     category: FacilityCategory.classroom,
     authority: 'OAA',
-    bgColor: Color(0xFFDBEAFE),
-    iconColor: Color(0xFF2563EB),
+    bgColor: AppColors.primaryLight,
+    iconColor: AppColors.primary,
   ),
   // Lounges
   const Facility(
@@ -36,24 +36,24 @@ final List<Facility> kFacilities = [
     name: 'CNP Snack Lounge',
     category: FacilityCategory.lounge,
     authority: 'OGA',
-    bgColor: Color(0xFFFFEDD5),
-    iconColor: Color(0xFFEA580C),
+    bgColor: AppColors.warningLight,
+    iconColor: AppColors.accent,
   ),
   const Facility(
     id: 'f5',
     name: 'BBQ Area',
     category: FacilityCategory.lounge,
     authority: 'OSS',
-    bgColor: Color(0xFFFFEDD5),
-    iconColor: Color(0xFFEA580C),
+    bgColor: AppColors.warningLight,
+    iconColor: AppColors.accent,
   ),
   const Facility(
     id: 'f6',
     name: 'Student Lounge (CNP B1)',
     category: FacilityCategory.lounge,
     authority: 'OSS',
-    bgColor: Color(0xFFFFEDD5),
-    iconColor: Color(0xFFEA580C),
+    bgColor: AppColors.warningLight,
+    iconColor: AppColors.accent,
   ),
   // Gymnasium
   const Facility(
@@ -61,8 +61,8 @@ final List<Facility> kFacilities = [
     name: 'Main Gymnasium',
     category: FacilityCategory.gymnasium,
     authority: 'OSS',
-    bgColor: Color(0xFFDCFCE7),
-    iconColor: Color(0xFF16A34A),
+    bgColor: AppColors.successLight,
+    iconColor: AppColors.success,
   ),
 ];
 
@@ -79,6 +79,137 @@ Set<int> kAvailableDaysForMonth(int year, int month) {
 
 // Backward-compatible April 2026 fixture for legacy widgets.
 final Set<int> kAvailableDays = kAvailableDaysForMonth(2026, 4);
+
+class MockStudentInfo {
+  final String givenName;
+  final String fullName;
+  final String email;
+  final String studentId;
+  final String program;
+  final String cohort;
+  final String dorm;
+
+  const MockStudentInfo({
+    required this.givenName,
+    required this.fullName,
+    required this.email,
+    required this.studentId,
+    required this.program,
+    required this.cohort,
+    required this.dorm,
+  });
+}
+
+class MockMeetingPoll {
+  final String code;
+  final String from;
+  final String title;
+  final int submitted;
+  final int total;
+  final int slotCount;
+  final List<String> attendees;
+
+  const MockMeetingPoll({
+    required this.code,
+    required this.from,
+    required this.title,
+    required this.submitted,
+    required this.total,
+    required this.slotCount,
+    required this.attendees,
+  });
+}
+
+const kMockStudentInfo = MockStudentInfo(
+  givenName: 'Apoorv',
+  fullName: 'Apoorv Terwadkar',
+  email: 'apoorv.terwadkar@iuj.ac.jp',
+  studentId: 'IUJ-2027-0142',
+  program: 'GSIM MBA',
+  cohort: 'Class of 2027',
+  dorm: 'SD1',
+);
+
+const kMockDashboardWeather = '11°C, light rain';
+
+List<CalendarEvent> getTodayEvents() {
+  final now = DateTime.now();
+  final exact =
+      kInitialCalendarEvents
+          .where(
+            (event) =>
+                event.year == now.year &&
+                event.month == now.month &&
+                event.date == now.day,
+          )
+          .toList()
+        ..sort((a, b) => a.time.compareTo(b.time));
+  if (exact.isNotEmpty) return exact;
+
+  return [
+    CalendarEvent(
+      id: 9001,
+      type: CalendarEventType.class_,
+      year: now.year,
+      month: now.month,
+      date: now.day,
+      time: _timeLabel(now.subtract(const Duration(hours: 1, minutes: 20))),
+      title: 'Data-Driven Organization',
+      detail: 'Zaw Zaw Aung | ITC1080 | P.109',
+    ),
+    CalendarEvent(
+      id: 9002,
+      type: CalendarEventType.class_,
+      year: now.year,
+      month: now.month,
+      date: now.day,
+      time: _timeLabel(now.add(const Duration(minutes: 42))),
+      title: 'Operations Management',
+      detail: 'Wenkai Li | OPR1010 | G.21',
+    ),
+    CalendarEvent(
+      id: 9003,
+      type: CalendarEventType.assignment,
+      year: now.year,
+      month: now.month,
+      date: now.day,
+      time: _timeLabel(now.add(const Duration(hours: 2, minutes: 30))),
+      title: 'Startup Pitch Deck Due',
+      detail: 'MGTE31363 | Upload to Moodle Portal',
+    ),
+    CalendarEvent(
+      id: 9004,
+      type: CalendarEventType.event,
+      year: now.year,
+      month: now.month,
+      date: now.day,
+      time: _timeLabel(now.add(const Duration(hours: 4))),
+      title: 'Culture Night Prep Meeting',
+      detail: 'Matsushita Hall | GSO Event',
+    ),
+  ];
+}
+
+const kMockDashboardPolls = [
+  MockMeetingPoll(
+    code: 'SD1SYNC',
+    from: 'Maria Santos',
+    title: 'SD1 study group availability',
+    submitted: 3,
+    total: 5,
+    slotCount: 6,
+    attendees: ['AT', 'MS', 'YT', 'LW', 'ZA'],
+  ),
+  MockMeetingPoll(
+    code: 'OPSCASE',
+    from: 'Yuki Tanaka',
+    title: 'Operations case discussion',
+    submitted: 2,
+    total: 4,
+    slotCount: 4,
+    attendees: ['AT', 'YT', 'AR', 'LW'],
+  ),
+];
 
 // Default time slots for any available day
 final List<TimeSlot> kMockSlots = [
@@ -688,25 +819,54 @@ final List<AlertItem> kMockAlerts = [
 ];
 
 // Library mock data
-final List<({String title, String dueDate, bool overdue})> kMockLibraryLoans = [
+final List<({String title, String author, String dueDate, bool overdue})>
+kMockLibraryLoans = [
   (
     title: 'International Business Strategy',
-    dueDate: 'Apr 15, 2026',
+    author: 'Alain Verbeke',
+    dueDate: _dateLabel(DateTime.now().add(const Duration(days: 3))),
     overdue: false,
   ),
   (
     title: 'Global Supply Chain Management',
-    dueDate: 'Apr 3, 2026',
+    author: 'John T. Mentzer',
+    dueDate: _dateLabel(DateTime.now().subtract(const Duration(days: 2))),
     overdue: true,
   ),
   (
     title: 'Comparative Management Systems',
-    dueDate: 'Apr 20, 2026',
+    author: 'Masaki Hayashi',
+    dueDate: _dateLabel(DateTime.now().add(const Duration(days: 9))),
     overdue: false,
   ),
   (
     title: 'The Oxford Handbook of International Business',
-    dueDate: 'Apr 25, 2026',
+    author: 'MLIC collection',
+    dueDate: _dateLabel(DateTime.now().add(const Duration(days: 14))),
     overdue: false,
   ),
 ];
+
+String _timeLabel(DateTime time) {
+  final hour = time.hour.toString().padLeft(2, '0');
+  final minute = time.minute.toString().padLeft(2, '0');
+  return '$hour:$minute';
+}
+
+String _dateLabel(DateTime date) {
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  return '${months[date.month - 1]} ${date.day}, ${date.year}';
+}

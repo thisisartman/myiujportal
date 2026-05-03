@@ -18,22 +18,22 @@ extension CalendarEventTypeExtension on CalendarEventType {
   Color get color {
     switch (this) {
       case CalendarEventType.class_:
-        return const Color(0xFF6366F1); // indigo
+        return AppColors.primary;
       case CalendarEventType.assignment:
-        return const Color(0xFFF59E0B); // amber
+        return AppColors.warning;
       case CalendarEventType.event:
-        return const Color(0xFF10B981); // emerald
+        return AppColors.success;
     }
   }
 
   Color get bgColor {
     switch (this) {
       case CalendarEventType.class_:
-        return AppColors.primaryLight;
+        return AppColors.tealTint2;
       case CalendarEventType.assignment:
-        return const Color(0xFFFFFBEB);
+        return AppColors.warningLight;
       case CalendarEventType.event:
-        return const Color(0xFFECFDF5);
+        return AppColors.successLight;
     }
   }
 }
@@ -41,6 +41,8 @@ extension CalendarEventTypeExtension on CalendarEventType {
 class CalendarEvent {
   final int id;
   final CalendarEventType type;
+  final int? year;
+  final int? month;
   final int date; // day of month
   final String time; // "HH:MM"
   final String title;
@@ -49,6 +51,8 @@ class CalendarEvent {
   const CalendarEvent({
     required this.id,
     required this.type,
+    this.year,
+    this.month,
     required this.date,
     required this.time,
     required this.title,
@@ -58,6 +62,8 @@ class CalendarEvent {
   CalendarEvent copyWith({
     int? id,
     CalendarEventType? type,
+    int? year,
+    int? month,
     int? date,
     String? time,
     String? title,
@@ -66,6 +72,8 @@ class CalendarEvent {
     return CalendarEvent(
       id: id ?? this.id,
       type: type ?? this.type,
+      year: year ?? this.year,
+      month: month ?? this.month,
       date: date ?? this.date,
       time: time ?? this.time,
       title: title ?? this.title,
