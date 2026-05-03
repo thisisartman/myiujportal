@@ -30,7 +30,7 @@ class ProfilePage extends ConsumerWidget {
         ]),
       ],
     );
-    final adminVaultSection = _AdminVault(ref: ref);
+    final adminVaultSection = _AdminVault();
     final signOutBtn = Align(
       alignment: Alignment.centerRight,
       child: SizedBox(
@@ -137,9 +137,7 @@ class ProfilePage extends ConsumerWidget {
 }
 
 class _AdminVault extends StatelessWidget {
-  final WidgetRef ref;
-
-  const _AdminVault({required this.ref});
+  const _AdminVault();
 
   @override
   Widget build(BuildContext context) {

@@ -118,7 +118,7 @@ class MeetingPage extends ConsumerWidget {
                     ref.read(meetingProvider.notifier).confirmMeeting(code);
                     showToast(
                       context,
-                      'Google Calendar invites sent to all attendees.',
+                      'Calendar invites sent to all attendees.',
                       type: ToastType.success,
                     );
                   },

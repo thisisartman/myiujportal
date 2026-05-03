@@ -4,6 +4,9 @@ import '../../theme/app_colors.dart';
 
 typedef BookingFormData = Map<String, String>;
 
+// Demo data marks these lounge fixtures as food-service venues.
+const _cateringFacilityIds = {'f4', 'f5'};
+
 class BookingForm extends StatefulWidget {
   final Facility? facility;
   final FacilityCategory category;
@@ -49,8 +52,7 @@ class _BookingFormState extends State<BookingForm> {
       widget.category == FacilityCategory.lounge ||
       widget.category == FacilityCategory.gymnasium;
 
-  bool get _isFoodVenue =>
-      widget.facility?.id == 'f4' || widget.facility?.id == 'f5';
+  bool get _isFoodVenue => _cateringFacilityIds.contains(widget.facility?.id);
 
   void _handleSubmit() {
     final data = <String, String>{

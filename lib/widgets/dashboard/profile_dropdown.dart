@@ -87,6 +87,7 @@ class _ProfileChipState extends ConsumerState<ProfileChip> {
       return;
     }
 
+    final widgetContext = context;
     final box = _key.currentContext!.findRenderObject() as RenderBox;
     final offset = box.localToGlobal(Offset.zero);
     final size = box.size;
@@ -111,7 +112,7 @@ class _ProfileChipState extends ConsumerState<ProfileChip> {
                 onReportIssue: _openIssueReport,
                 onProfile: () {
                   _removeOverlay();
-                  context.go('/profile');
+                  widgetContext.go('/profile');
                 },
                 onSignOut: () {
                   _removeOverlay();
@@ -267,7 +268,11 @@ class _DropdownRowState extends State<_DropdownRow> {
         onTap: widget.onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-          color: _hovering ? AppColors.primaryLight : Colors.transparent,
+          color: _hovering
+              ? (widget.isDanger
+                    ? AppColors.dangerLight
+                    : AppColors.primaryLight)
+              : Colors.transparent,
           child: Row(
             children: [
               Icon(widget.icon, size: 17, color: color),

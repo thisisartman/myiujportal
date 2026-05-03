@@ -88,10 +88,10 @@ class BookingSlotSelector extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: !slot.available
-                          ? const Color(0xFFFEE2E2)
+                          ? AppColors.dangerLight
                           : isSelected
-                          ? const Color(0xFFD1FAE5)
-                          : const Color(0xFFD1FAE5),
+                          ? AppColors.successLight
+                          : AppColors.successLight,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
@@ -104,8 +104,8 @@ class BookingSlotSelector extends StatelessWidget {
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         color: !slot.available
-                            ? const Color(0xFF991B1B)
-                            : const Color(0xFF065F46),
+                            ? AppColors.danger
+                            : AppColors.success,
                       ),
                     ),
                   ),

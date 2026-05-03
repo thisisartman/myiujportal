@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../models/calendar_event.dart';
 import '../../providers/calendar_provider.dart';
 import '../../theme/app_colors.dart';
@@ -19,6 +20,7 @@ class _UpcomingEventsWidgetState extends ConsumerState<UpcomingEventsWidget> {
   @override
   Widget build(BuildContext context) {
     final events = ref.watch(calendarEventsProvider);
+    final displayed = ref.watch(displayedMonthProvider);
     final today = DateTime.now().day;
     var upcoming = events.where((e) => e.date >= today).toList()
       ..sort((a, b) {
@@ -85,7 +87,7 @@ class _UpcomingEventsWidgetState extends ConsumerState<UpcomingEventsWidget> {
                   children: [
                     ...upcoming
                         .take(displayCount)
-                        .map((e) => _EventRow(event: e)),
+                        .map((e) => _EventRow(event: e, displayed: displayed)),
                     if (!isWide && upcoming.length > 3 && !_showAll)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
@@ -112,7 +114,9 @@ class _UpcomingEventsWidgetState extends ConsumerState<UpcomingEventsWidget> {
 
 class _EventRow extends ConsumerWidget {
   final CalendarEvent event;
-  const _EventRow({required this.event});
+  final DateTime displayed;
+
+  const _EventRow({required this.event, required this.displayed});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -131,7 +135,7 @@ class _EventRow extends ConsumerWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                'Apr ${event.date}  ${event.time}',
+                '${_monthLabel(displayed, event.date)} ${event.date}  ${event.time}',
                 style: const TextStyle(
                   fontSize: 11,
                   color: AppColors.textSecondary,
@@ -161,6 +165,14 @@ class _EventRow extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  String _monthLabel(DateTime displayed, int day) {
+    final daysInMonth = DateTime(displayed.year, displayed.month + 1, 0).day;
+    final safeDay = day < 1 ? 1 : (day > daysInMonth ? daysInMonth : day);
+    return DateFormat(
+      'MMM',
+    ).format(DateTime(displayed.year, displayed.month, safeDay));
   }
 
   List<Widget> _detailChips(
