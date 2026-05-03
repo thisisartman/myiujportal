@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
+import '../theme/app_colors.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -37,10 +38,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     // Simulate a brief network delay for realism.
     await Future.delayed(const Duration(milliseconds: 500));
 
-    final success = ref.read(authProvider.notifier).login(
-          _emailController.text,
-          _passwordController.text,
-        );
+    final success = ref
+        .read(authProvider.notifier)
+        .login(_emailController.text, _passwordController.text);
 
     if (!mounted) return;
 
@@ -71,7 +71,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF4F46E5),
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Center(
@@ -92,7 +92,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF111827),
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -100,7 +100,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   'International University of Japan',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF6B7280),
+                    color: AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 36),
@@ -111,10 +111,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE5E7EB)),
+                    border: Border.all(color: AppColors.border),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -130,7 +130,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF111827),
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -144,8 +144,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             labelText: 'Email',
                             hintText: 'you@iuj.ac.jp',
                           ),
-                          validator: (v) =>
-                              (v == null || v.trim().isEmpty) ? 'Enter your email' : null,
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? 'Enter your email'
+                              : null,
                         ),
                         const SizedBox(height: 14),
 
@@ -163,14 +164,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     ? Icons.visibility_off_outlined
                                     : Icons.visibility_outlined,
                                 size: 20,
-                                color: const Color(0xFF9CA3AF),
+                                color: AppColors.textMuted,
                               ),
-                              onPressed: () =>
-                                  setState(() => _obscurePassword = !_obscurePassword),
+                              onPressed: () => setState(
+                                () => _obscurePassword = !_obscurePassword,
+                              ),
                             ),
                           ),
-                          validator: (v) =>
-                              (v == null || v.isEmpty) ? 'Enter your password' : null,
+                          validator: (v) => (v == null || v.isEmpty)
+                              ? 'Enter your password'
+                              : null,
                         ),
 
                         // Error message
@@ -178,16 +181,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           const SizedBox(height: 12),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFFEF2F2),
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: const Color(0xFFFCA5A5)),
+                              border: Border.all(
+                                color: const Color(0xFFFCA5A5),
+                              ),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.error_outline,
-                                    size: 16, color: Color(0xFFDC2626)),
+                                const Icon(
+                                  Icons.error_outline,
+                                  size: 16,
+                                  color: Color(0xFFDC2626),
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
@@ -211,7 +221,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           child: FilledButton(
                             onPressed: _isLoading ? null : _submit,
                             style: FilledButton.styleFrom(
-                              backgroundColor: const Color(0xFF4F46E5),
+                              backgroundColor: AppColors.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -228,7 +238,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 : const Text(
                                     'Sign in',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.w600, fontSize: 15),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
                                   ),
                           ),
                         ),
@@ -252,8 +264,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.info_outline,
-                              size: 14, color: Color(0xFF7C3AED)),
+                          Icon(
+                            Icons.info_outline,
+                            size: 14,
+                            color: Color(0xFF7C3AED),
+                          ),
                           SizedBox(width: 6),
                           Text(
                             'Demo credentials',

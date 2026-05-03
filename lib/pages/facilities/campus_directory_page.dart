@@ -6,7 +6,14 @@ import '../../../theme/app_colors.dart';
 import '../../providers/directory_provider.dart';
 import '../../widgets/directory/directory_card.dart';
 
-const _filterChips = ['All', 'Student', 'Faculty', 'Staff', 'Department', 'Organization'];
+const _filterChips = [
+  'All',
+  'Student',
+  'Faculty',
+  'Staff',
+  'Department',
+  'Organization',
+];
 
 class CampusDirectoryPage extends ConsumerWidget {
   const CampusDirectoryPage({super.key});
@@ -17,17 +24,24 @@ class CampusDirectoryPage extends ConsumerWidget {
     final filter = ref.watch(directoryFilterProvider);
 
     final filtered = kMockDirectory.where((e) {
-      final matchesFilter = filter == 'All' ||
+      final matchesFilter =
+          filter == 'All' ||
           e.type == filter ||
           (filter == 'Faculty' && e.type.startsWith('Faculty')) ||
-          (filter == 'Staff' && (e.type == 'Support' || e.type == 'Facility' || e.type == 'Satellite Office'));
-      final matchesQuery = query.isEmpty ||
+          (filter == 'Staff' &&
+              (e.type == 'Support' ||
+                  e.type == 'Facility' ||
+                  e.type == 'Satellite Office'));
+      final matchesQuery =
+          query.isEmpty ||
           e.name.toLowerCase().contains(query.toLowerCase()) ||
           e.email.toLowerCase().contains(query.toLowerCase());
       return matchesFilter && matchesQuery;
     }).toList();
 
-    final mainEntries = filtered.where((e) => e.type != 'Organization').toList();
+    final mainEntries = filtered
+        .where((e) => e.type != 'Organization')
+        .toList();
     final orgs = filtered.where((e) => e.type == 'Organization').toList();
     final showOrgs = filter == 'All' || filter == 'Organization';
 
@@ -38,15 +52,27 @@ class CampusDirectoryPage extends ConsumerWidget {
           children: [
             GestureDetector(
               onTap: () => context.go('/facilities'),
-              child: const Icon(Icons.arrow_back_ios, size: 16, color: AppColors.textSecondary),
+              child: const Icon(
+                Icons.arrow_back_ios,
+                size: 16,
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(width: 6),
-            const Text('Campus Directory', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+            const Text(
+              'Campus Directory',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 16),
         TextField(
-          onChanged: (v) => ref.read(directorySearchProvider.notifier).state = v,
+          onChanged: (v) =>
+              ref.read(directorySearchProvider.notifier).state = v,
           decoration: InputDecoration(
             hintText: 'Search by name or email...',
             prefixIcon: const Icon(Icons.search, size: 18),
@@ -67,13 +93,16 @@ class CampusDirectoryPage extends ConsumerWidget {
                   selected: isActive,
                   onSelected: (_) {
                     ref.read(directoryFilterProvider.notifier).state = chip;
-                    ref.read(expandedDirectoryEntryProvider.notifier).state = null;
+                    ref.read(expandedDirectoryEntryProvider.notifier).state =
+                        null;
                   },
                   selectedColor: AppColors.primaryLight,
                   checkmarkColor: AppColors.primary,
                   labelStyle: TextStyle(
                     fontSize: 13,
-                    color: isActive ? AppColors.primary : AppColors.textSecondary,
+                    color: isActive
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
                     fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                   ),
                 ),
@@ -86,14 +115,24 @@ class CampusDirectoryPage extends ConsumerWidget {
           const Center(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 32),
-              child: Text('No results found.', style: TextStyle(color: AppColors.textMuted)),
+              child: Text(
+                'No results found.',
+                style: TextStyle(color: AppColors.textMuted),
+              ),
             ),
           )
         else ...[
           ...mainEntries.map((e) => DirectoryCard(entry: e)),
           if (showOrgs && orgs.isNotEmpty) ...[
             const SizedBox(height: 16),
-            const Text('Organisations', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+            const Text(
+              'Organisations',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
             const SizedBox(height: 12),
             ...orgs.map((e) => DirectoryCard(entry: e)),
           ],

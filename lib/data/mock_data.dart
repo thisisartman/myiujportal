@@ -66,8 +66,19 @@ final List<Facility> kFacilities = [
   ),
 ];
 
-// Days in April 2026 that have at least one available slot (after mock today Apr 6)
-const Set<int> kAvailableDays = {7, 8, 10, 11, 14, 15, 17, 21, 22, 24, 28, 29};
+Set<int> kAvailableDaysForMonth(int year, int month) {
+  final now = DateTime.now();
+  final daysInMonth = DateTime(year, month + 1, 0).day;
+  final startDay = year == now.year && month == now.month ? now.day + 1 : 1;
+
+  return {
+    for (var day = startDay; day <= daysInMonth; day++)
+      if (DateTime(year, month, day).weekday <= DateTime.thursday) day,
+  };
+}
+
+// Backward-compatible April 2026 fixture for legacy widgets.
+final Set<int> kAvailableDays = kAvailableDaysForMonth(2026, 4);
 
 // Default time slots for any available day
 final List<TimeSlot> kMockSlots = [
@@ -80,16 +91,86 @@ final List<TimeSlot> kMockSlots = [
 ];
 
 final List<CalendarEvent> kInitialCalendarEvents = [
-  const CalendarEvent(id: 1, type: CalendarEventType.class_, date: 1, time: '09:00', title: 'Ethics and Decision-making', detail: 'Maurice THEVENET | MGTP-31205 | G.30'),
-  const CalendarEvent(id: 2, type: CalendarEventType.class_, date: 1, time: '13:15', title: 'Launch your startup', detail: 'Anne Sophie DE GABRIAC | MGTE-31363 | P.109'),
-  const CalendarEvent(id: 3, type: CalendarEventType.assignment, date: 1, time: '15:00', title: 'Finance Assignment Due', detail: 'Submit via Moodle Portal'),
-  const CalendarEvent(id: 4, type: CalendarEventType.class_, date: 4, time: '16:30', title: 'Entrepreneurship', detail: 'Yann CRAMER | MGTE-31361 | P.103'),
-  const CalendarEvent(id: 5, type: CalendarEventType.event, date: 6, time: '18:30', title: 'Culture Night Prep Meeting', detail: 'Matsushita Hall | GSO Event'),
-  const CalendarEvent(id: 6, type: CalendarEventType.class_, date: 10, time: '09:00', title: 'Data-Driven Organization', detail: 'Zaw Zaw Aung | ITC1080 | P.109'),
-  const CalendarEvent(id: 7, type: CalendarEventType.assignment, date: 13, time: '23:59', title: 'Startup Pitch Deck Due', detail: 'Upload to Google Classroom'),
-  const CalendarEvent(id: 8, type: CalendarEventType.event, date: 20, time: '12:00', title: 'Career Fair Registration', detail: 'Main Cafeteria'),
-  const CalendarEvent(id: 9, type: CalendarEventType.class_, date: 24, time: '14:40', title: 'Operations Management', detail: 'Wenkai Li | OPR1010 | G.21'),
-  const CalendarEvent(id: 10, type: CalendarEventType.event, date: 27, time: '17:00', title: 'GSO Monthly Assembly', detail: 'Matsushita Hall'),
+  const CalendarEvent(
+    id: 1,
+    type: CalendarEventType.class_,
+    date: 1,
+    time: '09:00',
+    title: 'Ethics and Decision-making',
+    detail: 'Maurice THEVENET | MGTP-31205 | G.30',
+  ),
+  const CalendarEvent(
+    id: 2,
+    type: CalendarEventType.class_,
+    date: 1,
+    time: '13:15',
+    title: 'Launch your startup',
+    detail: 'Anne Sophie DE GABRIAC | MGTE-31363 | P.109',
+  ),
+  const CalendarEvent(
+    id: 3,
+    type: CalendarEventType.assignment,
+    date: 1,
+    time: '15:00',
+    title: 'Finance Assignment Due',
+    detail: 'Submit via Moodle Portal',
+  ),
+  const CalendarEvent(
+    id: 4,
+    type: CalendarEventType.class_,
+    date: 4,
+    time: '16:30',
+    title: 'Entrepreneurship',
+    detail: 'Yann CRAMER | MGTE-31361 | P.103',
+  ),
+  const CalendarEvent(
+    id: 5,
+    type: CalendarEventType.event,
+    date: 6,
+    time: '18:30',
+    title: 'Culture Night Prep Meeting',
+    detail: 'Matsushita Hall | GSO Event',
+  ),
+  const CalendarEvent(
+    id: 6,
+    type: CalendarEventType.class_,
+    date: 10,
+    time: '09:00',
+    title: 'Data-Driven Organization',
+    detail: 'Zaw Zaw Aung | ITC1080 | P.109',
+  ),
+  const CalendarEvent(
+    id: 7,
+    type: CalendarEventType.assignment,
+    date: 13,
+    time: '23:59',
+    title: 'Startup Pitch Deck Due',
+    detail: 'Upload to Google Classroom',
+  ),
+  const CalendarEvent(
+    id: 8,
+    type: CalendarEventType.event,
+    date: 20,
+    time: '12:00',
+    title: 'Career Fair Registration',
+    detail: 'Main Cafeteria',
+  ),
+  const CalendarEvent(
+    id: 9,
+    type: CalendarEventType.class_,
+    date: 24,
+    time: '14:40',
+    title: 'Operations Management',
+    detail: 'Wenkai Li | OPR1010 | G.21',
+  ),
+  const CalendarEvent(
+    id: 10,
+    type: CalendarEventType.event,
+    date: 27,
+    time: '17:00',
+    title: 'GSO Monthly Assembly',
+    detail: 'Matsushita Hall',
+  ),
 ];
 
 const List<String> kEnrolledCourses = [
@@ -101,33 +182,180 @@ const List<String> kEnrolledCourses = [
 
 final List<DirectoryEntry> kMockDirectory = [
   // Offices
-  const DirectoryEntry(id: 1, name: 'Office of Academic Affairs (OAA)', type: 'Department', email: 'oaa@iuj.ac.jp', phone: 'Ext. 4110'),
-  const DirectoryEntry(id: 2, name: 'Office of Student Services (OSS)', type: 'Department', email: 'oss@iuj.ac.jp', phone: 'Ext. 4120'),
-  const DirectoryEntry(id: 3, name: 'Office of General Affairs (OGA)', type: 'Department', email: 'oga@iuj.ac.jp', phone: 'Ext. 4130'),
-  const DirectoryEntry(id: 4, name: 'Admissions Office', type: 'Department', email: 'admissions@iuj.ac.jp', phone: 'Ext. 4100'),
-  const DirectoryEntry(id: 5, name: 'Career Development Center', type: 'Department', email: 'career@iuj.ac.jp', phone: 'Ext. 4140'),
+  const DirectoryEntry(
+    id: 1,
+    name: 'Office of Academic Affairs (OAA)',
+    type: 'Department',
+    email: 'oaa@iuj.ac.jp',
+    phone: 'Ext. 4110',
+  ),
+  const DirectoryEntry(
+    id: 2,
+    name: 'Office of Student Services (OSS)',
+    type: 'Department',
+    email: 'oss@iuj.ac.jp',
+    phone: 'Ext. 4120',
+  ),
+  const DirectoryEntry(
+    id: 3,
+    name: 'Office of General Affairs (OGA)',
+    type: 'Department',
+    email: 'oga@iuj.ac.jp',
+    phone: 'Ext. 4130',
+  ),
+  const DirectoryEntry(
+    id: 4,
+    name: 'Admissions Office',
+    type: 'Department',
+    email: 'admissions@iuj.ac.jp',
+    phone: 'Ext. 4100',
+  ),
+  const DirectoryEntry(
+    id: 5,
+    name: 'Career Development Center',
+    type: 'Department',
+    email: 'career@iuj.ac.jp',
+    phone: 'Ext. 4140',
+  ),
   // Faculty - GSIM
-  const DirectoryEntry(id: 6, name: 'Prof. Maurice Thevenet', type: 'Faculty - GSIM', email: 'mthevenet@iuj.ac.jp', phone: 'Ext. 3020'),
-  const DirectoryEntry(id: 7, name: 'Prof. Anne Sophie De Gabriac', type: 'Faculty - GSIM', email: 'adegabriac@iuj.ac.jp', phone: 'Ext. 3025'),
-  const DirectoryEntry(id: 8, name: 'Prof. Remy Magnier-Watanabe', type: 'Faculty - GSIM', email: 'rmagnier@iuj.ac.jp', phone: 'Ext. 3030'),
-  const DirectoryEntry(id: 9, name: 'Prof. Zaw Zaw Aung', type: 'Faculty - GSIM', email: 'zaung@iuj.ac.jp', phone: 'Ext. 3035'),
-  const DirectoryEntry(id: 10, name: 'Prof. Wenkai Li', type: 'Faculty - GSIM', email: 'wli@iuj.ac.jp', phone: 'Ext. 3040'),
+  const DirectoryEntry(
+    id: 6,
+    name: 'Prof. Maurice Thevenet',
+    type: 'Faculty - GSIM',
+    email: 'mthevenet@iuj.ac.jp',
+    phone: 'Ext. 3020',
+  ),
+  const DirectoryEntry(
+    id: 7,
+    name: 'Prof. Anne Sophie De Gabriac',
+    type: 'Faculty - GSIM',
+    email: 'adegabriac@iuj.ac.jp',
+    phone: 'Ext. 3025',
+  ),
+  const DirectoryEntry(
+    id: 8,
+    name: 'Prof. Remy Magnier-Watanabe',
+    type: 'Faculty - GSIM',
+    email: 'rmagnier@iuj.ac.jp',
+    phone: 'Ext. 3030',
+  ),
+  const DirectoryEntry(
+    id: 9,
+    name: 'Prof. Zaw Zaw Aung',
+    type: 'Faculty - GSIM',
+    email: 'zaung@iuj.ac.jp',
+    phone: 'Ext. 3035',
+  ),
+  const DirectoryEntry(
+    id: 10,
+    name: 'Prof. Wenkai Li',
+    type: 'Faculty - GSIM',
+    email: 'wli@iuj.ac.jp',
+    phone: 'Ext. 3040',
+  ),
   // Support
-  const DirectoryEntry(id: 11, name: 'IT Helpdesk', type: 'Support', email: 'helpdesk@iuj.ac.jp', phone: 'Ext. 4222'),
-  const DirectoryEntry(id: 12, name: 'Matsushita Library (MLIC) Front Desk', type: 'Facility', email: 'library@iuj.ac.jp', phone: 'Ext. 4333'),
-  const DirectoryEntry(id: 13, name: 'Health Center', type: 'Support', email: 'health@iuj.ac.jp', phone: 'Ext. 4200'),
-  const DirectoryEntry(id: 14, name: 'Tokyo Liaison Office (Roppongi)', type: 'Satellite Office', email: 'tokyo@iuj.ac.jp', phone: '+81-3-XXXX-XXXX'),
+  const DirectoryEntry(
+    id: 11,
+    name: 'IT Helpdesk',
+    type: 'Support',
+    email: 'helpdesk@iuj.ac.jp',
+    phone: 'Ext. 4222',
+  ),
+  const DirectoryEntry(
+    id: 12,
+    name: 'Matsushita Library (MLIC) Front Desk',
+    type: 'Facility',
+    email: 'library@iuj.ac.jp',
+    phone: 'Ext. 4333',
+  ),
+  const DirectoryEntry(
+    id: 13,
+    name: 'Health Center',
+    type: 'Support',
+    email: 'health@iuj.ac.jp',
+    phone: 'Ext. 4200',
+  ),
+  const DirectoryEntry(
+    id: 14,
+    name: 'Tokyo Liaison Office (Roppongi)',
+    type: 'Satellite Office',
+    email: 'tokyo@iuj.ac.jp',
+    phone: '+81-3-XXXX-XXXX',
+  ),
   // Students
-  const DirectoryEntry(id: 15, name: 'Subhanshu Biswas', type: 'Student', email: 'sbiswas@iuj.ac.jp', phone: '', studentId: 'IUJ-2026-0001'),
-  const DirectoryEntry(id: 16, name: 'Yuki Tanaka', type: 'Student', email: 'ytanaka@iuj.ac.jp', phone: '', studentId: 'IUJ-2026-0042'),
-  const DirectoryEntry(id: 17, name: 'Maria Santos', type: 'Student', email: 'msantos@iuj.ac.jp', phone: '', studentId: 'IUJ-2026-0078'),
-  const DirectoryEntry(id: 18, name: 'Ahmed Al-Rashid', type: 'Student', email: 'aalrashid@iuj.ac.jp', phone: '', studentId: 'IUJ-2025-0134'),
-  const DirectoryEntry(id: 19, name: 'Liu Wei', type: 'Student', email: 'lwei@iuj.ac.jp', phone: '', studentId: 'IUJ-2025-0099'),
+  const DirectoryEntry(
+    id: 15,
+    name: 'Subhanshu Biswas',
+    type: 'Student',
+    email: 'sbiswas@iuj.ac.jp',
+    phone: '',
+    studentId: 'IUJ-2026-0001',
+  ),
+  const DirectoryEntry(
+    id: 16,
+    name: 'Yuki Tanaka',
+    type: 'Student',
+    email: 'ytanaka@iuj.ac.jp',
+    phone: '',
+    studentId: 'IUJ-2026-0042',
+  ),
+  const DirectoryEntry(
+    id: 17,
+    name: 'Maria Santos',
+    type: 'Student',
+    email: 'msantos@iuj.ac.jp',
+    phone: '',
+    studentId: 'IUJ-2026-0078',
+  ),
+  const DirectoryEntry(
+    id: 18,
+    name: 'Ahmed Al-Rashid',
+    type: 'Student',
+    email: 'aalrashid@iuj.ac.jp',
+    phone: '',
+    studentId: 'IUJ-2025-0134',
+  ),
+  const DirectoryEntry(
+    id: 19,
+    name: 'Liu Wei',
+    type: 'Student',
+    email: 'lwei@iuj.ac.jp',
+    phone: '',
+    studentId: 'IUJ-2025-0099',
+  ),
   // Organizations
-  const DirectoryEntry(id: 20, name: 'Graduate Student Organization (GSO)', type: 'Organization', email: 'gso@iuj.ac.jp', phone: 'Ext. 4300', coordinator: 'Maria Santos'),
-  const DirectoryEntry(id: 21, name: 'GSIM Student Council', type: 'Organization', email: 'gsim-council@iuj.ac.jp', phone: 'Ext. 4301', coordinator: 'Subhanshu Biswas'),
-  const DirectoryEntry(id: 22, name: 'GSIR Student Council', type: 'Organization', email: 'gsir-council@iuj.ac.jp', phone: 'Ext. 4302', coordinator: 'Yuki Tanaka'),
-  const DirectoryEntry(id: 23, name: 'IUJ Photography Club', type: 'Organization', email: 'photo-club@iuj.ac.jp', phone: '', coordinator: 'Liu Wei'),
+  const DirectoryEntry(
+    id: 20,
+    name: 'Graduate Student Organization (GSO)',
+    type: 'Organization',
+    email: 'gso@iuj.ac.jp',
+    phone: 'Ext. 4300',
+    coordinator: 'Maria Santos',
+  ),
+  const DirectoryEntry(
+    id: 21,
+    name: 'GSIM Student Council',
+    type: 'Organization',
+    email: 'gsim-council@iuj.ac.jp',
+    phone: 'Ext. 4301',
+    coordinator: 'Subhanshu Biswas',
+  ),
+  const DirectoryEntry(
+    id: 22,
+    name: 'GSIR Student Council',
+    type: 'Organization',
+    email: 'gsir-council@iuj.ac.jp',
+    phone: 'Ext. 4302',
+    coordinator: 'Yuki Tanaka',
+  ),
+  const DirectoryEntry(
+    id: 23,
+    name: 'IUJ Photography Club',
+    type: 'Organization',
+    email: 'photo-club@iuj.ac.jp',
+    phone: '',
+    coordinator: 'Liu Wei',
+  ),
 ];
 
 final List<WikiCategory> kWikiCategories = [
@@ -137,12 +365,27 @@ final List<WikiCategory> kWikiCategories = [
     subcategories: [
       // GSIM
       const WikiSubcategory(id: 'finance', name: 'Finance (GSIM)'),
-      const WikiSubcategory(id: 'general-management', name: 'General Management (GSIM)'),
-      const WikiSubcategory(id: 'it-operations', name: 'IT & Operations (GSIM)'),
+      const WikiSubcategory(
+        id: 'general-management',
+        name: 'General Management (GSIM)',
+      ),
+      const WikiSubcategory(
+        id: 'it-operations',
+        name: 'IT & Operations (GSIM)',
+      ),
       // GSIR
-      const WikiSubcategory(id: 'intl-relations', name: 'International Relations (GSIR)'),
-      const WikiSubcategory(id: 'intl-development', name: 'International Development (GSIR)'),
-      const WikiSubcategory(id: 'public-management', name: 'Public Management (GSIR)'),
+      const WikiSubcategory(
+        id: 'intl-relations',
+        name: 'International Relations (GSIR)',
+      ),
+      const WikiSubcategory(
+        id: 'intl-development',
+        name: 'International Development (GSIR)',
+      ),
+      const WikiSubcategory(
+        id: 'public-management',
+        name: 'Public Management (GSIR)',
+      ),
     ],
   ),
   const WikiCategory(id: 'residential-life', name: 'Residential Life'),
@@ -153,47 +396,255 @@ final List<WikiCategory> kWikiCategories = [
 
 // All wiki page metadata (content is in the page widgets)
 final Map<String, WikiPage> kWikiPages = {
-  'wiki-home': const WikiPage(id: 'wiki-home', title: 'Wiki Knowledge Base', category: 'Wiki', isLandingPage: true, lastUpdated: 'Today'),
-  'category-courses': const WikiPage(id: 'category-courses', title: 'Course Syllabi Hub', category: 'Courses', isLandingPage: true, parentPage: 'wiki-home', lastUpdated: 'Today'),
-  'subcategory-finance': const WikiPage(id: 'subcategory-finance', title: 'Finance Specialization', category: 'Courses', subcategory: 'Finance', isLandingPage: true, parentPage: 'category-courses', lastUpdated: 'Winter 2026'),
-  'subcategory-it-operations': const WikiPage(id: 'subcategory-it-operations', title: 'IT & Operations Specialization', category: 'Courses', subcategory: 'IT & Operations', isLandingPage: true, parentPage: 'category-courses', lastUpdated: 'Winter 2026'),
-  'subcategory-general-management': const WikiPage(id: 'subcategory-general-management', title: 'General Management Specialization', category: 'Courses', subcategory: 'General Management', isLandingPage: true, parentPage: 'category-courses', lastUpdated: 'Winter 2026'),
-  'category-residential-life': const WikiPage(id: 'category-residential-life', title: 'Residential Life Hub', category: 'Residential Life', isLandingPage: true, parentPage: 'wiki-home', lastUpdated: 'Today'),
-  'category-academics': const WikiPage(id: 'category-academics', title: 'Academics Hub', category: 'Academics', isLandingPage: true, parentPage: 'wiki-home', lastUpdated: 'Today'),
-  'category-gso': const WikiPage(id: 'category-gso', title: 'GSO Hub', category: 'GSO', isLandingPage: true, parentPage: 'wiki-home', lastUpdated: 'Today'),
-  'category-administration': const WikiPage(id: 'category-administration', title: 'Administration Hub', category: 'Administration', isLandingPage: true, parentPage: 'wiki-home', lastUpdated: 'Today'),
-  'winter-survival': const WikiPage(id: 'winter-survival', title: 'Winter Survival Guide', category: 'Residential Life', parentPage: 'category-residential-life', lastUpdated: 'Oct 24, 2025'),
-  'trash-mastery': const WikiPage(id: 'trash-mastery', title: 'Trash Separation Mastery', category: 'Residential Life', parentPage: 'category-residential-life', lastUpdated: 'Sep 10, 2025'),
-  'urasa-station': const WikiPage(id: 'urasa-station', title: 'Urasa Station Transit Guide', category: 'Residential Life', parentPage: 'category-residential-life', lastUpdated: 'Nov 01, 2025'),
-  'device-calendar': const WikiPage(id: 'device-calendar', title: 'Syncing Timetable & Reminders', category: 'Academics', parentPage: 'category-academics', lastUpdated: 'Just Now'),
-  'course-fin2090': const WikiPage(id: 'course-fin2090', title: 'FIN2090: Behavioral Finance', category: 'Courses', subcategory: 'Finance', parentPage: 'subcategory-finance', lastUpdated: 'Winter 2026'),
-  'course-fin2080': const WikiPage(id: 'course-fin2080', title: 'FIN2080: Sustainable Finance & Investment', category: 'Courses', subcategory: 'Finance', parentPage: 'subcategory-finance', lastUpdated: 'Winter 2026'),
-  'course-fin3020': const WikiPage(id: 'course-fin3020', title: 'FIN3020: Finance and Technology', category: 'Courses', subcategory: 'Finance', parentPage: 'subcategory-finance', lastUpdated: 'Winter 2026'),
-  'course-itc1080': const WikiPage(id: 'course-itc1080', title: 'ITC1080: Data-Driven Organization', category: 'Courses', subcategory: 'IT & Operations', parentPage: 'subcategory-it-operations', lastUpdated: 'Winter 2026'),
-  'course-itc2080': const WikiPage(id: 'course-itc2080', title: 'ITC2080: Management for Digital Transformation', category: 'Courses', subcategory: 'IT & Operations', parentPage: 'subcategory-it-operations', lastUpdated: 'Winter 2026'),
-  'course-itc2020': const WikiPage(id: 'course-itc2020', title: 'ITC2020: Big Data Analytics', category: 'Courses', subcategory: 'IT & Operations', parentPage: 'subcategory-it-operations', lastUpdated: 'Winter 2026'),
-  'course-opr1010': const WikiPage(id: 'course-opr1010', title: 'OPR1010: Operations Management', category: 'Courses', subcategory: 'IT & Operations', parentPage: 'subcategory-it-operations', lastUpdated: 'Winter 2026'),
-  'course-mgt1130': const WikiPage(id: 'course-mgt1130', title: 'MGT1130: International Management', category: 'Courses', subcategory: 'General Management', parentPage: 'subcategory-general-management', lastUpdated: 'Winter 2026'),
-  'course-mgt1140': const WikiPage(id: 'course-mgt1140', title: 'MGT1140: Business Decision-Making and Control', category: 'Courses', subcategory: 'General Management', parentPage: 'subcategory-general-management', lastUpdated: 'Winter 2026'),
-  'course-mgt2120': const WikiPage(id: 'course-mgt2120', title: 'MGT2120: Entrepreneurship & Small Business Dev.', category: 'Courses', subcategory: 'General Management', parentPage: 'subcategory-general-management', lastUpdated: 'Winter 2026'),
+  'wiki-home': const WikiPage(
+    id: 'wiki-home',
+    title: 'Wiki Knowledge Base',
+    category: 'Wiki',
+    isLandingPage: true,
+    lastUpdated: 'Today',
+  ),
+  'category-courses': const WikiPage(
+    id: 'category-courses',
+    title: 'Course Syllabi Hub',
+    category: 'Courses',
+    isLandingPage: true,
+    parentPage: 'wiki-home',
+    lastUpdated: 'Today',
+  ),
+  'subcategory-finance': const WikiPage(
+    id: 'subcategory-finance',
+    title: 'Finance Specialization',
+    category: 'Courses',
+    subcategory: 'Finance',
+    isLandingPage: true,
+    parentPage: 'category-courses',
+    lastUpdated: 'Winter 2026',
+  ),
+  'subcategory-it-operations': const WikiPage(
+    id: 'subcategory-it-operations',
+    title: 'IT & Operations Specialization',
+    category: 'Courses',
+    subcategory: 'IT & Operations',
+    isLandingPage: true,
+    parentPage: 'category-courses',
+    lastUpdated: 'Winter 2026',
+  ),
+  'subcategory-general-management': const WikiPage(
+    id: 'subcategory-general-management',
+    title: 'General Management Specialization',
+    category: 'Courses',
+    subcategory: 'General Management',
+    isLandingPage: true,
+    parentPage: 'category-courses',
+    lastUpdated: 'Winter 2026',
+  ),
+  'category-residential-life': const WikiPage(
+    id: 'category-residential-life',
+    title: 'Residential Life Hub',
+    category: 'Residential Life',
+    isLandingPage: true,
+    parentPage: 'wiki-home',
+    lastUpdated: 'Today',
+  ),
+  'category-academics': const WikiPage(
+    id: 'category-academics',
+    title: 'Academics Hub',
+    category: 'Academics',
+    isLandingPage: true,
+    parentPage: 'wiki-home',
+    lastUpdated: 'Today',
+  ),
+  'category-gso': const WikiPage(
+    id: 'category-gso',
+    title: 'GSO Hub',
+    category: 'GSO',
+    isLandingPage: true,
+    parentPage: 'wiki-home',
+    lastUpdated: 'Today',
+  ),
+  'category-administration': const WikiPage(
+    id: 'category-administration',
+    title: 'Administration Hub',
+    category: 'Administration',
+    isLandingPage: true,
+    parentPage: 'wiki-home',
+    lastUpdated: 'Today',
+  ),
+  'winter-survival': const WikiPage(
+    id: 'winter-survival',
+    title: 'Winter Survival Guide',
+    category: 'Residential Life',
+    parentPage: 'category-residential-life',
+    lastUpdated: 'Oct 24, 2025',
+  ),
+  'trash-mastery': const WikiPage(
+    id: 'trash-mastery',
+    title: 'Trash Separation Mastery',
+    category: 'Residential Life',
+    parentPage: 'category-residential-life',
+    lastUpdated: 'Sep 10, 2025',
+  ),
+  'urasa-station': const WikiPage(
+    id: 'urasa-station',
+    title: 'Urasa Station Transit Guide',
+    category: 'Residential Life',
+    parentPage: 'category-residential-life',
+    lastUpdated: 'Nov 01, 2025',
+  ),
+  'device-calendar': const WikiPage(
+    id: 'device-calendar',
+    title: 'Syncing Timetable & Reminders',
+    category: 'Academics',
+    parentPage: 'category-academics',
+    lastUpdated: 'Just Now',
+  ),
+  'course-fin2090': const WikiPage(
+    id: 'course-fin2090',
+    title: 'FIN2090: Behavioral Finance',
+    category: 'Courses',
+    subcategory: 'Finance',
+    parentPage: 'subcategory-finance',
+    lastUpdated: 'Winter 2026',
+  ),
+  'course-fin2080': const WikiPage(
+    id: 'course-fin2080',
+    title: 'FIN2080: Sustainable Finance & Investment',
+    category: 'Courses',
+    subcategory: 'Finance',
+    parentPage: 'subcategory-finance',
+    lastUpdated: 'Winter 2026',
+  ),
+  'course-fin3020': const WikiPage(
+    id: 'course-fin3020',
+    title: 'FIN3020: Finance and Technology',
+    category: 'Courses',
+    subcategory: 'Finance',
+    parentPage: 'subcategory-finance',
+    lastUpdated: 'Winter 2026',
+  ),
+  'course-itc1080': const WikiPage(
+    id: 'course-itc1080',
+    title: 'ITC1080: Data-Driven Organization',
+    category: 'Courses',
+    subcategory: 'IT & Operations',
+    parentPage: 'subcategory-it-operations',
+    lastUpdated: 'Winter 2026',
+  ),
+  'course-itc2080': const WikiPage(
+    id: 'course-itc2080',
+    title: 'ITC2080: Management for Digital Transformation',
+    category: 'Courses',
+    subcategory: 'IT & Operations',
+    parentPage: 'subcategory-it-operations',
+    lastUpdated: 'Winter 2026',
+  ),
+  'course-itc2020': const WikiPage(
+    id: 'course-itc2020',
+    title: 'ITC2020: Big Data Analytics',
+    category: 'Courses',
+    subcategory: 'IT & Operations',
+    parentPage: 'subcategory-it-operations',
+    lastUpdated: 'Winter 2026',
+  ),
+  'course-opr1010': const WikiPage(
+    id: 'course-opr1010',
+    title: 'OPR1010: Operations Management',
+    category: 'Courses',
+    subcategory: 'IT & Operations',
+    parentPage: 'subcategory-it-operations',
+    lastUpdated: 'Winter 2026',
+  ),
+  'course-mgt1130': const WikiPage(
+    id: 'course-mgt1130',
+    title: 'MGT1130: International Management',
+    category: 'Courses',
+    subcategory: 'General Management',
+    parentPage: 'subcategory-general-management',
+    lastUpdated: 'Winter 2026',
+  ),
+  'course-mgt1140': const WikiPage(
+    id: 'course-mgt1140',
+    title: 'MGT1140: Business Decision-Making and Control',
+    category: 'Courses',
+    subcategory: 'General Management',
+    parentPage: 'subcategory-general-management',
+    lastUpdated: 'Winter 2026',
+  ),
+  'course-mgt2120': const WikiPage(
+    id: 'course-mgt2120',
+    title: 'MGT2120: Entrepreneurship & Small Business Dev.',
+    category: 'Courses',
+    subcategory: 'General Management',
+    parentPage: 'subcategory-general-management',
+    lastUpdated: 'Winter 2026',
+  ),
 
   // GSIR subcategory landing pages
-  'subcategory-intl-relations': const WikiPage(id: 'subcategory-intl-relations', title: 'International Relations (IRP)', category: 'Courses', subcategory: 'International Relations (GSIR)', isLandingPage: true, parentPage: 'category-courses', lastUpdated: 'Apr 2026'),
-  'subcategory-intl-development': const WikiPage(id: 'subcategory-intl-development', title: 'International Development (IDP)', category: 'Courses', subcategory: 'International Development (GSIR)', isLandingPage: true, parentPage: 'category-courses', lastUpdated: 'Apr 2026'),
-  'subcategory-public-management': const WikiPage(id: 'subcategory-public-management', title: 'Public Management & Policy (PMPP)', category: 'Courses', subcategory: 'Public Management (GSIR)', isLandingPage: true, parentPage: 'category-courses', lastUpdated: 'Apr 2026'),
+  'subcategory-intl-relations': const WikiPage(
+    id: 'subcategory-intl-relations',
+    title: 'International Relations (IRP)',
+    category: 'Courses',
+    subcategory: 'International Relations (GSIR)',
+    isLandingPage: true,
+    parentPage: 'category-courses',
+    lastUpdated: 'Apr 2026',
+  ),
+  'subcategory-intl-development': const WikiPage(
+    id: 'subcategory-intl-development',
+    title: 'International Development (IDP)',
+    category: 'Courses',
+    subcategory: 'International Development (GSIR)',
+    isLandingPage: true,
+    parentPage: 'category-courses',
+    lastUpdated: 'Apr 2026',
+  ),
+  'subcategory-public-management': const WikiPage(
+    id: 'subcategory-public-management',
+    title: 'Public Management & Policy (PMPP)',
+    category: 'Courses',
+    subcategory: 'Public Management (GSIR)',
+    isLandingPage: true,
+    parentPage: 'category-courses',
+    lastUpdated: 'Apr 2026',
+  ),
 
   // Administration pages
-  'about-iuj': const WikiPage(id: 'about-iuj', title: 'About IUJ', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
-  'access-transport': const WikiPage(id: 'access-transport', title: 'Getting to Campus', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
-  'admissions-overview': const WikiPage(id: 'admissions-overview', title: 'Admissions Overview', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
-  'research-centers': const WikiPage(id: 'research-centers', title: 'Research Centers & Institutes', category: 'Administration', parentPage: 'category-administration', lastUpdated: 'Apr 2026'),
+  'about-iuj': const WikiPage(
+    id: 'about-iuj',
+    title: 'About IUJ',
+    category: 'Administration',
+    parentPage: 'category-administration',
+    lastUpdated: 'Apr 2026',
+  ),
+  'access-transport': const WikiPage(
+    id: 'access-transport',
+    title: 'Getting to Campus',
+    category: 'Administration',
+    parentPage: 'category-administration',
+    lastUpdated: 'Apr 2026',
+  ),
+  'admissions-overview': const WikiPage(
+    id: 'admissions-overview',
+    title: 'Admissions Overview',
+    category: 'Administration',
+    parentPage: 'category-administration',
+    lastUpdated: 'Apr 2026',
+  ),
+  'research-centers': const WikiPage(
+    id: 'research-centers',
+    title: 'Research Centers & Institutes',
+    category: 'Administration',
+    parentPage: 'category-administration',
+    lastUpdated: 'Apr 2026',
+  ),
 };
 
 final List<AlertItem> kMockAlerts = [
   const AlertItem(
     id: 'a1',
     title: 'Library Extended Hours — Finals Week',
-    body: 'The Matsushita Library (MLIC) will be open until midnight from Apr 20–30. Quiet study rooms bookable via OSS.',
+    body:
+        'The Matsushita Library (MLIC) will be open until midnight from Apr 20–30. Quiet study rooms bookable via OSS.',
     date: 'Apr 6',
     mailingList: 'all-students',
     severity: AlertSeverity.info,
@@ -201,7 +652,8 @@ final List<AlertItem> kMockAlerts = [
   const AlertItem(
     id: 'a2',
     title: 'Course Registration Opens Apr 15',
-    body: 'Spring term course registration opens at 9:00 AM on April 15. Log into the Academic Portal to submit your course selections. Contact OAA (oaa@iuj.ac.jp) with any questions.',
+    body:
+        'Spring term course registration opens at 9:00 AM on April 15. Log into the Academic Portal to submit your course selections. Contact OAA (oaa@iuj.ac.jp) with any questions.',
     date: 'Apr 5',
     mailingList: 'all-students',
     severity: AlertSeverity.announcement,
@@ -209,7 +661,8 @@ final List<AlertItem> kMockAlerts = [
   const AlertItem(
     id: 'a3',
     title: 'GSIM Career Fair — Volunteer Sign-up',
-    body: 'The GSIM Career Fair is on Apr 20. Students interested in volunteering at the event should sign up via the OSS portal by Apr 12.',
+    body:
+        'The GSIM Career Fair is on Apr 20. Students interested in volunteering at the event should sign up via the OSS portal by Apr 12.',
     date: 'Apr 4',
     mailingList: 'gsim-only',
     severity: AlertSeverity.info,
@@ -217,7 +670,8 @@ final List<AlertItem> kMockAlerts = [
   const AlertItem(
     id: 'a4',
     title: 'Campus Shuttle Schedule Change (Golden Week)',
-    body: 'The Urasa Station shuttle will run reduced service May 3–6 (Golden Week). Check the OGA notice board for the modified timetable.',
+    body:
+        'The Urasa Station shuttle will run reduced service May 3–6 (Golden Week). Check the OGA notice board for the modified timetable.',
     date: 'Apr 3',
     mailingList: 'all-students',
     severity: AlertSeverity.warning,
@@ -225,7 +679,8 @@ final List<AlertItem> kMockAlerts = [
   const AlertItem(
     id: 'a5',
     title: 'New Wi-Fi Access Points Installed in CNP',
-    body: 'IT has upgraded wireless coverage in the CNP building. If you experience connectivity issues, contact helpdesk@iuj.ac.jp or Ext. 4222.',
+    body:
+        'IT has upgraded wireless coverage in the CNP building. If you experience connectivity issues, contact helpdesk@iuj.ac.jp or Ext. 4222.',
     date: 'Apr 1',
     mailingList: 'all-students',
     severity: AlertSeverity.info,
@@ -234,8 +689,24 @@ final List<AlertItem> kMockAlerts = [
 
 // Library mock data
 final List<({String title, String dueDate, bool overdue})> kMockLibraryLoans = [
-  (title: 'International Business Strategy', dueDate: 'Apr 15, 2026', overdue: false),
-  (title: 'Global Supply Chain Management', dueDate: 'Apr 3, 2026', overdue: true),
-  (title: 'Comparative Management Systems', dueDate: 'Apr 20, 2026', overdue: false),
-  (title: 'The Oxford Handbook of International Business', dueDate: 'Apr 25, 2026', overdue: false),
+  (
+    title: 'International Business Strategy',
+    dueDate: 'Apr 15, 2026',
+    overdue: false,
+  ),
+  (
+    title: 'Global Supply Chain Management',
+    dueDate: 'Apr 3, 2026',
+    overdue: true,
+  ),
+  (
+    title: 'Comparative Management Systems',
+    dueDate: 'Apr 20, 2026',
+    overdue: false,
+  ),
+  (
+    title: 'The Oxford Handbook of International Business',
+    dueDate: 'Apr 25, 2026',
+    overdue: false,
+  ),
 ];

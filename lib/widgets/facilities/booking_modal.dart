@@ -9,7 +9,11 @@ import 'booking_slot_selector.dart';
 import 'booking_form.dart';
 
 /// Returned when the user completes the booking flow.
-typedef BookingResult = ({int day, Set<String> slots, Map<String, String> formData});
+typedef BookingResult = ({
+  int day,
+  Set<String> slots,
+  Map<String, String> formData,
+});
 
 class BookingModal extends ConsumerStatefulWidget {
   final Facility facility;
@@ -28,7 +32,9 @@ class _BookingModalState extends ConsumerState<BookingModal> {
   List<TimeSlot> _effectiveSlots() {
     final booked = ref.watch(bookedSlotsProvider)[widget.facility.id] ?? {};
     return kMockSlots.map((s) {
-      if (booked.contains(s.time)) return TimeSlot(time: s.time, available: false);
+      if (booked.contains(s.time)) {
+        return TimeSlot(time: s.time, available: false);
+      }
       return s;
     }).toList();
   }
@@ -83,7 +89,11 @@ class _BookingModalState extends ConsumerState<BookingModal> {
       children: [
         Text(
           'Step $_step of 3',
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textSecondary,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(

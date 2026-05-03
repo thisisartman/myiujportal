@@ -5,30 +5,45 @@ enum AlertSeverity { info, warning, announcement }
 extension AlertSeverityExt on AlertSeverity {
   Color get color {
     switch (this) {
-      case AlertSeverity.info: return const Color(0xFF2563EB);
-      case AlertSeverity.warning: return const Color(0xFFD97706);
-      case AlertSeverity.announcement: return const Color(0xFF7C3AED);
+      case AlertSeverity.info:
+        return const Color(0xFF2563EB);
+      case AlertSeverity.warning:
+        return const Color(0xFFD97706);
+      case AlertSeverity.announcement:
+        return const Color(0xFF7C3AED);
     }
   }
+
   Color get bgColor {
     switch (this) {
-      case AlertSeverity.info: return const Color(0xFFDBEAFE);
-      case AlertSeverity.warning: return const Color(0xFFFEF3C7);
-      case AlertSeverity.announcement: return const Color(0xFFF5F3FF);
+      case AlertSeverity.info:
+        return const Color(0xFFDBEAFE);
+      case AlertSeverity.warning:
+        return const Color(0xFFFEF3C7);
+      case AlertSeverity.announcement:
+        return const Color(0xFFF5F3FF);
     }
   }
+
   IconData get icon {
     switch (this) {
-      case AlertSeverity.info: return Icons.info_outline;
-      case AlertSeverity.warning: return Icons.warning_amber_outlined;
-      case AlertSeverity.announcement: return Icons.campaign_outlined;
+      case AlertSeverity.info:
+        return Icons.info_outline;
+      case AlertSeverity.warning:
+        return Icons.warning_amber_outlined;
+      case AlertSeverity.announcement:
+        return Icons.campaign_outlined;
     }
   }
+
   String get label {
     switch (this) {
-      case AlertSeverity.info: return 'Info';
-      case AlertSeverity.warning: return 'Notice';
-      case AlertSeverity.announcement: return 'Announcement';
+      case AlertSeverity.info:
+        return 'Info';
+      case AlertSeverity.warning:
+        return 'Notice';
+      case AlertSeverity.announcement:
+        return 'Announcement';
     }
   }
 }

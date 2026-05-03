@@ -26,7 +26,9 @@ class AppShell extends ConsumerWidget {
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeInOut,
                   width: isDesktopCollapsed ? 0 : 256,
-                  child: isDesktopCollapsed ? const SizedBox.shrink() : const Sidebar(),
+                  child: isDesktopCollapsed
+                      ? const SizedBox.shrink()
+                      : const Sidebar(),
                 ),
               Expanded(
                 child: Column(
@@ -35,7 +37,7 @@ class AppShell extends ConsumerWidget {
                     Expanded(
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.all(24),
-                        child: child,
+                        child: SelectionArea(child: child),
                       ),
                     ),
                   ],
@@ -50,13 +52,16 @@ class AppShell extends ConsumerWidget {
               child: IgnorePointer(
                 ignoring: !isMobileOpen,
                 child: GestureDetector(
-                  onTap: () => ref.read(sidebarOpenProvider.notifier).state = false,
+                  onTap: () =>
+                      ref.read(sidebarOpenProvider.notifier).state = false,
                   child: Container(color: Colors.black54),
                 ),
               ),
             ),
             Positioned(
-              left: 0, top: 0, bottom: 0,
+              left: 0,
+              top: 0,
+              bottom: 0,
               child: AnimatedSlide(
                 offset: isMobileOpen ? Offset.zero : const Offset(-1, 0),
                 duration: const Duration(milliseconds: 250),

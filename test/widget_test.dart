@@ -22,23 +22,29 @@ void main() {
       mailingList: 'all',
       severity: AlertSeverity.info,
     );
-    await tester.pumpWidget(ProviderScope(
-      overrides: [
-        alertsProvider.overrideWith((ref) => [testAlert]),
-      ],
-      child: const MaterialApp(home: Scaffold(body: AlertsWidget())),
-    ));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          alertsProvider.overrideWith((ref) => [testAlert]),
+        ],
+        child: const MaterialApp(home: Scaffold(body: AlertsWidget())),
+      ),
+    );
     expect(find.text('Test Alert'), findsOneWidget);
   });
 
   testWidgets('directoryFilterProvider defaults to All', (tester) async {
     late WidgetRef capturedRef;
-    await tester.pumpWidget(ProviderScope(
-      child: Consumer(builder: (_, ref, __) {
-        capturedRef = ref;
-        return const SizedBox();
-      }),
-    ));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, ref, child) {
+            capturedRef = ref;
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
     expect(capturedRef.read(directoryFilterProvider), 'All');
   });
 }

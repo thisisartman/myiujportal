@@ -10,9 +10,19 @@ class FacilitiesHubPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Facilities Hub', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+        const Text(
+          'Facilities Hub',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+        ),
         const SizedBox(height: 4),
-        const Text('Book rooms, access the library, and explore the campus directory', style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+        const Text(
+          'Book rooms, access the library, and explore the campus directory',
+          style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+        ),
         const SizedBox(height: 24),
         _HubCard(
           icon: Icons.meeting_room_outlined,
@@ -28,7 +38,8 @@ class FacilitiesHubPage extends StatelessWidget {
           iconBg: const Color(0xFFF3E8FF),
           iconColor: const Color(0xFF9333EA),
           title: 'Library',
-          subtitle: 'View your loans, explore resources, and search the catalogue',
+          subtitle:
+              'View your loans, explore resources, and search the catalogue',
           route: '/facilities/library',
         ),
         const SizedBox(height: 12),
@@ -77,7 +88,10 @@ class _HubCard extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Icon(icon, color: iconColor, size: 26),
             ),
             const SizedBox(width: 16),
@@ -85,9 +99,22 @@ class _HubCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(subtitle, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),

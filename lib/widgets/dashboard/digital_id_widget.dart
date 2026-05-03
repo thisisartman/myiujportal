@@ -37,16 +37,36 @@ class _DigitalIdWidgetState extends State<DigitalIdWidget> {
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.white24,
-                child: Text('S', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
+                child: Text(
+                  'S',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Student', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700)),
-                    Text('IUJ-2026-0001', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                    Text('MBA · GSIM · Class of 2027', style: TextStyle(color: Colors.white60, fontSize: 11)),
+                    Text(
+                      'Student',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      'IUJ-2026-0001',
+                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                    ),
+                    Text(
+                      'MBA · GSIM · Class of 2027',
+                      style: TextStyle(color: Colors.white60, fontSize: 11),
+                    ),
                   ],
                 ),
               ),

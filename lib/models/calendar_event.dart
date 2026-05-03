@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 enum CalendarEventType { class_, assignment, event }
 
@@ -28,7 +29,7 @@ extension CalendarEventTypeExtension on CalendarEventType {
   Color get bgColor {
     switch (this) {
       case CalendarEventType.class_:
-        return const Color(0xFFEEF2FF);
+        return AppColors.primaryLight;
       case CalendarEventType.assignment:
         return const Color(0xFFFFFBEB);
       case CalendarEventType.event:

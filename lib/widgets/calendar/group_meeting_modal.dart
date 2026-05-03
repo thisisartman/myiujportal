@@ -1,119 +1,178 @@
-// lib/widgets/calendar/group_meeting_modal.dart
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../common/app_modal.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/meeting_provider.dart';
 import '../../theme/app_colors.dart';
+import '../common/app_modal.dart';
 
-class GroupMeetingModal extends StatefulWidget {
+class GroupMeetingModal extends ConsumerStatefulWidget {
   const GroupMeetingModal({super.key});
 
   static void show(BuildContext context) {
-    AppModal.show(context, title: 'Schedule Group Meeting', child: const GroupMeetingModal());
+    AppModal.show(
+      context,
+      title: 'Schedule Group Meeting',
+      child: const GroupMeetingModal(),
+    );
   }
 
   @override
-  State<GroupMeetingModal> createState() => _GroupMeetingModalState();
+  ConsumerState<GroupMeetingModal> createState() => _GroupMeetingModalState();
 }
 
-class _GroupMeetingModalState extends State<GroupMeetingModal> {
-  // April 2026 — days 7–30
-  final Set<int> _selectedDays = {};
-  final Set<String> _selectedSlots = {};
-  String? _generatedLink;
-
-  static const _slots = [
-    '09:00 – 10:30', '10:40 – 12:10', '13:15 – 14:45',
-    '14:55 – 16:25', '16:30 – 18:00', '18:15 – 19:45',
-  ];
+class _GroupMeetingModalState extends ConsumerState<GroupMeetingModal> {
+  int _step = 1;
+  DateTime? _date;
+  TimeOfDay _startTime = const TimeOfDay(hour: 9, minute: 0);
+  int _durationMinutes = 60;
+  String _repetition = 'None';
+  String? _generatedCode;
 
   @override
   Widget build(BuildContext context) {
-    if (_generatedLink != null) return _linkView();
-    return _selectionView();
-  }
-
-  Widget _selectionView() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('1. Select days you are free', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-        const SizedBox(height: 10),
-        // Day grid (remaining April days)
-        Wrap(
-          spacing: 6,
-          runSpacing: 6,
-          children: List.generate(24, (i) => i + 7).map((day) {
-            final selected = _selectedDays.contains(day);
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () => setState(() {
-                  if (selected) { _selectedDays.remove(day); } else { _selectedDays.add(day); }
-                }),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 100),
-                  width: 38, height: 38,
-                  decoration: BoxDecoration(
-                    color: selected ? AppColors.primary : AppColors.background,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    '$day',
-                    style: TextStyle(
-                      fontSize: 13, fontWeight: FontWeight.w600,
-                      color: selected ? Colors.white : AppColors.textPrimary,
+        LinearProgressIndicator(
+          value: _step / 4,
+          backgroundColor: AppColors.border,
+          color: AppColors.primary,
+          minHeight: 4,
+          borderRadius: BorderRadius.circular(2),
+        ),
+        const SizedBox(height: 16),
+        if (_step == 1) _dateStep(),
+        if (_step == 2) _timeStep(),
+        if (_step == 3) _repetitionStep(),
+        if (_step == 4) _summaryStep(),
+        const SizedBox(height: 16),
+        if (_generatedCode == null)
+          Row(
+            children: [
+              if (_step > 1)
+                TextButton(
+                  onPressed: () => setState(() => _step--),
+                  child: const Text('Back'),
+                ),
+              const Spacer(),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: _canContinue ? _next : null,
+                child: Text(_step == 4 ? 'Generate link' : 'Next'),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  bool get _canContinue => _step != 1 || _date != null;
+
+  Widget _dateStep() {
+    final now = DateTime.now();
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final offset = DateTime(now.year, now.month, 1).weekday - 1;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select a meeting date',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+              .map(
+                (label) => Expanded(
+                  child: Center(
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textMuted,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }).toList(),
+              )
+              .toList(),
         ),
-        const SizedBox(height: 16),
-        const Text('2. Select available time slots', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-        const SizedBox(height: 10),
-        ..._slots.map((slot) {
-          final selected = _selectedSlots.contains(slot);
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () => setState(() {
-                  if (selected) { _selectedSlots.remove(slot); } else { _selectedSlots.add(slot); }
-                }),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 100),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: selected ? AppColors.primaryLight : AppColors.background,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: selected ? AppColors.primary : AppColors.border),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.access_time_outlined, size: 14, color: selected ? AppColors.primary : AppColors.textMuted),
-                      const SizedBox(width: 8),
-                      Text(slot, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: selected ? AppColors.primary : AppColors.textPrimary)),
-                    ],
+        const SizedBox(height: 6),
+        GridView.count(
+          crossAxisCount: 7,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          childAspectRatio: 1.25,
+          children: [
+            for (var i = 0; i < offset; i++) const SizedBox(),
+            for (var day = 1; day <= daysInMonth; day++)
+              _MeetingDayCell(
+                day: day,
+                selected: _date?.day == day,
+                disabled: day <= now.day,
+                onTap: () =>
+                    setState(() => _date = DateTime(now.year, now.month, day)),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _timeStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Choose time and duration',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          icon: const Icon(Icons.access_time, size: 16),
+          label: Text(_startTime.format(context)),
+          onPressed: () async {
+            final picked = await showTimePicker(
+              context: context,
+              initialTime: _startTime,
+            );
+            if (picked != null) setState(() => _startTime = picked);
+          },
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            IconButton(
+              onPressed: _durationMinutes <= 10
+                  ? null
+                  : () => setState(() => _durationMinutes -= 10),
+              icon: const Icon(Icons.remove),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  _durationLabel,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
             ),
-          );
-        }),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
-              onPressed: _selectedDays.isEmpty || _selectedSlots.isEmpty ? null : _generateLink,
-              child: const Text('Generate Link'),
+            IconButton(
+              onPressed: () => setState(() => _durationMinutes += 10),
+              icon: const Icon(Icons.add),
             ),
           ],
         ),
@@ -121,51 +180,137 @@ class _GroupMeetingModalState extends State<GroupMeetingModal> {
     );
   }
 
-  void _generateLink() {
-    final days = (_selectedDays.toList()..sort()).join(',');
-    final slots = _selectedSlots.length;
-    setState(() {
-      _generatedLink = 'https://myiuj.iuj.ac.jp/meeting?days=$days&slots=$slots&host=IUJ-2026-0001';
-    });
+  Widget _repetitionStep() {
+    return SegmentedButton<String>(
+      segments: const [
+        ButtonSegment(value: 'None', label: Text('None')),
+        ButtonSegment(value: 'Weekly', label: Text('Weekly')),
+        ButtonSegment(value: 'Bi-weekly', label: Text('Bi-weekly')),
+      ],
+      selected: {_repetition},
+      onSelectionChanged: (selection) {
+        setState(() => _repetition = selection.first);
+      },
+    );
   }
 
-  Widget _linkView() {
+  Widget _summaryStep() {
+    final code = _generatedCode;
+    final url = code == null ? null : '/meeting/$code';
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.check_circle, color: AppColors.primary, size: 48),
-        const SizedBox(height: 12),
-        const Text('Meeting link created!', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        const Text(
+          'Meeting summary',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+        ),
         const SizedBox(height: 8),
-        const Text('Share this link with your group. They can select their available slots on top of yours.', style: TextStyle(fontSize: 13, color: AppColors.textSecondary), textAlign: TextAlign.center),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(8)),
-          child: Row(
-            children: [
-              Expanded(child: Text(_generatedLink!, style: const TextStyle(fontSize: 12, color: AppColors.textPrimary), overflow: TextOverflow.ellipsis)),
-              const SizedBox(width: 8),
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () => Clipboard.setData(ClipboardData(text: _generatedLink!)),
-                  child: const Icon(Icons.copy_outlined, size: 18, color: AppColors.primary),
+        Text('Date: ${_date!.year}-${_date!.month}-${_date!.day}'),
+        Text('Start: ${_startTime.format(context)}'),
+        Text('Duration: $_durationLabel'),
+        Text('Repetition: $_repetition'),
+        if (url != null) ...[
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Expanded(child: Text(url, overflow: TextOverflow.ellipsis)),
+                IconButton(
+                  onPressed: () => Clipboard.setData(ClipboardData(text: url)),
+                  icon: const Icon(Icons.copy_outlined, size: 18),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Done'),
-          ),
-        ),
+        ],
       ],
+    );
+  }
+
+  String get _durationLabel {
+    if (_durationMinutes < 60) return '$_durationMinutes minutes';
+    final hours = _durationMinutes ~/ 60;
+    final minutes = _durationMinutes % 60;
+    return minutes > 0 ? '${hours}h ${minutes}m' : '${hours}h';
+  }
+
+  void _next() {
+    if (_step < 4) {
+      setState(() => _step++);
+      return;
+    }
+
+    final code = _generateCode();
+    ref
+        .read(meetingProvider.notifier)
+        .addMeeting(
+          MeetingData(
+            code: code,
+            creatorId: 'IUJ-2026-0001',
+            status: 'pending',
+            date: _date!,
+            durationMinutes: _durationMinutes,
+            repetition: _repetition,
+            attendeeAvailability: {
+              'IUJ-2026-0001': [_startTime.format(context)],
+            },
+          ),
+        );
+    setState(() => _generatedCode = code);
+  }
+
+  String _generateCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    return List.generate(8, (_) => chars[random.nextInt(chars.length)]).join();
+  }
+}
+
+class _MeetingDayCell extends StatelessWidget {
+  final int day;
+  final bool selected;
+  final bool disabled;
+  final VoidCallback onTap;
+
+  const _MeetingDayCell({
+    required this.day,
+    required this.selected,
+    required this.disabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: disabled ? MouseCursor.defer : SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: disabled ? null : onTap,
+        child: Container(
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: selected
+                ? AppColors.primary
+                : (disabled ? Colors.transparent : AppColors.primaryLight),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            '$day',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: selected
+                  ? Colors.white
+                  : (disabled ? AppColors.textMuted : AppColors.primary),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,10 +1,12 @@
 // lib/pages/dashboard_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import '../theme/app_colors.dart';
 import '../widgets/dashboard/upcoming_events_widget.dart';
 import '../widgets/dashboard/quick_links_widget.dart';
 import '../widgets/dashboard/alerts_widget.dart';
-import '../widgets/dashboard/digital_id_widget.dart';
+import '../widgets/dashboard/profile_dropdown.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -12,41 +14,25 @@ class DashboardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isWide = MediaQuery.of(context).size.width >= 900;
+    final header = _DashboardHeader(today: DateTime.now());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header
-        const Text(
-          'Good morning, Student!',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: Color(0xFF111827)),
-        ),
-        const SizedBox(height: 4),
-        const Text(
-          'Monday, April 6, 2026',
-          style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
-        ),
-        const SizedBox(height: 24),
-
-        // Digital ID — full width
-        const DigitalIdWidget(),
-        const SizedBox(height: 16),
-
-        // Main 2-column layout (or stacked on mobile)
         isWide
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Left: Upcoming Events (wider)
                   const Expanded(flex: 5, child: UpcomingEventsWidget()),
                   const SizedBox(width: 16),
-                  // Right: Quick Links + Alerts
                   Expanded(
                     flex: 4,
                     child: Column(
-                      children: const [
+                      children: [
+                        header,
+                        const SizedBox(height: 16),
                         QuickLinksWidget(),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         AlertsWidget(),
                       ],
                     ),
@@ -55,6 +41,8 @@ class DashboardPage extends ConsumerWidget {
               )
             : const Column(
                 children: [
+                  _DashboardHeader(today: null),
+                  SizedBox(height: 16),
                   UpcomingEventsWidget(),
                   SizedBox(height: 16),
                   QuickLinksWidget(),
@@ -62,6 +50,53 @@ class DashboardPage extends ConsumerWidget {
                   AlertsWidget(),
                 ],
               ),
+      ],
+    );
+  }
+}
+
+class _DashboardHeader extends StatelessWidget {
+  final DateTime? today;
+
+  const _DashboardHeader({required this.today});
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveToday = today ?? DateTime.now();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Good morning, Student!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                DateFormat('EEEE, MMMM d, yyyy').format(effectiveToday),
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 2),
+              const Text(
+                'Spring term 2026',
+                style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        const ProfileChip(),
       ],
     );
   }
