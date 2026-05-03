@@ -55,7 +55,11 @@ class AppModal extends StatelessWidget {
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
-                      child: const Icon(Icons.close, size: 20, color: AppColors.textMuted),
+                      child: const Icon(
+                        Icons.close,
+                        size: 20,
+                        color: AppColors.textMuted,
+                      ),
                     ),
                   ),
                 ],

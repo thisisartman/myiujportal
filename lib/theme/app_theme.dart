@@ -8,25 +8,46 @@ class AppTheme {
   static ThemeData light() {
     final base = TextTheme(
       displayLarge: GoogleFonts.plusJakartaSans(
-        fontSize: 28, fontWeight: FontWeight.w700, color: AppColors.textPrimary, height: 1.2,
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        height: 1.2,
       ),
       headlineMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary, height: 1.2,
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+        height: 1.2,
       ),
       titleMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary, height: 1.3,
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+        height: 1.3,
       ),
       bodyMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textPrimary, height: 1.5,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textPrimary,
+        height: 1.5,
       ),
       bodySmall: GoogleFonts.plusJakartaSans(
-        fontSize: 13, fontWeight: FontWeight.w400, color: AppColors.textSecondary, height: 1.5,
+        fontSize: 13,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textSecondary,
+        height: 1.5,
       ),
       labelMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary, height: 1.0,
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textSecondary,
+        height: 1.0,
       ),
       labelSmall: GoogleFonts.plusJakartaSans(
-        fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted, height: 1.0,
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textMuted,
+        height: 1.0,
       ),
     );
 
@@ -41,7 +62,10 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.border),
@@ -55,7 +79,8 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         hintStyle: GoogleFonts.plusJakartaSans(
-          fontSize: 14, color: AppColors.textMuted,
+          fontSize: 14,
+          color: AppColors.textMuted,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -64,7 +89,10 @@ class AppTheme {
           foregroundColor: AppColors.surface,
           minimumSize: const Size(0, 44),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w600),
+          textStyle: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -73,16 +101,26 @@ class AppTheme {
           minimumSize: const Size(0, 44),
           side: const BorderSide(color: AppColors.border),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w500),
+          textStyle: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
-          textStyle: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600),
+          textStyle: GoogleFonts.plusJakartaSans(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
-      dividerTheme: const DividerThemeData(color: AppColors.border, space: 1, thickness: 1),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.border,
+        space: 1,
+        thickness: 1,
+      ),
     );
   }
 }

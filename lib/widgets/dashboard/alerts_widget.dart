@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/alert_item.dart';
 import '../../providers/alerts_provider.dart';
 import '../../theme/app_colors.dart';
+import '../common/app_modal.dart';
 
 class AlertsWidget extends ConsumerWidget {
   const AlertsWidget({super.key});
@@ -23,16 +24,37 @@ class AlertsWidget extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
             child: Row(
               children: [
-                const Icon(Icons.notifications_none_outlined, size: 18, color: AppColors.primary),
+                const Icon(
+                  Icons.notifications_none_outlined,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
                 const SizedBox(width: 6),
-                const Text('Alerts & News', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                const Text(
+                  'Alerts & News',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                  decoration: BoxDecoration(color: AppColors.primaryLight, borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Text(
                     '${alerts.length}',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
               ],
@@ -43,7 +65,9 @@ class AlertsWidget extends ConsumerWidget {
             constraints: const BoxConstraints(maxHeight: 260),
             child: SingleChildScrollView(
               child: Column(
-                children: alerts.map((alert) => _AlertRow(alert: alert)).toList(),
+                children: alerts
+                    .map((alert) => _AlertRow(alert: alert))
+                    .toList(),
               ),
             ),
           ),
@@ -61,8 +85,6 @@ class _AlertRow extends StatefulWidget {
 }
 
 class _AlertRowState extends State<_AlertRow> {
-  bool _expanded = false;
-
   @override
   Widget build(BuildContext context) {
     final a = widget.alert;
@@ -71,16 +93,35 @@ class _AlertRowState extends State<_AlertRow> {
         MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
-            onTap: () => setState(() => _expanded = !_expanded),
+            onTap: () => AppModal.show(
+              context,
+              title: a.title,
+              child: Text(
+                a.body,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 28, height: 28,
-                    decoration: BoxDecoration(color: a.severity.bgColor, borderRadius: BorderRadius.circular(6)),
-                    child: Icon(a.severity.icon, color: a.severity.color, size: 14),
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: a.severity.bgColor,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Icon(
+                      a.severity.icon,
+                      color: a.severity.color,
+                      size: 14,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -90,31 +131,51 @@ class _AlertRowState extends State<_AlertRow> {
                         Row(
                           children: [
                             Expanded(
-                              child: Text(a.title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                              child: Text(
+                                a.title,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
                             ),
-                            Text(a.date, style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+                            Text(
+                              a.date,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 2),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                          decoration: BoxDecoration(color: a.severity.bgColor, borderRadius: BorderRadius.circular(4)),
-                          child: Text(a.mailingList, style: TextStyle(fontSize: 10, color: a.severity.color, fontWeight: FontWeight.w600)),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 1,
+                          ),
+                          decoration: BoxDecoration(
+                            color: a.severity.bgColor,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            a.mailingList,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: a.severity.color,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Icon(_expanded ? Icons.expand_less : Icons.expand_more, size: 16, color: AppColors.textMuted),
                 ],
               ),
             ),
           ),
         ),
-        if (_expanded)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(52, 0, 14, 10),
-            child: Text(a.body, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary, height: 1.5)),
-          ),
         const Divider(height: 1),
       ],
     );

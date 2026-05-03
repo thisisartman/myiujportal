@@ -23,9 +23,19 @@ class BookingSlotSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Select Time Slots', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+        const Text(
+          'Select Time Slots',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
         const SizedBox(height: 4),
-        const Text('You may select multiple available slots.', style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
+        const Text(
+          'You may select multiple available slots.',
+          style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+        ),
         const SizedBox(height: 12),
         ...slots.map((slot) {
           final isSelected = selectedSlots.contains(slot.time);
@@ -38,15 +48,15 @@ class BookingSlotSelector extends StatelessWidget {
                 color: !slot.available
                     ? AppColors.background
                     : isSelected
-                        ? AppColors.primaryLight
-                        : AppColors.surface,
+                    ? AppColors.primaryLight
+                    : AppColors.surface,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: !slot.available
                       ? AppColors.border
                       : isSelected
-                          ? AppColors.primary
-                          : AppColors.border,
+                      ? AppColors.primary
+                      : AppColors.border,
                 ),
               ),
               child: Row(
@@ -54,7 +64,9 @@ class BookingSlotSelector extends StatelessWidget {
                   Icon(
                     slot.available ? Icons.access_time : Icons.block,
                     size: 16,
-                    color: slot.available ? AppColors.primary : AppColors.textMuted,
+                    color: slot.available
+                        ? AppColors.primary
+                        : AppColors.textMuted,
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -63,22 +75,31 @@ class BookingSlotSelector extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: slot.available ? AppColors.textPrimary : AppColors.textMuted,
+                        color: slot.available
+                            ? AppColors.textPrimary
+                            : AppColors.textMuted,
                       ),
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: !slot.available
                           ? const Color(0xFFFEE2E2)
                           : isSelected
-                              ? const Color(0xFFD1FAE5)
-                              : const Color(0xFFD1FAE5),
+                          ? const Color(0xFFD1FAE5)
+                          : const Color(0xFFD1FAE5),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      !slot.available ? 'Unavailable' : isSelected ? 'Selected' : 'Available',
+                      !slot.available
+                          ? 'Unavailable'
+                          : isSelected
+                          ? 'Selected'
+                          : 'Available',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -100,9 +121,13 @@ class BookingSlotSelector extends StatelessWidget {
             const Spacer(),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: selectedSlots.isNotEmpty ? AppColors.primary : AppColors.textMuted,
+                backgroundColor: selectedSlots.isNotEmpty
+                    ? AppColors.primary
+                    : AppColors.textMuted,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               onPressed: selectedSlots.isNotEmpty ? onNext : null,
               child: const Text('Next'),

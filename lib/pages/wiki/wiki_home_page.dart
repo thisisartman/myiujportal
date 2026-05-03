@@ -20,7 +20,14 @@ class WikiHomePage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Wiki Knowledge Base', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+        const Text(
+          'Wiki Knowledge Base',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+        ),
         const SizedBox(height: 8),
         const Text(
           'Find procedures, guides, course syllabi, and student-curated knowledge all in one place.',
@@ -38,7 +45,9 @@ class WikiHomePage extends ConsumerWidget {
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 onPressed: () => _showCreateTopicModal(context, isCreate: true),
               ),
@@ -46,20 +55,37 @@ class WikiHomePage extends ConsumerWidget {
             const SizedBox(width: 12),
             Expanded(
               child: OutlinedButton.icon(
-                icon: const Icon(Icons.edit_outlined, size: 18, color: AppColors.primary),
-                label: const Text('Edit Existing Topic', style: TextStyle(color: AppColors.textPrimary)),
+                icon: const Icon(
+                  Icons.edit_outlined,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
+                label: const Text(
+                  'Edit Existing Topic',
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   side: const BorderSide(color: Color(0xFFD1D5DB)),
                 ),
-                onPressed: () => _showCreateTopicModal(context, isCreate: false),
+                onPressed: () =>
+                    _showCreateTopicModal(context, isCreate: false),
               ),
             ),
           ],
         ),
         const SizedBox(height: 32),
-        const Text('Explore Categories', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+        const Text(
+          'Explore Categories',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
         const Divider(height: 24),
         _categoryGrid(context),
       ],
@@ -129,7 +155,10 @@ class WikiHomePage extends ConsumerWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: c.iconBg, borderRadius: BorderRadius.circular(10)),
+              decoration: BoxDecoration(
+                color: c.iconBg,
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: Icon(c.icon, color: c.iconColor, size: 22),
             ),
             const SizedBox(width: 14),
@@ -137,8 +166,21 @@ class WikiHomePage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(c.title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-                Text(c.subtitle, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                Text(
+                  c.title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Text(
+                  c.subtitle,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ],
             ),
             const Spacer(),
@@ -149,37 +191,61 @@ class WikiHomePage extends ConsumerWidget {
     );
   }
 
-  Widget _searchResults(BuildContext context, List<MapEntry<String, dynamic>> results) {
+  Widget _searchResults(
+    BuildContext context,
+    List<MapEntry<String, dynamic>> results,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${results.length} result(s) found', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+        Text(
+          '${results.length} result(s) found',
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
         const SizedBox(height: 12),
-        ...results.map((entry) => GestureDetector(
-          onTap: () => context.go('/wiki/${entry.key}'),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.article_outlined, color: AppColors.primary),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(entry.value.title, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
-                    Text(entry.value.category, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                  ],
-                ),
-              ],
+        ...results.map(
+          (entry) => GestureDetector(
+            onTap: () => context.go('/wiki/${entry.key}'),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.article_outlined, color: AppColors.primary),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        entry.value.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      Text(
+                        entry.value.category,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        )),
+        ),
       ],
     );
   }
@@ -226,12 +292,19 @@ class WikiHomePage extends ConsumerWidget {
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.warning_amber_rounded, color: Color(0xFFD97706), size: 16),
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      color: Color(0xFFD97706),
+                      size: 16,
+                    ),
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Student submissions are queued for moderation. Only Professors and OAA staff can publish directly.',
-                        style: TextStyle(fontSize: 12, color: Color(0xFF92400E)),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF92400E),
+                        ),
                       ),
                     ),
                   ],

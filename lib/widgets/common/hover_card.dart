@@ -1,5 +1,6 @@
 // lib/widgets/common/hover_card.dart
 import 'package:flutter/material.dart';
+import '../../theme/app_colors.dart';
 
 /// A container that darkens its border and background on hover.
 /// Wrap any tappable card with this instead of a plain Container.
@@ -20,9 +21,9 @@ class HoverCard extends StatefulWidget {
     this.padding = const EdgeInsets.all(16),
     this.borderRadius = const BorderRadius.all(Radius.circular(12)),
     this.baseColor = Colors.white,
-    this.hoverColor = const Color(0xFFF5F3FF),
-    this.baseBorderColor = const Color(0xFFE5E7EB),
-    this.hoverBorderColor = const Color(0xFF4F46E5),
+    this.hoverColor = AppColors.primaryLight,
+    this.baseBorderColor = AppColors.border,
+    this.hoverBorderColor = AppColors.primary,
   });
 
   @override
@@ -35,7 +36,9 @@ class _HoverCardState extends State<HoverCard> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
+      cursor: widget.onTap != null
+          ? SystemMouseCursors.click
+          : MouseCursor.defer,
       onEnter: (_) => setState(() => _hovering = true),
       onExit: (_) => setState(() => _hovering = false),
       child: GestureDetector(
@@ -47,7 +50,9 @@ class _HoverCardState extends State<HoverCard> {
             color: _hovering ? widget.hoverColor : widget.baseColor,
             borderRadius: widget.borderRadius,
             border: Border.all(
-              color: _hovering ? widget.hoverBorderColor : widget.baseBorderColor,
+              color: _hovering
+                  ? widget.hoverBorderColor
+                  : widget.baseBorderColor,
             ),
           ),
           child: widget.child,

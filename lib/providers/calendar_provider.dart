@@ -2,18 +2,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/calendar_event.dart';
 import '../data/mock_data.dart';
 
-// The month being viewed (default: April 2026)
-final currentViewDateProvider = StateProvider<DateTime>((ref) => DateTime(2026, 4, 1));
+// The month being viewed.
+final currentViewDateProvider = StateProvider<DateTime>((ref) {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, 1);
+});
 
 // The selected day of the month
-final selectedDateProvider = StateProvider<int>((ref) => 1);
+final selectedDateProvider = StateProvider<int>((ref) => DateTime.now().day);
 
 // Filter: 'all', 'class_', 'assignment', 'event'
 final calendarFilterProvider = StateProvider<String>((ref) => 'all');
 
 // Calendar view mode
 enum CalendarViewMode { month, week }
-final calendarViewModeProvider = StateProvider<CalendarViewMode>((ref) => CalendarViewMode.month);
+
+final calendarViewModeProvider = StateProvider<CalendarViewMode>(
+  (ref) => CalendarViewMode.month,
+);
 
 // The mutable list of events
 class CalendarEventsNotifier extends Notifier<List<CalendarEvent>> {
@@ -35,12 +41,15 @@ class CalendarEventsNotifier extends Notifier<List<CalendarEvent>> {
     state = state.where((e) => e.id != id).toList();
   }
 
-  int get nextId => state.isEmpty ? 1 : state.map((e) => e.id).reduce((a, b) => a > b ? a : b) + 1;
+  int get nextId => state.isEmpty
+      ? 1
+      : state.map((e) => e.id).reduce((a, b) => a > b ? a : b) + 1;
 }
 
-final calendarEventsProvider = NotifierProvider<CalendarEventsNotifier, List<CalendarEvent>>(
-  CalendarEventsNotifier.new,
-);
+final calendarEventsProvider =
+    NotifierProvider<CalendarEventsNotifier, List<CalendarEvent>>(
+      CalendarEventsNotifier.new,
+    );
 
 // Derived: events for selected date, filtered
 final filteredEventsProvider = Provider<List<CalendarEvent>>((ref) {
@@ -63,9 +72,10 @@ final filteredEventsProvider = Provider<List<CalendarEvent>>((ref) {
 });
 
 // Tracks which month/year the calendar grid is showing (independent of selected date)
-final displayedMonthProvider = StateProvider<DateTime>(
-  (ref) => DateTime(2026, 4), // April 2026 default
-);
+final displayedMonthProvider = StateProvider<DateTime>((ref) {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month);
+});
 
 // All events for the current view month (for dot indicators)
 final monthEventsProvider = Provider<Map<int, List<CalendarEvent>>>((ref) {

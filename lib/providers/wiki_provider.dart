@@ -11,7 +11,9 @@ final expandedSubcategoriesProvider = StateProvider<List<String>>(
 
 final wikiSearchQueryProvider = StateProvider<String>((ref) => '');
 
-final wikiSearchResultsProvider = Provider<List<MapEntry<String, dynamic>>>((ref) {
+final wikiSearchResultsProvider = Provider<List<MapEntry<String, dynamic>>>((
+  ref,
+) {
   final query = ref.watch(wikiSearchQueryProvider);
   if (query.isEmpty) return [];
   return kWikiPages.entries.where((entry) {

@@ -13,10 +13,16 @@ class MonthGrid extends ConsumerWidget {
     final displayed = ref.watch(displayedMonthProvider);
     final selectedDate = ref.watch(selectedDateProvider);
     final monthEvents = ref.watch(monthEventsProvider);
-    final isMockMonth = displayed.month == 4 && displayed.year == 2026;
+    final today = DateTime.now();
+    final isThisMonth =
+        displayed.month == today.month && displayed.year == today.year;
 
     final daysInMonth = DateTime(displayed.year, displayed.month + 1, 0).day;
-    int firstWeekday = DateTime(displayed.year, displayed.month, 1).weekday; // 1=Mon
+    final firstWeekday = DateTime(
+      displayed.year,
+      displayed.month,
+      1,
+    ).weekday; // 1=Mon
     final leadingBlanks = firstWeekday - 1; // 0 = starts on Monday
 
     const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -34,8 +40,13 @@ class MonthGrid extends ConsumerWidget {
               icon: const Icon(Icons.chevron_left, size: 20),
               onPressed: () {
                 final cur = ref.read(displayedMonthProvider);
-                ref.read(displayedMonthProvider.notifier).state =
-                    DateTime(cur.year, cur.month - 1);
+                final next = DateTime(cur.year, cur.month - 1);
+                ref.read(displayedMonthProvider.notifier).state = next;
+                ref.read(currentViewDateProvider.notifier).state = DateTime(
+                  next.year,
+                  next.month,
+                  1,
+                );
               },
             ),
             MouseRegion(
@@ -71,35 +82,55 @@ class MonthGrid extends ConsumerWidget {
               icon: const Icon(Icons.chevron_right, size: 20),
               onPressed: () {
                 final cur = ref.read(displayedMonthProvider);
-                ref.read(displayedMonthProvider.notifier).state =
-                    DateTime(cur.year, cur.month + 1);
+                final next = DateTime(cur.year, cur.month + 1);
+                ref.read(displayedMonthProvider.notifier).state = next;
+                ref.read(currentViewDateProvider.notifier).state = DateTime(
+                  next.year,
+                  next.month,
+                  1,
+                );
               },
             ),
             TextButton(
               onPressed: () {
-                ref.read(displayedMonthProvider.notifier).state = DateTime(2026, 4);
-                ref.read(currentViewDateProvider.notifier).state = DateTime(2026, 4, 1);
-                ref.read(selectedDateProvider.notifier).state = 1;
+                final now = DateTime.now();
+                ref.read(displayedMonthProvider.notifier).state = DateTime(
+                  now.year,
+                  now.month,
+                );
+                ref.read(currentViewDateProvider.notifier).state = DateTime(
+                  now.year,
+                  now.month,
+                  1,
+                );
+                ref.read(selectedDateProvider.notifier).state = now.day;
               },
-              child: const Text('Today', style: TextStyle(color: AppColors.primary)),
+              child: const Text(
+                'Today',
+                style: TextStyle(color: AppColors.primary),
+              ),
             ),
           ],
         ),
         const SizedBox(height: 8),
         // Day headers
         Row(
-          children: dayLabels.map((d) => Expanded(
-            child: Center(
-              child: Text(
-                d,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
+          children: dayLabels
+              .map(
+                (d) => Expanded(
+                  child: Center(
+                    child: Text(
+                      d,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          )).toList(),
+              )
+              .toList(),
         ),
         const SizedBox(height: 8),
         // Grid
@@ -114,50 +145,16 @@ class MonthGrid extends ConsumerWidget {
           itemBuilder: (context, index) {
             if (index < leadingBlanks) return const SizedBox.shrink();
             final day = index - leadingBlanks + 1;
-            final isSelected = day == selectedDate && isMockMonth;
-            final isToday = day == 1 && isMockMonth; // April 1 2026 = today
-            final dayEvents = isMockMonth ? (monthEvents[day] ?? []) : <CalendarEvent>[];
+            final isSelected = day == selectedDate;
+            final isToday = isThisMonth && day == today.day;
+            final dayEvents = monthEvents[day] ?? <CalendarEvent>[];
 
-            return GestureDetector(
+            return _DayCell(
+              day: day,
+              isSelected: isSelected,
+              isToday: isToday,
+              events: dayEvents,
               onTap: () => ref.read(selectedDateProvider.notifier).state = day,
-              child: Container(
-                margin: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.primary
-                      : (isToday ? AppColors.primaryLight : null),
-                  borderRadius: BorderRadius.circular(8),
-                  border: isToday && !isSelected
-                      ? Border.all(color: AppColors.primary, width: 1.5)
-                      : null,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '$day',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: isSelected ? Colors.white : AppColors.textPrimary,
-                      ),
-                    ),
-                    if (dayEvents.isNotEmpty)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: dayEvents.take(3).map((e) => Container(
-                          width: 5,
-                          height: 5,
-                          margin: const EdgeInsets.only(top: 2, left: 1),
-                          decoration: BoxDecoration(
-                            color: isSelected ? Colors.white70 : e.type.color,
-                            shape: BoxShape.circle,
-                          ),
-                        )).toList(),
-                      ),
-                  ],
-                ),
-              ),
             );
           },
         ),
@@ -168,8 +165,18 @@ class MonthGrid extends ConsumerWidget {
 
 void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
   final months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   showDialog(
     context: context,
@@ -200,8 +207,10 @@ void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                     onTap: () {
-                      ref.read(displayedMonthProvider.notifier).state =
-                          DateTime(current.year, i + 1);
+                      final next = DateTime(current.year, i + 1);
+                      ref.read(displayedMonthProvider.notifier).state = next;
+                      ref.read(currentViewDateProvider.notifier).state =
+                          DateTime(next.year, next.month, 1);
                       Navigator.of(context).pop();
                     },
                     child: Container(
@@ -217,7 +226,9 @@ void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                          color: isSelected
+                              ? Colors.white
+                              : AppColors.textPrimary,
                         ),
                       ),
                     ),
@@ -233,7 +244,12 @@ void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
 }
 
 void _showYearPicker(BuildContext context, WidgetRef ref, DateTime current) {
-  final years = List.generate(10, (i) => current.year - 3 + i);
+  const enrollmentYear = 2025;
+  const graduationYear = 2027;
+  final years = List.generate(
+    graduationYear - enrollmentYear + 1,
+    (i) => enrollmentYear + i,
+  );
   showDialog(
     context: context,
     builder: (_) => Dialog(
@@ -257,8 +273,10 @@ void _showYearPicker(BuildContext context, WidgetRef ref, DateTime current) {
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                     onTap: () {
-                      ref.read(displayedMonthProvider.notifier).state =
-                          DateTime(y, current.month);
+                      final next = DateTime(y, current.month);
+                      ref.read(displayedMonthProvider.notifier).state = next;
+                      ref.read(currentViewDateProvider.notifier).state =
+                          DateTime(next.year, next.month, 1);
                       Navigator.of(context).pop();
                     },
                     child: Container(
@@ -276,7 +294,9 @@ void _showYearPicker(BuildContext context, WidgetRef ref, DateTime current) {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                          color: isSelected
+                              ? Colors.white
+                              : AppColors.textPrimary,
                         ),
                       ),
                     ),
@@ -289,4 +309,87 @@ void _showYearPicker(BuildContext context, WidgetRef ref, DateTime current) {
       ),
     ),
   );
+}
+
+class _DayCell extends StatefulWidget {
+  final int day;
+  final bool isSelected;
+  final bool isToday;
+  final List<CalendarEvent> events;
+  final VoidCallback onTap;
+
+  const _DayCell({
+    required this.day,
+    required this.isSelected,
+    required this.isToday,
+    required this.events,
+    required this.onTap,
+  });
+
+  @override
+  State<_DayCell> createState() => _DayCellState();
+}
+
+class _DayCellState extends State<_DayCell> {
+  bool _hovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: widget.isSelected
+                ? AppColors.primary
+                : (_hovering || widget.isToday ? AppColors.primaryLight : null),
+            borderRadius: BorderRadius.circular(8),
+            border: widget.isToday && !widget.isSelected
+                ? Border.all(color: AppColors.primary, width: 1.5)
+                : null,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${widget.day}',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: widget.isSelected
+                      ? Colors.white
+                      : AppColors.textPrimary,
+                ),
+              ),
+              if (widget.events.isNotEmpty)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: widget.events
+                      .take(3)
+                      .map(
+                        (e) => Container(
+                          width: 5,
+                          height: 5,
+                          margin: const EdgeInsets.only(top: 2, left: 1),
+                          decoration: BoxDecoration(
+                            color: widget.isSelected
+                                ? Colors.white70
+                                : e.type.color,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

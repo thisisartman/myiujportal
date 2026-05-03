@@ -8,10 +8,34 @@ class QuickLinksWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final links = [
-      _Link(Icons.calendar_today_outlined, 'Calendar', AppColors.primary, AppColors.primaryLight, '/calendar'),
-      _Link(Icons.business_outlined, 'Facilities', const Color(0xFF0891B2), const Color(0xFFCFFAFE), '/facilities'),
-      _Link(Icons.local_library_outlined, 'Wiki', const Color(0xFF7C3AED), const Color(0xFFF5F3FF), '/wiki'),
-      _Link(Icons.badge_outlined, 'Digital ID', AppColors.accent, const Color(0xFFFFF7ED), '/profile'),
+      _Link(
+        Icons.calendar_today_outlined,
+        'Calendar',
+        AppColors.primary,
+        AppColors.primaryLight,
+        '/calendar',
+      ),
+      _Link(
+        Icons.business_outlined,
+        'Facilities',
+        const Color(0xFF0891B2),
+        const Color(0xFFCFFAFE),
+        '/facilities',
+      ),
+      _Link(
+        Icons.local_library_outlined,
+        'Wiki',
+        const Color(0xFF7C3AED),
+        const Color(0xFFF5F3FF),
+        '/wiki',
+      ),
+      _Link(
+        Icons.badge_outlined,
+        'Digital ID',
+        AppColors.accent,
+        const Color(0xFFFFF7ED),
+        '/profile',
+      ),
     ];
 
     return Container(
@@ -24,7 +48,14 @@ class QuickLinksWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Quick Links', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+          const Text(
+            'Quick Links',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
           const SizedBox(height: 12),
           GridView.count(
             crossAxisCount: 2,
@@ -32,7 +63,7 @@ class QuickLinksWidget extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
-            childAspectRatio: 2.4,
+            childAspectRatio: 1.1,
             children: links.map((l) => _LinkTile(link: l)).toList(),
           ),
         ],
@@ -71,22 +102,27 @@ class _LinkTileState extends State<_LinkTile> {
         onTap: () => context.go(l.path),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
             color: _hovering ? l.bg : AppColors.background,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: _hovering ? l.fg : AppColors.border),
           ),
-          child: Row(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(l.icon, color: l.fg, size: 18),
-              const SizedBox(width: 8),
-              Text(l.label,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: _hovering ? l.fg : AppColors.textPrimary,
-                  )),
+              Icon(l.icon, color: l.fg, size: 16),
+              const SizedBox(height: 6),
+              Text(
+                l.label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: _hovering ? l.fg : AppColors.textPrimary,
+                ),
+              ),
             ],
           ),
         ),

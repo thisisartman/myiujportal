@@ -12,6 +12,7 @@ import '../pages/facilities/campus_directory_page.dart';
 import '../pages/wiki/wiki_home_page.dart';
 import '../pages/wiki/wiki_article_page.dart';
 import '../pages/profile_page.dart';
+import '../pages/meeting_page.dart';
 import '../providers/auth_provider.dart';
 
 // Bridges Riverpod auth state into a ChangeNotifier so GoRouter can refresh.
@@ -85,7 +86,9 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/wiki/:articleId',
             pageBuilder: (context, state) {
               final articleId = state.pathParameters['articleId']!;
-              return NoTransitionPage(child: WikiArticlePage(articleId: articleId));
+              return NoTransitionPage(
+                child: WikiArticlePage(articleId: articleId),
+              );
             },
           ),
           GoRoute(
@@ -93,13 +96,21 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) {
               final articleId =
                   '${state.pathParameters['category']!}-${state.pathParameters['articleId']!}';
-              return NoTransitionPage(child: WikiArticlePage(articleId: articleId));
+              return NoTransitionPage(
+                child: WikiArticlePage(articleId: articleId),
+              );
             },
           ),
           GoRoute(
             path: '/profile',
             pageBuilder: (context, state) =>
                 const NoTransitionPage(child: ProfilePage()),
+          ),
+          GoRoute(
+            path: '/meeting/:code',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: MeetingPage(code: state.pathParameters['code']!),
+            ),
           ),
         ],
       ),

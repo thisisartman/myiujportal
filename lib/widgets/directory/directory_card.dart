@@ -17,8 +17,9 @@ class DirectoryCard extends ConsumerWidget {
 
     return GestureDetector(
       onTap: () {
-        ref.read(expandedDirectoryEntryProvider.notifier).state =
-            isExpanded ? null : entry.id;
+        ref.read(expandedDirectoryEntryProvider.notifier).state = isExpanded
+            ? null
+            : entry.id;
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
@@ -43,13 +44,24 @@ class DirectoryCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(entry.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                        Text(
+                          entry.name,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
                         const SizedBox(height: 3),
                         _TypeChip(type: entry.type),
                       ],
                     ),
                   ),
-                  Icon(isExpanded ? Icons.expand_less : Icons.expand_more, color: AppColors.textMuted, size: 18),
+                  Icon(
+                    isExpanded ? Icons.expand_less : Icons.expand_more,
+                    color: AppColors.textMuted,
+                    size: 18,
+                  ),
                 ],
               ),
             ),
@@ -76,7 +88,8 @@ class _ExpandedDetails extends StatelessWidget {
           if (entry.studentId != null) _row('Student ID', entry.studentId!),
           if (entry.email.isNotEmpty) _row('Email', entry.email),
           if (entry.phone.isNotEmpty) _row('Phone', entry.phone),
-          if (entry.coordinator != null) _row('Coordinator', entry.coordinator!),
+          if (entry.coordinator != null)
+            _row('Coordinator', entry.coordinator!),
           if (entry.type == 'Organization') ...[
             const SizedBox(height: 10),
             _WikiLink(entry: entry),
@@ -94,10 +107,23 @@ class _ExpandedDetails extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.w500)),
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
           Expanded(
-            child: Text(value, style: const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textPrimary,
+              ),
+            ),
           ),
         ],
       ),
@@ -125,7 +151,14 @@ class _WikiLink extends StatelessWidget {
         children: [
           Icon(Icons.open_in_new, size: 14, color: AppColors.primary),
           SizedBox(width: 6),
-          Text('View Wiki page', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary)),
+          Text(
+            'View Wiki page',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary,
+            ),
+          ),
         ],
       ),
     );
@@ -148,7 +181,14 @@ class _Avatar extends StatelessWidget {
     return CircleAvatar(
       radius: 22,
       backgroundColor: AppColors.primaryLight,
-      child: Text(_initials, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary)),
+      child: Text(
+        _initials,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          color: AppColors.primary,
+        ),
+      ),
     );
   }
 }
@@ -173,7 +213,14 @@ class _TypeChip extends StatelessWidget {
         color: _color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Text(type, style: TextStyle(fontSize: 11, color: _color, fontWeight: FontWeight.w500)),
+      child: Text(
+        type,
+        style: TextStyle(
+          fontSize: 11,
+          color: _color,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 }
