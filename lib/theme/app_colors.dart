@@ -12,11 +12,18 @@ class AppColors {
   static const Color surface = Color(0xFFFFFFFF);
   static const Color background = Color(0xFFF8FAFC);
   static const Color border = Color(0xFFE2E8F0);
+  static const Color bgSunken = Color(0xFFF1F5F9);
+  static const Color rule = Color(0xFFCBD5E1);
+  static const Color ruleSoft = Color(0xFFE2E8F0);
+  static const Color ruleSofter = Color(0xFFEEF2F6);
 
   // Text
   static const Color textPrimary = Color(0xFF0F172A);
   static const Color textSecondary = Color(0xFF64748B);
   static const Color textMuted = Color(0xFF94A3B8);
+  static const Color ink2 = Color(0xFF1E293B);
+  static const Color tealInk = Color(0xFF0F766E);
+  static const Color tealTint2 = Color(0xFFF0FDFA);
 
   // Semantic
   static const Color success = Color(0xFF16A34A);

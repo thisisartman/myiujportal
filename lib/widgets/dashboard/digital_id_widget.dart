@@ -1,79 +1,238 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import '../../data/mock_data.dart';
 import '../../theme/app_colors.dart';
+import '../common/app_modal.dart';
+import '../common/dashboard_card.dart';
+import '../profile/digital_id_card.dart';
 
-class DigitalIdWidget extends StatefulWidget {
+class DigitalIdWidget extends StatelessWidget {
   const DigitalIdWidget({super.key});
-  @override
-  State<DigitalIdWidget> createState() => _DigitalIdWidgetState();
-}
-
-class _DigitalIdWidgetState extends State<DigitalIdWidget> {
-  bool _hovering = false;
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovering = true),
-      onExit: (_) => setState(() => _hovering = false),
+    final student = kMockStudentInfo;
+    return DashboardCard(
+      label: const DashboardCardLabel(
+        icon: Icons.badge_outlined,
+        text: 'Digital ID',
+      ),
+      actionLabel: 'Profile',
+      onAction: () => _showLargeId(context, student),
       child: GestureDetector(
-        onTap: () => context.go('/profile'),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          padding: const EdgeInsets.all(16),
+        onTap: () => _showLargeId(context, student),
+        child: Container(
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: _hovering
-                  ? [AppColors.primary, const Color(0xFF0F766E)]
-                  : [AppColors.primary, const Color(0xFF14B8A6)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(8),
+            border: const Border(
+              left: BorderSide(color: AppColors.primary, width: 4),
+              top: BorderSide(color: AppColors.ruleSoft),
+              right: BorderSide(color: AppColors.ruleSoft),
+              bottom: BorderSide(color: AppColors.ruleSoft),
             ),
-            borderRadius: BorderRadius.circular(12),
           ),
-          child: const Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: Colors.white24,
-                child: Text(
-                  'S',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Student',
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'International University of Japan',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
                       ),
                     ),
-                    Text(
-                      'IUJ-2026-0001',
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
+                  Text(
+                    student.studentId,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'monospace',
+                      color: AppColors.ink2,
                     ),
-                    Text(
-                      'MBA · GSIM · Class of 2027',
-                      style: TextStyle(color: Colors.white60, fontSize: 11),
-                    ),
-                  ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 28,
+                width: double.infinity,
+                child: CustomPaint(
+                  painter: BarcodePainter(id: student.studentId),
+                  size: Size.infinite,
                 ),
               ),
-              Icon(Icons.badge_outlined, color: Colors.white54, size: 28),
+              const SizedBox(height: 14),
+              Text(
+                student.fullName,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  _MetaCell(label: 'Program', value: student.program),
+                  _MetaCell(label: 'Cohort', value: student.cohort),
+                  _MetaCell(label: 'Dorm', value: student.dorm),
+                ],
+              ),
+              const SizedBox(height: 14),
+              const Row(
+                children: [
+                  Text(
+                    'Valid · Spring 2026',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  Spacer(),
+                  Text(
+                    'Tap to enlarge',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.tealInk,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showLargeId(BuildContext context, MockStudentInfo student) {
+    AppModal.show(
+      context,
+      title: 'Digital ID',
+      child: _IdEnlargeModal(student: student),
+    );
+  }
+}
+
+class _MetaCell extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _MetaCell({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label.toUpperCase(),
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: AppColors.ink2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IdEnlargeModal extends StatelessWidget {
+  final MockStudentInfo student;
+
+  const _IdEnlargeModal({required this.student});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 72,
+          width: double.infinity,
+          child: CustomPaint(
+            painter: BarcodePainter(id: student.studentId),
+            size: Size.infinite,
+          ),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          student.fullName,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          student.email,
+          style: const TextStyle(color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: 18),
+        _DetailRow(label: 'Student ID', value: student.studentId),
+        _DetailRow(label: 'Program', value: student.program),
+        _DetailRow(label: 'Cohort', value: student.cohort),
+        _DetailRow(label: 'Dorm', value: student.dorm),
+      ],
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _DetailRow({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 92,
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w800,
+                color: AppColors.ink2,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

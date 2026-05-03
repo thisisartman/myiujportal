@@ -340,6 +340,8 @@ class CalendarPage extends ConsumerWidget {
                         CalendarEvent(
                           id: notifier.nextId,
                           type: selectedType,
+                          year: displayed.year,
+                          month: displayed.month,
                           date: selectedDate,
                           time: timeController.text,
                           title: titleController.text,
