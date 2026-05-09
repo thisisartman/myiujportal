@@ -5,6 +5,7 @@ import '../providers/auth_provider.dart';
 import '../theme/app_colors.dart';
 import '../widgets/common/app_modal.dart';
 import '../widgets/common/hover_card.dart';
+import '../widgets/common/page_chrome.dart';
 import '../widgets/common/toast_overlay.dart';
 import '../widgets/profile/digital_id_card.dart';
 import '../widgets/profile/issue_report_modal.dart';
@@ -64,15 +65,17 @@ class ProfilePage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Profile',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            color: AppColors.textPrimary,
-          ),
+        const PageGreeting(
+          title: 'Profile',
+          meta: [
+            MetaText('Apoorv Terwadkar · GSIM MBA'),
+            MetaDot(),
+            MetaText('Spring 2026 · Valid', emphasis: true),
+          ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 18),
+        const _ProfileTabs(),
+        const SizedBox(height: 18),
         if (isWide)
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +96,14 @@ class ProfilePage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.ruleSoft),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.035),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         children: rows.indexed.map((entry) {
@@ -188,22 +198,44 @@ class _AdminVault extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.ruleSoft),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.035),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Row(
+            children: [
+              Icon(
+                Icons.admin_panel_settings_outlined,
+                size: 18,
+                color: AppColors.tealInk,
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Admin Vault',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
           const Text(
-            'Admin Vault',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
-            ),
+            'Official records, finances, library access and campus support.',
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 12),
           GridView.count(
@@ -228,6 +260,58 @@ class _AdminVault extends StatelessWidget {
     );
     if (!context.mounted || submitted != true) return;
     showToast(context, 'Report submitted.', type: ToastType.success);
+  }
+}
+
+class _ProfileTabs extends StatelessWidget {
+  const _ProfileTabs();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.ruleSoft)),
+      ),
+      child: Row(
+        children: const [
+          _ProfileTab(label: 'Overview', active: true),
+          _ProfileTab(label: 'Records'),
+          _ProfileTab(label: 'Settings'),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileTab extends StatelessWidget {
+  final String label;
+  final bool active;
+
+  const _ProfileTab({required this.label, this.active = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 18),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 11),
+        decoration: BoxDecoration(
+          border: active
+              ? const Border(
+                  bottom: BorderSide(color: AppColors.primary, width: 2),
+                )
+              : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: active ? AppColors.textPrimary : AppColors.textSecondary,
+          ),
+        ),
+      ),
+    );
   }
 }
 

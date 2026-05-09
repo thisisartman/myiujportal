@@ -5,6 +5,7 @@ import '../../data/mock_data.dart';
 import '../../../theme/app_colors.dart';
 import '../../providers/directory_provider.dart';
 import '../../widgets/directory/directory_card.dart';
+import '../../widgets/common/page_chrome.dart';
 
 const _filterChips = [
   'All',
@@ -48,66 +49,43 @@ class CampusDirectoryPage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            GestureDetector(
-              onTap: () => context.go('/facilities'),
-              child: const Icon(
-                Icons.arrow_back_ios,
-                size: 16,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(width: 6),
-            const Text(
-              'Campus Directory',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
-              ),
-            ),
+        PageGreeting(
+          title: 'Campus Directory',
+          meta: [
+            const MetaText('Students, faculty, staff and organizations'),
+            const MetaDot(),
+            MetaText('${filtered.length} visible', emphasis: true),
           ],
-        ),
-        const SizedBox(height: 16),
-        TextField(
-          onChanged: (v) =>
-              ref.read(directorySearchProvider.notifier).state = v,
-          decoration: InputDecoration(
-            hintText: 'Search by name or email...',
-            prefixIcon: const Icon(Icons.search, size: 18),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-            contentPadding: const EdgeInsets.symmetric(vertical: 10),
+          actions: OutlinedButton.icon(
+            onPressed: () => context.go('/facilities'),
+            icon: const Icon(Icons.arrow_back, size: 16),
+            label: const Text('Facilities'),
           ),
         ),
-        const SizedBox(height: 12),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: _filterChips.map((chip) {
-              final isActive = filter == chip;
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: FilterChip(
-                  label: Text(chip),
-                  selected: isActive,
-                  onSelected: (_) {
-                    ref.read(directoryFilterProvider.notifier).state = chip;
-                    ref.read(expandedDirectoryEntryProvider.notifier).state =
-                        null;
-                  },
-                  selectedColor: AppColors.primaryLight,
-                  checkmarkColor: AppColors.primary,
-                  labelStyle: TextStyle(
-                    fontSize: 13,
-                    color: isActive
-                        ? AppColors.primary
-                        : AppColors.textSecondary,
-                    fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+        const SizedBox(height: 16),
+        SearchPanel(
+          hint: 'Search by name, email, office, club...',
+          onChanged: (value) =>
+              ref.read(directorySearchProvider.notifier).state = value,
+          trailing: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _filterChips.map((chip) {
+                final isActive = filter == chip;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: SoftChip(
+                    label: chip,
+                    selected: isActive,
+                    onTap: () {
+                      ref.read(directoryFilterProvider.notifier).state = chip;
+                      ref.read(expandedDirectoryEntryProvider.notifier).state =
+                          null;
+                    },
                   ),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
         ),
         const SizedBox(height: 16),

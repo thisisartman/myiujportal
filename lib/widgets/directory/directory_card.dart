@@ -28,9 +28,16 @@ class DirectoryCard extends ConsumerWidget {
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isExpanded ? AppColors.primary : AppColors.border,
+            color: isExpanded ? AppColors.primary : AppColors.ruleSoft,
             width: isExpanded ? 1.5 : 1,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.035),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Column(
           children: [
@@ -198,10 +205,10 @@ class _TypeChip extends StatelessWidget {
   const _TypeChip({required this.type});
 
   Color get _color {
-    if (type.startsWith('Faculty')) return const Color(0xFF7C3AED);
-    if (type == 'Student') return const Color(0xFF2563EB);
-    if (type == 'Organization') return const Color(0xFF16A34A);
-    if (type == 'Department') return const Color(0xFFD97706);
+    if (type.startsWith('Faculty')) return AppColors.primary;
+    if (type == 'Student') return AppColors.tealInk;
+    if (type == 'Organization') return AppColors.success;
+    if (type == 'Department') return AppColors.warning;
     return AppColors.textSecondary;
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/wiki_provider.dart';
 import '../../widgets/common/app_modal.dart';
+import '../../widgets/common/page_chrome.dart';
 import '../../theme/app_colors.dart';
 
 class WikiHomePage extends ConsumerWidget {
@@ -20,64 +21,49 @@ class WikiHomePage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Wiki Knowledge Base',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Find procedures, guides, course syllabi, and student-curated knowledge all in one place.',
-          style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-        ),
-        const SizedBox(height: 24),
-        // Action buttons
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton.icon(
+        PageGreeting(
+          title: 'Wiki',
+          meta: const [
+            MetaText('Courses, rooms, how-to guides and student knowledge'),
+            MetaDot(),
+            MetaText('Updated daily', emphasis: true),
+          ],
+          actions: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              ElevatedButton.icon(
                 icon: const Icon(Icons.add_circle_outline, size: 18),
-                label: const Text('Create New Topic'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+                label: const Text('Create topic'),
                 onPressed: () => _showCreateTopicModal(context, isCreate: true),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: OutlinedButton.icon(
-                icon: const Icon(
-                  Icons.edit_outlined,
-                  size: 18,
-                  color: AppColors.primary,
-                ),
-                label: const Text(
-                  'Edit Existing Topic',
-                  style: TextStyle(color: AppColors.textPrimary),
-                ),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  side: const BorderSide(color: Color(0xFFD1D5DB)),
-                ),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.edit_outlined, size: 18),
+                label: const Text('Edit topic'),
                 onPressed: () =>
                     _showCreateTopicModal(context, isCreate: false),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: 18),
+        SearchPanel(
+          hint: 'Search wiki, courses, rooms, forms...',
+          onChanged: (value) =>
+              ref.read(wikiSearchQueryProvider.notifier).state = value,
+          trailing: const Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              MetaText('Popular:'),
+              SoftChip(label: 'Course catalog'),
+              SoftChip(label: 'Study room booking'),
+              SoftChip(label: 'Dorm guides'),
+              SoftChip(label: 'Report campus issue'),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
         const Text(
           'Explore Categories',
           style: TextStyle(
@@ -96,32 +82,32 @@ class WikiHomePage extends ConsumerWidget {
     final categories = [
       _CategoryCard(
         icon: Icons.book_outlined,
-        iconBg: const Color(0xFFDBEAFE),
-        iconColor: const Color(0xFF2563EB),
+        iconBg: AppColors.tealTint2,
+        iconColor: AppColors.primary,
         title: 'Courses',
         subtitle: 'Syllabi & Materials',
         path: '/wiki/category-courses',
       ),
       _CategoryCard(
         icon: Icons.home_outlined,
-        iconBg: const Color(0xFFDCFCE7),
-        iconColor: const Color(0xFF16A34A),
+        iconBg: AppColors.successLight,
+        iconColor: AppColors.success,
         title: 'Residential Life',
         subtitle: 'Dorms & Local Guides',
         path: '/wiki/category-residential-life',
       ),
       _CategoryCard(
         icon: Icons.school_outlined,
-        iconBg: const Color(0xFFF3E8FF),
-        iconColor: const Color(0xFF9333EA),
+        iconBg: AppColors.warningLight,
+        iconColor: AppColors.warning,
         title: 'Academics',
         subtitle: 'Procedures & Registration',
         path: '/wiki/category-academics',
       ),
       _CategoryCard(
         icon: Icons.group_outlined,
-        iconBg: const Color(0xFFFFEDD5),
-        iconColor: const Color(0xFFEA580C),
+        iconBg: AppColors.dangerLight,
+        iconColor: AppColors.danger,
         title: 'GSO',
         subtitle: 'Events & Organizations',
         path: '/wiki/category-gso',
@@ -131,10 +117,10 @@ class WikiHomePage extends ConsumerWidget {
     final isWide = MediaQuery.of(context).size.width >= 600;
 
     return GridView.count(
-      crossAxisCount: isWide ? 2 : 1,
+      crossAxisCount: isWide ? 3 : 1,
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
-      childAspectRatio: isWide ? 3.5 : 4,
+      childAspectRatio: isWide ? 1.15 : 3.2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: categories.map((c) => _buildCategoryTile(context, c)).toList(),
@@ -145,13 +131,21 @@ class WikiHomePage extends ConsumerWidget {
     return GestureDetector(
       onTap: () => context.go(c.path),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: AppColors.ruleSoft),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.035),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.all(12),
@@ -161,30 +155,32 @@ class WikiHomePage extends ConsumerWidget {
               ),
               child: Icon(c.icon, color: c.iconColor, size: 22),
             ),
-            const SizedBox(width: 14),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  c.title,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                Text(
-                  c.subtitle,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
+            const SizedBox(height: 12),
+            Text(
+              c.title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              c.subtitle,
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+              ),
             ),
             const Spacer(),
-            const Icon(Icons.chevron_right, color: AppColors.textMuted),
+            const Text(
+              'Browse ->',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: AppColors.tealInk,
+              ),
+            ),
           ],
         ),
       ),
@@ -286,15 +282,15 @@ class WikiHomePage extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFFBEB),
+                  color: AppColors.warningLight,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFFFDE68A)),
+                  border: Border.all(color: AppColors.warning),
                 ),
                 child: const Row(
                   children: [
                     Icon(
                       Icons.warning_amber_rounded,
-                      color: Color(0xFFD97706),
+                      color: AppColors.warning,
                       size: 16,
                     ),
                     SizedBox(width: 8),
@@ -303,7 +299,7 @@ class WikiHomePage extends ConsumerWidget {
                         'Student submissions are queued for moderation. Only Professors and OAA staff can publish directly.',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF92400E),
+                          color: AppColors.warning,
                         ),
                       ),
                     ),
