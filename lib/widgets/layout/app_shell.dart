@@ -1,77 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../providers/sidebar_provider.dart';
-import 'sidebar.dart';
 import 'top_nav.dart';
 import '../../theme/app_colors.dart';
 
-class AppShell extends ConsumerWidget {
+class AppShell extends StatelessWidget {
   final Widget child;
   const AppShell({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isDesktopCollapsed = ref.watch(desktopCollapsedProvider);
-    final isMobileOpen = ref.watch(sidebarOpenProvider);
-    final isDesktop = MediaQuery.of(context).size.width >= 768;
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Stack(
+      body: Column(
         children: [
-          Row(
-            children: [
-              if (isDesktop)
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  width: isDesktopCollapsed ? 0 : 256,
-                  child: isDesktopCollapsed
-                      ? const SizedBox.shrink()
-                      : const Sidebar(),
-                ),
-              Expanded(
-                child: Column(
-                  children: [
-                    TopNav(),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(24),
-                        child: SelectionArea(child: child),
-                      ),
-                    ),
-                  ],
+          const TopNav(),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(
+                _pageGutter(context),
+                24,
+                _pageGutter(context),
+                isMobile ? 88 : 48,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1400),
+                  child: SelectionArea(child: child),
                 ),
               ),
-            ],
+            ),
           ),
-          if (!isDesktop) ...[
-            AnimatedOpacity(
-              opacity: isMobileOpen ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 200),
-              child: IgnorePointer(
-                ignoring: !isMobileOpen,
-                child: GestureDetector(
-                  onTap: () =>
-                      ref.read(sidebarOpenProvider.notifier).state = false,
-                  child: Container(color: Colors.black54),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              child: AnimatedSlide(
-                offset: isMobileOpen ? Offset.zero : const Offset(-1, 0),
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeInOut,
-                child: const Sidebar(),
-              ),
-            ),
-          ],
+          if (isMobile) const MobileNav(),
         ],
       ),
     );
+  }
+
+  double _pageGutter(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < 480) return 16;
+    if (width < 900) return 20;
+    return width * 0.03;
   }
 }

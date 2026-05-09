@@ -73,11 +73,18 @@ class _ExpandableRoomCardState extends ConsumerState<ExpandableRoomCard> {
 
   Widget _card({required Widget child}) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.ruleSoft),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.035),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: child,
     );
@@ -117,7 +124,20 @@ class _ExpandableRoomCardState extends ConsumerState<ExpandableRoomCard> {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  _AuthorityChip(label: facility.authority),
+                  Wrap(
+                    spacing: 6,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      _AuthorityChip(label: facility.authority),
+                      Text(
+                        _categoryLabel(facility.category),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -130,6 +150,14 @@ class _ExpandableRoomCardState extends ConsumerState<ExpandableRoomCard> {
         ),
       ),
     );
+  }
+
+  String _categoryLabel(FacilityCategory category) {
+    return switch (category) {
+      FacilityCategory.classroom => 'Classroom',
+      FacilityCategory.lounge => 'Lounge',
+      FacilityCategory.gymnasium => 'Gymnasium',
+    };
   }
 
   List<TimeSlot> _effectiveSlots() {

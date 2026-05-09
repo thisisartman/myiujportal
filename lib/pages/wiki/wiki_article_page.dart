@@ -5,6 +5,7 @@ import '../../data/mock_data.dart';
 import '../../widgets/wiki/breadcrumb_bar.dart';
 import '../../widgets/common/app_modal.dart';
 import '../../widgets/common/hover_card.dart';
+import '../../widgets/common/page_chrome.dart';
 import '../../theme/app_colors.dart';
 
 const _kBookableFacilityArticleIds = {
@@ -47,52 +48,26 @@ class WikiArticlePage extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BreadcrumbBar(pageId: articleId),
-        // Header
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    page.title,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Last updated: ${page.lastUpdated}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textMuted,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            OutlinedButton.icon(
-              icon: const Icon(Icons.edit_outlined, size: 14),
-              label: const Text('Suggest Edit'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: const BorderSide(color: AppColors.primary),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-              ),
-              onPressed: () => _showSuggestEdit(context),
-            ),
+        const SizedBox(height: 14),
+        PageGreeting(
+          title: page.title,
+          meta: [
+            MetaText('Last updated: ${page.lastUpdated}'),
+            const MetaDot(),
+            const MetaText('Student wiki', emphasis: true),
           ],
+          actions: OutlinedButton.icon(
+            icon: const Icon(Icons.edit_outlined, size: 14),
+            label: const Text('Suggest Edit'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.primary,
+              side: const BorderSide(color: AppColors.primary),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            onPressed: () => _showSuggestEdit(context),
+          ),
         ),
-        const SizedBox(height: 24),
-        const Divider(),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
         // Page content
         _buildContent(context, articleId),
       ],
