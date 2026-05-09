@@ -9,6 +9,7 @@ import '../widgets/calendar/month_grid.dart';
 import '../widgets/calendar/event_card.dart';
 import '../widgets/calendar/group_meeting_modal.dart';
 import '../widgets/common/app_modal.dart';
+import '../widgets/common/page_chrome.dart';
 
 class CalendarPage extends ConsumerWidget {
   const CalendarPage({super.key});
@@ -18,50 +19,48 @@ class CalendarPage extends ConsumerWidget {
     final filteredEvents = ref.watch(filteredEventsProvider);
     final selectedDate = ref.watch(selectedDateProvider);
     final displayed = ref.watch(displayedMonthProvider);
-    final isWide = MediaQuery.of(context).size.width >= 900;
+    final isWide = MediaQuery.of(context).size.width >= 980;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header row
-        Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Calendar',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                Text(
-                  DateFormat('MMMM yyyy').format(displayed),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
+        PageGreeting(
+          title: 'Calendar',
+          meta: [
+            const MetaText('Spring 2026 · Week 6', emphasis: true),
+            const MetaDot(),
+            MetaText('${filteredEvents.length} items on selected day'),
           ],
+          actions: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              OutlinedButton.icon(
+                onPressed: () => GroupMeetingModal.show(context),
+                icon: const Icon(Icons.groups_2_outlined, size: 16),
+                label: const Text('Schedule group meeting'),
+              ),
+              ElevatedButton.icon(
+                onPressed: () => _showAddEventModal(context, ref),
+                icon: const Icon(Icons.add, size: 16),
+                label: const Text('Add event'),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 16),
-        // Content layout
         isWide
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     flex: 3,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.border),
+                    child: PageCard(
+                      padding: EdgeInsets.zero,
+                      header: PageCardHeader(
+                        icon: Icons.calendar_month_outlined,
+                        title: DateFormat('MMMM yyyy').format(displayed),
+                        action: _CalendarToolbar(ref: ref),
                       ),
                       child: const MonthGrid(),
                     ),
@@ -80,12 +79,12 @@ class CalendarPage extends ConsumerWidget {
               )
             : Column(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.border),
+                  PageCard(
+                    padding: EdgeInsets.zero,
+                    header: PageCardHeader(
+                      icon: Icons.calendar_month_outlined,
+                      title: DateFormat('MMMM yyyy').format(displayed),
+                      action: _CalendarToolbar(ref: ref),
                     ),
                     child: const MonthGrid(),
                   ),
@@ -98,27 +97,10 @@ class CalendarPage extends ConsumerWidget {
   }
 
   Widget _filterChip(String label, String value, String filter, WidgetRef ref) {
-    final active = filter == value;
-    return GestureDetector(
+    return SoftChip(
+      label: label,
+      selected: filter == value,
       onTap: () => ref.read(calendarFilterProvider.notifier).state = value,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: active ? AppColors.primaryLight : AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: active ? AppColors.primary : AppColors.border,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: active ? AppColors.primary : AppColors.textSecondary,
-          ),
-        ),
-      ),
     );
   }
 
@@ -131,44 +113,31 @@ class CalendarPage extends ConsumerWidget {
     final displayed = ref.watch(displayedMonthProvider);
     final filter = ref.watch(calendarFilterProvider);
     final monthName = DateFormat('MMMM').format(displayed);
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+    return PageCard(
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
+      header: PageCardHeader(
+        icon: Icons.event_note_outlined,
+        title: 'Selected day',
+        action: ElevatedButton.icon(
+          icon: const Icon(Icons.add, size: 14),
+          label: const Text('Add'),
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(0, 34),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          ),
+          onPressed: () => _showAddEventModal(context, ref),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '$monthName $selectedDate',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.add, size: 16),
-                label: const Text('Add Event'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
-                ),
-                onPressed: () => _showAddEventModal(context, ref),
-              ),
-            ],
+          Text(
+            '$monthName $selectedDate',
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
+            ),
           ),
           const SizedBox(height: 10),
           SingleChildScrollView(
@@ -212,7 +181,14 @@ class CalendarPage extends ConsumerWidget {
               ),
             )
           else
-            ...events.map((e) => EventCard(event: e)),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 480),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: events.map((e) => EventCard(event: e)).toList(),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -360,6 +336,57 @@ class CalendarPage extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CalendarToolbar extends StatelessWidget {
+  final WidgetRef ref;
+
+  const _CalendarToolbar({required this.ref});
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        IconButton(
+          tooltip: 'Previous month',
+          onPressed: () {
+            final displayed = ref.read(displayedMonthProvider);
+            ref.read(displayedMonthProvider.notifier).state = DateTime(
+              displayed.year,
+              displayed.month - 1,
+            );
+          },
+          icon: const Icon(Icons.chevron_left, size: 18),
+        ),
+        IconButton(
+          tooltip: 'Next month',
+          onPressed: () {
+            final displayed = ref.read(displayedMonthProvider);
+            ref.read(displayedMonthProvider.notifier).state = DateTime(
+              displayed.year,
+              displayed.month + 1,
+            );
+          },
+          icon: const Icon(Icons.chevron_right, size: 18),
+        ),
+        OutlinedButton(
+          onPressed: () {
+            final now = DateTime.now();
+            ref.read(displayedMonthProvider.notifier).state = now;
+            ref.read(selectedDateProvider.notifier).state = now.day;
+          },
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size(0, 34),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          ),
+          child: const Text('Today'),
+        ),
+      ],
     );
   }
 }
