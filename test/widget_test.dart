@@ -7,6 +7,8 @@ import 'package:myiuj_portal/providers/directory_provider.dart';
 import 'package:myiuj_portal/widgets/dashboard/alerts_widget.dart';
 import 'package:myiuj_portal/models/alert_item.dart';
 import 'package:myiuj_portal/data/mock_data.dart';
+import 'package:go_router/go_router.dart';
+import 'package:myiuj_portal/widgets/layout/top_nav.dart';
 
 void main() {
   testWidgets('App renders without crashing', (WidgetTester tester) async {
@@ -47,6 +49,25 @@ void main() {
       ),
     );
     expect(capturedRef.read(directoryFilterProvider), 'All');
+  });
+
+  testWidgets('TopNav shows warning report icon', (tester) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: TopNav()),
+        ),
+      ],
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp.router(routerConfig: router),
+      ),
+    );
+    await tester.pump();
+    expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+    expect(find.byTooltip('Report an Issue'), findsOneWidget);
   });
 
   test('kFinancialStatements has 6 unique, correctly-formatted entries in chronological order', () {
