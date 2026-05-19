@@ -870,3 +870,12 @@ String _dateLabel(DateTime date) {
   ];
   return '${months[date.month - 1]} ${date.day}, ${date.year}';
 }
+
+const List<String> kFinancialStatements = [
+  'November 2025 Statement',
+  'December 2025 Statement',
+  'January 2026 Statement',
+  'February 2026 Statement',
+  'March 2026 Statement',
+  'April 2026 Statement',
+];

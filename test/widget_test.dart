@@ -6,6 +6,7 @@ import 'package:myiuj_portal/providers/alerts_provider.dart';
 import 'package:myiuj_portal/providers/directory_provider.dart';
 import 'package:myiuj_portal/widgets/dashboard/alerts_widget.dart';
 import 'package:myiuj_portal/models/alert_item.dart';
+import 'package:myiuj_portal/data/mock_data.dart';
 
 void main() {
   testWidgets('App renders without crashing', (WidgetTester tester) async {
@@ -46,5 +47,31 @@ void main() {
       ),
     );
     expect(capturedRef.read(directoryFilterProvider), 'All');
+  });
+
+  test('kFinancialStatements has 6 unique, correctly-formatted entries in chronological order', () {
+    expect(kFinancialStatements.length, 6);
+    // No duplicates
+    expect(kFinancialStatements.toSet().length, kFinancialStatements.length);
+    // Format: 'Month YYYY Statement'
+    final pattern = RegExp(r'^\w+ \d{4} Statement$');
+    for (final s in kFinancialStatements) {
+      expect(pattern.hasMatch(s), isTrue, reason: '$s does not match expected format');
+    }
+    // Chronological order (list is ordered oldest-first)
+    const months = ['January','February','March','April','May','June',
+      'July','August','September','October','November','December'];
+    for (int i = 1; i < kFinancialStatements.length; i++) {
+      final prev = kFinancialStatements[i - 1].split(' ');
+      final curr = kFinancialStatements[i].split(' ');
+      final prevYear = int.parse(prev[1]);
+      final currYear = int.parse(curr[1]);
+      final prevMonth = months.indexOf(prev[0]);
+      final currMonth = months.indexOf(curr[0]);
+      final prevOrd = prevYear * 12 + prevMonth;
+      final currOrd = currYear * 12 + currMonth;
+      expect(currOrd, greaterThan(prevOrd),
+          reason: '${kFinancialStatements[i]} should come after ${kFinancialStatements[i-1]}');
+    }
   });
 }
