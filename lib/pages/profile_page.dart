@@ -1,67 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../data/mock_data.dart';
 import '../providers/auth_provider.dart';
 import '../theme/app_colors.dart';
 import '../widgets/common/app_modal.dart';
-import '../widgets/common/hover_card.dart';
 import '../widgets/common/page_chrome.dart';
 import '../widgets/common/toast_overlay.dart';
 import '../widgets/profile/digital_id_card.dart';
 import '../widgets/profile/issue_report_modal.dart';
 
-class ProfilePage extends ConsumerWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isWide = MediaQuery.of(context).size.width >= 900;
-    final academicSection = Column(
-      children: [
-        _infoCard([
-          ('Program', 'MBA — Graduate School of International Management'),
-          ('Student ID', 'IUJ-2026-0001'),
-          ('Year', '1st Year'),
-          ('Status', 'Full-time'),
-        ]),
-        const SizedBox(height: 16),
-        _infoCard([
-          ('Adviser', 'Prof. Remy Magnier-Watanabe'),
-          ('Campus Address', 'Dorm A, Room 201'),
-        ]),
-      ],
-    );
-    final adminVaultSection = _AdminVault();
-    final signOutBtn = Align(
-      alignment: Alignment.centerRight,
-      child: SizedBox(
-        width: 160,
-        child: OutlinedButton.icon(
-          icon: const Icon(Icons.logout, size: 16),
-          label: const Text('Sign out'),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.danger,
-            side: const BorderSide(color: AppColors.danger),
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          onPressed: () => ref.read(authProvider.notifier).logout(),
-        ),
-      ),
-    );
-    final leftCol = Column(
-      children: [
-        const DigitalIdCard(),
-        const SizedBox(height: 16),
-        academicSection,
-      ],
-    );
-    final rightCol = Column(
-      children: [adminVaultSection, const SizedBox(height: 24), signOutBtn],
-    );
+  ConsumerState<ProfilePage> createState() => _ProfilePageState();
+}
 
+class _ProfilePageState extends ConsumerState<ProfilePage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabs;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabs = TabController(length: 3, vsync: this);
+    _tabs.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _tabs.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -74,21 +48,234 @@ class ProfilePage extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 18),
-        const _ProfileTabs(),
+        const DigitalIdCard(),
         const SizedBox(height: 18),
-        if (isWide)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: leftCol),
-              const SizedBox(width: 16),
-              Expanded(child: rightCol),
-            ],
-          )
-        else
-          Column(children: [leftCol, const SizedBox(height: 16), rightCol]),
+        TabBar(
+          controller: _tabs,
+          labelColor: AppColors.textPrimary,
+          unselectedLabelColor: AppColors.textSecondary,
+          labelStyle: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+          indicatorColor: AppColors.primary,
+          indicatorSize: TabBarIndicatorSize.label,
+          dividerColor: AppColors.ruleSoft,
+          tabs: const [
+            Tab(text: 'Personal Info'),
+            Tab(text: 'Academic'),
+            Tab(text: 'Financial'),
+          ],
+        ),
+        const SizedBox(height: 18),
+        _tabContent(),
+        const SizedBox(height: 24),
+        _reportIssuesButton(),
       ],
     );
+  }
+
+  Widget _tabContent() {
+    return switch (_tabs.index) {
+      0 => _personalInfoTab(),
+      1 => _academicTab(),
+      2 => _financialTab(),
+      _ => const SizedBox.shrink(),
+    };
+  }
+
+  Widget _personalInfoTab() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _infoCard([
+          ('Name', 'Apoorv Terwadkar'),
+          ('Email', 'student@iuj.ac.jp'),
+          ('Campus Address', 'Dorm A, Room 201'),
+          ('Student ID', 'IUJ-2026-0001'),
+        ]),
+        const SizedBox(height: 24),
+        Align(
+          alignment: Alignment.centerRight,
+          child: SizedBox(
+            width: 160,
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.logout, size: 16),
+              label: const Text('Sign out'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.danger,
+                side: const BorderSide(color: AppColors.danger),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: () => ref.read(authProvider.notifier).logout(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _academicTab() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _infoCard([
+          ('Program', 'MBA — Graduate School of International Management'),
+          ('Student ID', 'IUJ-2026-0001'),
+          ('Year', '1st Year'),
+          ('Status', 'Full-time'),
+          ('Adviser', 'Prof. Remy Magnier-Watanabe'),
+        ]),
+        const SizedBox(height: 16),
+        _libraryTile(),
+        const SizedBox(height: 16),
+        _changelogCard(),
+      ],
+    );
+  }
+
+  Widget _libraryTile() {
+    return GestureDetector(
+      onTap: () => context.go('/facilities/library'),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.ruleSoft),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.035),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.local_library_outlined,
+                color: AppColors.primary, size: 20),
+            SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'My Library',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Text(
+                  'Loans and library resources',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+            Spacer(),
+            Icon(Icons.chevron_right, color: AppColors.textSecondary, size: 18),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _changelogCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.ruleSoft),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.035),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Records Changelog',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 12),
+          _ChangelogRow('Apr 24', 'Address record verified by OSS.'),
+          _ChangelogRow('Apr 18', 'Library account synced.'),
+          _ChangelogRow('Apr 10', 'Enrollment status confirmed.'),
+          _ChangelogRow('Apr 02', 'Financial statement refreshed.'),
+        ],
+      ),
+    );
+  }
+
+  Widget _financialTab() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.ruleSoft),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.035),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        children: kFinancialStatements.indexed.map((entry) {
+          final (i, month) = entry;
+          return _StatementRow(
+            month: month,
+            isFirst: i == 0,
+            isLast: i == kFinancialStatements.length - 1,
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _reportIssuesButton() {
+    return OutlinedButton.icon(
+      icon: const Icon(Icons.report_problem_outlined, size: 16),
+      label: const Text('Report an Issue'),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.danger,
+        side: const BorderSide(color: AppColors.danger),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      onPressed: () => _showIssueReport(context),
+    );
+  }
+
+  Future<void> _showIssueReport(BuildContext context) async {
+    final submitted = await AppModal.show<bool>(
+      context,
+      title: 'Report an Issue',
+      child: const IssueReportModal(),
+    );
+    if (!context.mounted || submitted != true) return;
+    showToast(context, 'Report submitted.', type: ToastType.success);
   }
 
   Widget _infoCard(List<(String, String)> rows) {
@@ -146,219 +333,135 @@ class ProfilePage extends ConsumerWidget {
   }
 }
 
-class _AdminVault extends StatelessWidget {
-  const _AdminVault();
+class _StatementRow extends StatefulWidget {
+  final String month;
+  final bool isFirst;
+  final bool isLast;
 
-  @override
-  Widget build(BuildContext context) {
-    final tiles = [
-      _VaultTile(
-        icon: Icons.receipt_long_outlined,
-        title: 'Financial Statement',
-        subtitle: 'Tuition and payment records',
-        onTap: () => AppModal.show(
-          context,
-          title: 'Financial Statement',
-          child: const Text('Download placeholder'),
-        ),
-      ),
-      _VaultTile(
-        icon: Icons.local_library_outlined,
-        title: 'My Library',
-        subtitle: 'Loans and library resources',
-        onTap: () => context.go('/facilities/library'),
-      ),
-      _VaultTile(
-        icon: Icons.history_outlined,
-        title: 'Records Changelog',
-        subtitle: 'Recent admin updates',
-        onTap: () => AppModal.show(
-          context,
-          title: 'Records Changelog',
-          child: SizedBox(
-            height: 220,
-            child: ListView(
-              children: const [
-                _ChangelogRow('Apr 24', 'Address record verified by OSS.'),
-                _ChangelogRow('Apr 18', 'Library account synced.'),
-                _ChangelogRow('Apr 10', 'Enrollment status confirmed.'),
-                _ChangelogRow('Apr 02', 'Financial statement refreshed.'),
-              ],
-            ),
-          ),
-        ),
-      ),
-      _VaultTile(
-        icon: Icons.report_problem_outlined,
-        title: 'Report Issues',
-        subtitle: 'Facilities and campus support',
-        onTap: () => _showIssueReport(context),
-      ),
-    ];
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.ruleSoft),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.035),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(
-                Icons.admin_panel_settings_outlined,
-                size: 18,
-                color: AppColors.tealInk,
-              ),
-              SizedBox(width: 8),
-              Text(
-                'Admin Vault',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            'Official records, finances, library access and campus support.',
-            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-          ),
-          const SizedBox(height: 12),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 1.15,
-            children: tiles,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _showIssueReport(BuildContext context) async {
-    final submitted = await AppModal.show<bool>(
-      context,
-      title: 'Report an Issue',
-      child: const IssueReportModal(),
-    );
-    if (!context.mounted || submitted != true) return;
-    showToast(context, 'Report submitted.', type: ToastType.success);
-  }
-}
-
-class _ProfileTabs extends StatelessWidget {
-  const _ProfileTabs();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.ruleSoft)),
-      ),
-      child: Row(
-        children: const [
-          _ProfileTab(label: 'Overview', active: true),
-          _ProfileTab(label: 'Records'),
-          _ProfileTab(label: 'Settings'),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProfileTab extends StatelessWidget {
-  final String label;
-  final bool active;
-
-  const _ProfileTab({required this.label, this.active = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 18),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 11),
-        decoration: BoxDecoration(
-          border: active
-              ? const Border(
-                  bottom: BorderSide(color: AppColors.primary, width: 2),
-                )
-              : null,
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: active ? AppColors.textPrimary : AppColors.textSecondary,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _VaultTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  const _VaultTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
+  const _StatementRow({
+    required this.month,
+    required this.isFirst,
+    required this.isLast,
   });
 
   @override
+  State<_StatementRow> createState() => _StatementRowState();
+}
+
+class _StatementRowState extends State<_StatementRow> {
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    return HoverCard(
-      onTap: onTap,
-      padding: const EdgeInsets.all(12),
-      borderRadius: BorderRadius.circular(8),
+    return Container(
+      decoration: BoxDecoration(
+        border: widget.isFirst
+            ? null
+            : const Border(top: BorderSide(color: AppColors.border)),
+        borderRadius: BorderRadius.vertical(
+          top: widget.isFirst ? const Radius.circular(12) : Radius.zero,
+          bottom: widget.isLast ? const Radius.circular(12) : Radius.zero,
+        ),
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.primary, size: 22),
-          const Spacer(),
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+          InkWell(
+            onTap: () => setState(() => _expanded = !_expanded),
+            borderRadius: BorderRadius.vertical(
+              top: widget.isFirst ? const Radius.circular(12) : Radius.zero,
+              bottom: !_expanded && widget.isLast
+                  ? const Radius.circular(12)
+                  : Radius.zero,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                children: [
+                  const Icon(Icons.receipt_long_outlined,
+                      size: 18, color: AppColors.primary),
+                  const SizedBox(width: 12),
+                  Text(
+                    widget.month,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    _expanded ? Icons.expand_less : Icons.expand_more,
+                    size: 18,
+                    color: AppColors.textSecondary,
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 3),
-          Text(
-            subtitle,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 11,
-              color: AppColors.textSecondary,
+          if (_expanded)
+            Container(
+              decoration: const BoxDecoration(
+                border: Border(top: BorderSide(color: AppColors.border)),
+                color: AppColors.bgSunken,
+              ),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.open_in_new, size: 14),
+                    label: const Text('Open'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      side: const BorderSide(color: AppColors.primary),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      textStyle: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w600),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6)),
+                    ),
+                    onPressed: () => AppModal.show(
+                      context,
+                      title: widget.month,
+                      child: const Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          'Document viewer coming soon.',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.download_outlined, size: 14),
+                    label: const Text('Download'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textSecondary,
+                      side: const BorderSide(color: AppColors.ruleSoft),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      textStyle: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w600),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6)),
+                    ),
+                    onPressed: () => AppModal.show(
+                      context,
+                      title: 'Download',
+                      child: const Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          'Download coming soon.',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
