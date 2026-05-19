@@ -6,17 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **MyIUJ!** is a campus portal for the International University of Japan (IUJ).
 
-- **Reference prototype:** `MyIUJ! Revamp.jsx` (kept, not deleted — source of truth for UI/UX)
+- **Reference prototype:** `MyIUJ! Revamp.jsx` — kept as UI/UX source of truth; all mock data, wiki content, and visual patterns must match it
 - **Current implementation:** Flutter web app under `lib/`
-- **Target platforms:** Web (now), Android/iOS (future via same codebase)
-
-## Tech Stack
-
-- **Flutter 3.41.4 / Dart 3.11.1**
-- **flutter_riverpod ^2.6.1** — state management
-- **go_router ^14.x** — URL-based routing (web-friendly deep links)
-- **google_fonts ^6.x** — Inter typeface
-- **intl ^0.19** — date formatting
+- **Target platforms:** Web (primary), Android/iOS (future via same codebase)
 
 ## Key Commands
 
@@ -27,79 +19,128 @@ flutter run -d chrome
 # Production build
 flutter build web --release
 
-# Analyze code
-dart analyze lib/
+# Analyze (lint)
+flutter analyze lib/
+
+# Run tests
+flutter test
+
+# Run a single test file
+flutter test test/widget_test.dart
 ```
+
+## Tech Stack
+
+- **Flutter 3.41.4 / Dart 3.11.1**
+- **flutter_riverpod ^2.6.1** — all state via `StateNotifierProvider` / `Provider`
+- **go_router ^14.x** — URL routing; `routerProvider` in `router/app_router.dart`
+- **google_fonts ^6.x** — Inter typeface via `AppTheme.light()` in `theme/app_theme.dart`
+- **intl ^0.19** — date formatting
+- **url_launcher ^6.x** — external links
+
+## Architecture
+
+### Auth & Routing
+
+Auth is a single `bool` in `authProvider` (`StateNotifierProvider<AuthNotifier, bool>`). The router (`routerProvider`) guards all shell routes: unauthenticated users are redirected to `/login`; the bridge is `_AuthListenable extends ChangeNotifier` in `router/app_router.dart`.
+
+Demo credentials (swap when real auth arrives):
+- `student@iuj.ac.jp` / `iuj2026`
+- `professor@iuj.ac.jp` / `iuj2026`
+- `admin@iuj.ac.jp` / `iuj2026`
+
+All authenticated pages live inside a `ShellRoute` that renders `AppShell` (persistent sidebar + top nav). `/login` is a bare `GoRoute` outside the shell.
+
+### Route table
+
+| Path | Widget |
+|------|--------|
+| `/login` | `LoginPage` |
+| `/` | `DashboardPage` |
+| `/calendar` | `CalendarPage` |
+| `/facilities` | `FacilitiesHubPage` |
+| `/facilities/room-booking` | `RoomBookingPage` |
+| `/facilities/library` | `LibraryPage` |
+| `/facilities/directory` | `CampusDirectoryPage` |
+| `/wiki` | `WikiHomePage` |
+| `/wiki/:articleId` | `WikiArticlePage(articleId)` |
+| `/wiki/:category/:articleId` | `WikiArticlePage(articleId: "$category-$articleId")` |
+| `/profile` | `ProfilePage` |
+| `/meeting/:code` | `MeetingPage(code)` |
+
+### State (Providers)
+
+| Provider | Type | Purpose |
+|----------|------|---------|
+| `authProvider` | `StateNotifierProvider<AuthNotifier, bool>` | Login/logout |
+| `calendarProvider` | — | Events, selectedDate, filter, viewMode |
+| `sidebarProvider` | — | Mobile open / desktop collapsed |
+| `wikiProvider` | — | expandedCategories, search query/results |
+| `facilitiesProvider` | — | selectedFacility, selectedSlot, booking state |
+| `alertsProvider` | — | IUJ news/alerts feed |
+| `directoryProvider` / `directoryFilterProvider` | — | Campus directory & filter state |
+| `dashboardProvider` | — | Dashboard aggregation |
+| `meetingProvider` | — | Group meeting/poll state |
+
+### Theme
+
+Colors live in `theme/app_colors.dart` as `AppColors` static constants (never hardcode hex values). Theme wiring is in `theme/app_theme.dart`. Brand: teal primary `#0D9488`, orange accent `#EA580C`, dark-navy sidebar `#0F172A`.
+
+### Common Widgets
+
+- `AppModal` — all modals must use this; **`maxWidth: 448`** (Tailwind `max-w-md` equivalent)
+- `ToastOverlay` — transient notifications
+- `DashboardCard` — standard card surface for dashboard sections
+- `HoverCard` — card with hover elevation/highlight
+- `PageChrome` — consistent page-level padding/header wrapper
 
 ## Project Structure
 
 ```
 lib/
-├── main.dart                        # ProviderScope + runApp
-├── app.dart                         # MaterialApp.router, theme, GoRouter instance
-├── router/app_router.dart           # GoRouter routes (ShellRoute wraps all pages)
-├── models/
-│   ├── alert_item.dart              # AlertSeverity enum + AlertItem class
-│   ├── calendar_event.dart          # CalendarEvent, CalendarEventType enum + extensions
-│   ├── facility.dart                # Facility, TimeSlot
-│   └── wiki_page.dart               # WikiPage, WikiCategory, DirectoryEntry
-├── data/mock_data.dart              # All hardcoded mock data (ported from JSX prototype)
-├── providers/
-│   ├── calendar_provider.dart       # events, selectedDate, filter, viewMode
-│   ├── sidebar_provider.dart        # mobile open / desktop collapsed
-│   ├── wiki_provider.dart           # expandedCategories, search query/results
-│   └── facilities_provider.dart     # selectedFacility, selectedSlot, booking state
+├── main.dart                    # ProviderScope + runApp
+├── app.dart                     # MaterialApp.router → routerProvider + AppTheme
+├── router/app_router.dart       # All GoRouter routes; _AuthListenable bridge
+├── theme/
+│   ├── app_colors.dart          # All color constants (AppColors)
+│   └── app_theme.dart           # ThemeData via AppTheme.light()
+├── models/                      # Plain Dart data classes + enums
+├── data/mock_data.dart          # All hardcoded mock data (matches JSX prototype)
+├── providers/                   # One file per feature domain
 ├── pages/
-│   ├── dashboard_page.dart          # Route: /
-│   ├── calendar_page.dart           # Route: /calendar
-│   ├── facilities_page.dart         # Route: /facilities
+│   ├── login_page.dart
+│   ├── dashboard_page.dart
+│   ├── calendar_page.dart
+│   ├── facilities_hub_page.dart # Hub landing; links to sub-pages
+│   ├── facilities/
+│   │   ├── room_booking_page.dart
+│   │   ├── library_page.dart
+│   │   └── campus_directory_page.dart
+│   ├── profile_page.dart
+│   ├── meeting_page.dart
 │   └── wiki/
-│       ├── wiki_home_page.dart      # Route: /wiki
-│       └── wiki_article_page.dart   # Route: /wiki/:articleId  (handles all wiki sub-pages)
+│       ├── wiki_home_page.dart
+│       └── wiki_article_page.dart
 └── widgets/
-    ├── layout/
-    │   ├── app_shell.dart           # ShellRoute wrapper — persistent sidebar + top nav
-    │   ├── sidebar.dart             # Collapsible sidebar with wiki accordion
-    │   └── top_nav.dart             # Hamburger, search bar, user avatar
-    ├── dashboard/
-    │   ├── upcoming_events_widget.dart  # Upcoming events list with tag chips
-    │   ├── quick_links_widget.dart      # 2×2 grid of navigation shortcuts
-    │   ├── alerts_widget.dart           # Expandable IUJ news/alerts feed
-    │   └── digital_id_widget.dart       # Student ID card linking to profile
-    ├── calendar/
-    │   ├── month_grid.dart          # Dynamic month grid with event dot indicators
-    │   └── event_card.dart          # Hover edit/delete; edit modal
-    ├── facilities/
-    │   ├── facility_card.dart       # Selectable facility tile
-    │   └── time_slot_selector.dart  # Available/unavailable slot list
-    ├── wiki/
-    │   └── breadcrumb_bar.dart      # "Back to [Parent]" navigation
-    └── common/
-        ├── app_modal.dart           # Reusable modal, maxWidth: 448 (≈ Tailwind max-w-md)
-        └── toast_overlay.dart       # Transient toast notifications
+    ├── layout/                  # app_shell, sidebar, top_nav
+    ├── common/                  # app_modal, toast_overlay, dashboard_card, hover_card, page_chrome
+    ├── dashboard/               # up_next_card, today_timeline_card, upcoming_events_widget,
+    │                            # quick_links_widget, alerts_widget, digital_id_widget,
+    │                            # group_meeting_polls_card, library_loans_card, profile_dropdown
+    ├── calendar/                # month_grid, event_card, event_detail_modal, group_meeting_modal
+    ├── facilities/              # expandable_room_card, booking_calendar, booking_slot_selector,
+    │                            # booking_form, booking_modal
+    ├── directory/               # directory_card
+    ├── profile/                 # digital_id_card, issue_report_modal
+    └── wiki/                    # breadcrumb_bar
 ```
-
-## Routing
-
-| Path | Widget | Notes |
-|------|--------|-------|
-| `/` | `DashboardPage` | |
-| `/calendar` | `CalendarPage` | |
-| `/facilities` | `FacilitiesPage` | |
-| `/wiki` | `WikiHomePage` | |
-| `/wiki/:articleId` | `WikiArticlePage` | handles category-, subcategory-, article- pages |
-| `/wiki/:category/:articleId` | `WikiArticlePage` | URL-composed articleId |
 
 ## Key Design Constraints (from PRD)
 
-- All modals: `maxWidth: 448` (equivalent to Tailwind `max-w-md`)
-- Calendar event types: strictly **"Classes"**, **"Assignments"**, **"Events"** (enum `CalendarEventType`)
-- Device calendar sync copy: use generic **"device calendar"** — never brand-specific names
-- Dashboard `DashboardCalendarWidget`: date number on top, day-of-week below; **no location**; entire widget taps to `/calendar`
-- Wiki RBAC: Students can only "Suggest Edit"; only Professors/OAA staff can publish new courses
-- Wiki moderation: student submissions show "Submitted for Moderation" state — not live publish
-
-## Reference File
-
-`MyIUJ! Revamp.jsx` is the original single-file React prototype. It is kept as a design reference.
-All mock data, wiki content, and UI patterns should match it.
+- **All modals:** `maxWidth: 448` via `AppModal`
+- **Calendar event types:** strictly `CalendarEventType.classes`, `.assignments`, `.events` — no other values
+- **Device calendar sync copy:** always "device calendar" — never brand names (Samsung, Apple, Google)
+- **Dashboard calendar widget:** date number on top, day-of-week below; no location; whole widget navigates to `/calendar`
+- **Wiki RBAC:** Students → "Suggest Edit" only; Professors/OAA staff → publish new courses. Student submissions must show "Submitted for Moderation" state, not go live immediately
+- **Colors:** always use `AppColors` constants — never inline hex
+- **No page transitions:** all routes use `NoTransitionPage`
