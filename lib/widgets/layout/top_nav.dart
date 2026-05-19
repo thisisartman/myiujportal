@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/wiki_provider.dart';
 import '../../theme/app_colors.dart';
+import '../common/app_modal.dart';
 import '../common/toast_overlay.dart';
 import '../dashboard/profile_dropdown.dart';
+import '../profile/issue_report_modal.dart';
 
 class TopNav extends ConsumerWidget {
   const TopNav({super.key});
@@ -64,6 +66,8 @@ class TopNav extends ConsumerWidget {
               ),
             ),
           if (showSearch) const SizedBox(width: 12),
+          _ReportIssueButton(),
+          const SizedBox(width: 4),
           _AlertButton(),
           const SizedBox(width: 10),
           const ProfileChip(),
@@ -302,6 +306,33 @@ class _AlertButton extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _ReportIssueButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: 'Report an Issue',
+      child: IconButton(
+        onPressed: () => _showIssueReport(context),
+        icon: const Icon(
+          Icons.warning_amber_rounded,
+          color: AppColors.warning,
+          size: 20,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showIssueReport(BuildContext context) async {
+    final submitted = await AppModal.show<bool>(
+      context,
+      title: 'Report an Issue',
+      child: const IssueReportModal(),
+    );
+    if (!context.mounted || submitted != true) return;
+    showToast(context, 'Report submitted.', type: ToastType.success);
   }
 }
 
