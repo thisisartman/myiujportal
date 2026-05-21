@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../data/mock_data.dart';
 import '../../models/calendar_event.dart';
-import '../../providers/directory_provider.dart';
 import '../../providers/meeting_provider.dart';
 import '../../theme/app_colors.dart';
 import '../calendar/event_detail_modal.dart';
@@ -129,31 +128,32 @@ class _TimelineRow extends ConsumerWidget {
                     spacing: 6,
                     runSpacing: 6,
                     children: [
-                      _TypeChip(type: event.type),
+                      _TypeChip(
+                        type: event.type,
+                        onTap: () => context.go(
+                          '/calendar?filter=${event.type.name}',
+                        ),
+                      ),
                       if (meta.course != null)
                         _TimelineChip(
                           label: meta.course!,
                           onTap: () => context.go(
-                            '/wiki/course-${dashboardCourseId(meta.course!)}',
+                            courseWikiRoute(meta.course!),
                           ),
                         ),
                       if (meta.room != null)
                         _TimelineChip(
                           label: meta.room!,
                           icon: Icons.location_on_outlined,
-                          onTap: () => context.go('/facilities/room-booking'),
+                          onTap: () => context.go(roomWikiRoute(meta.room!)),
                         ),
                       if (meta.professor != null)
                         _TimelineChip(
                           label: meta.professor!,
                           icon: Icons.person_outline,
-                          onTap: () {
-                            ref.read(directorySearchProvider.notifier).state =
-                                meta.professor!;
-                            ref.read(directoryFilterProvider.notifier).state =
-                                'Faculty';
-                            context.go('/facilities/directory');
-                          },
+                          onTap: () => context.go(
+                            '/facilities/directory?query=${Uri.encodeComponent(meta.professor!)}',
+                          ),
                         ),
                     ],
                   ),
@@ -222,38 +222,26 @@ class _TimelineMarker extends StatelessWidget {
 
 class _TypeChip extends StatelessWidget {
   final CalendarEventType type;
+  final VoidCallback? onTap;
 
-  const _TypeChip({required this.type});
+  const _TypeChip({required this.type, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (type) {
-      CalendarEventType.class_ => (
-        'Class',
-        AppColors.tealInk,
-        AppColors.tealTint2,
-      ),
-      CalendarEventType.assignment => (
-        'Assignment',
-        AppColors.danger,
-        AppColors.dangerLight,
-      ),
-      CalendarEventType.event => (
-        'Event',
-        AppColors.warning,
-        AppColors.warningLight,
-      ),
+      CalendarEventType.class_ => ('Class', AppColors.tealInk, AppColors.tealTint2),
+      CalendarEventType.assignment => ('Assignment', AppColors.danger, AppColors.dangerLight),
+      CalendarEventType.event => ('Event', AppColors.warning, AppColors.warningLight),
     };
-    return Container(
+    final chip = Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: fg),
-      ),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
+      child: Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: fg)),
+    );
+    if (onTap == null) return chip;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(onTap: onTap, child: chip),
     );
   }
 }

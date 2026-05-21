@@ -30,6 +30,17 @@ DashboardEventMeta parseDashboardEventMeta(String detail) {
 
 String dashboardCourseId(String code) => code.replaceAll('-', '').toLowerCase();
 
+String courseWikiRoute(String code) =>
+    '/wiki/course-${code.replaceAll('-', '').toLowerCase()}';
+
+String roomWikiRoute(String room) {
+  final r = room.toLowerCase();
+  if (r.contains('library') || r.contains('mlic')) {
+    return '/wiki/04-Administration--library--library-overview';
+  }
+  return '/wiki/04-Administration--facilities-campus--library-mlic';
+}
+
 DateTime dashboardEventDateTime(CalendarEvent event, {DateTime? baseDate}) {
   final base = baseDate ?? DateTime.now();
   final parts = event.time.split(':');

@@ -52,8 +52,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/calendar',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: CalendarPage()),
+            pageBuilder: (context, state) {
+              final filter = state.uri.queryParameters['filter'];
+              return NoTransitionPage(child: CalendarPage(initialFilter: filter));
+            },
           ),
           GoRoute(
             path: '/facilities',
@@ -72,8 +74,12 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(
                 path: 'directory',
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: CampusDirectoryPage()),
+                pageBuilder: (context, state) {
+                  final query = state.uri.queryParameters['query'];
+                  return NoTransitionPage(
+                    child: CampusDirectoryPage(initialQuery: query),
+                  );
+                },
               ),
             ],
           ),
