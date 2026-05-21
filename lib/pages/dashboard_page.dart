@@ -29,7 +29,7 @@ class DashboardPage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _GreetingSection(settings: settings),
+        const _GreetingSection(),
         const SizedBox(height: 18),
         _DashboardGrid(
           cols: int.tryParse(settings.columnCount) ?? 3,
@@ -67,72 +67,49 @@ class DashboardPage extends ConsumerWidget {
   }
 }
 
-class _GreetingSection extends ConsumerWidget {
-  final DashboardSettings settings;
-
-  const _GreetingSection({required this.settings});
+class _GreetingSection extends StatelessWidget {
+  const _GreetingSection();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final now = DateTime.now();
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final compact = constraints.maxWidth < 760;
-        final left = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '${_greetingFor(now)}, ${kMockStudentInfo.givenName}',
+          style: const TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
+            const _TermBadge(),
+            const _Dot(),
             Text(
-              '${_greetingFor(now)}, ${kMockStudentInfo.givenName}',
+              DateFormat('EEEE, MMMM d · HH:mm').format(now),
               style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                fontSize: 13,
+                color: AppColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 8,
-              runSpacing: 6,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                const _TermBadge(),
-                const _Dot(),
-                Text(
-                  DateFormat('EEEE, MMMM d · HH:mm').format(now),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                const _Dot(),
-                Text(
-                  kMockDashboardWeather,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
+            const _Dot(),
+            Text(
+              kMockDashboardWeather,
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
-        );
-
-        final controls = _DashboardControls(settings: settings);
-        if (compact) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [left, const SizedBox(height: 14), controls],
-          );
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: left),
-            const SizedBox(width: 16),
-            controls,
-          ],
-        );
-      },
+        ),
+      ],
     );
   }
 
@@ -140,110 +117,6 @@ class _GreetingSection extends ConsumerWidget {
     if (time.hour < 12) return 'Good morning';
     if (time.hour < 18) return 'Good afternoon';
     return 'Good evening';
-  }
-}
-
-class _DashboardControls extends ConsumerWidget {
-  final DashboardSettings settings;
-
-  const _DashboardControls({required this.settings});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.read(dashboardSettingsProvider.notifier);
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      alignment: WrapAlignment.end,
-      children: [
-        SegmentedButton<String>(
-          segments: const [
-            ButtonSegment(value: '1', label: Text('1')),
-            ButtonSegment(value: '2', label: Text('2')),
-            ButtonSegment(value: '3', label: Text('3')),
-          ],
-          selected: {settings.columnCount},
-          showSelectedIcon: false,
-          onSelectionChanged: (value) => notifier.setColumnCount(value.first),
-        ),
-        PopupMenuButton<String>(
-          tooltip: 'Quick link style',
-          onSelected: notifier.setQuickLinkStyle,
-          itemBuilder: (context) => const [
-            PopupMenuItem(value: 'icon-only', child: Text('Icon only')),
-            PopupMenuItem(value: 'icon-label', child: Text('Icon + label')),
-            PopupMenuItem(value: 'cards', child: Text('Cards')),
-          ],
-          child: _ControlPill(
-            icon: Icons.grid_view_outlined,
-            label: settings.quickLinkStyle,
-          ),
-        ),
-        PopupMenuButton<String>(
-          tooltip: 'Dashboard widgets',
-          onSelected: notifier.toggle,
-          itemBuilder: (context) => [
-            _toggleItem('upNext', 'Up next', settings.showUpNext),
-            _toggleItem('timeline', 'Timeline', settings.showTimeline),
-            _toggleItem('alerts', 'Alerts', settings.showAlerts),
-            _toggleItem('quickLinks', 'Quick links', settings.showQuickLinks),
-            _toggleItem('idCard', 'Digital ID', settings.showIdCard),
-            _toggleItem('library', 'Library', settings.showLibrary),
-            _toggleItem('polls', 'Polls', settings.showPolls),
-          ],
-          child: const _ControlPill(
-            icon: Icons.tune_outlined,
-            label: 'Widgets',
-          ),
-        ),
-      ],
-    );
-  }
-
-  CheckedPopupMenuItem<String> _toggleItem(
-    String value,
-    String label,
-    bool checked,
-  ) {
-    return CheckedPopupMenuItem(
-      value: value,
-      checked: checked,
-      child: Text(label),
-    );
-  }
-}
-
-class _ControlPill extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _ControlPill({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.ruleSoft),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 15, color: AppColors.tealInk),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: AppColors.ink2,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
