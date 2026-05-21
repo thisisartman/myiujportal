@@ -15,6 +15,8 @@ class _IssueReportModalState extends State<IssueReportModal> {
   String? _where;
   String? _what;
   String? _specify;
+  String _comment = '';
+  final _commentCtrl = TextEditingController();
 
   static const _locations = [
     'Study Room 1',
@@ -43,13 +45,19 @@ class _IssueReportModalState extends State<IssueReportModal> {
   };
 
   @override
+  void dispose() {
+    _commentCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         LinearProgressIndicator(
-          value: _step / 3,
+          value: _step / 4,
           backgroundColor: AppColors.border,
           color: AppColors.primary,
           minHeight: 4,
@@ -59,6 +67,7 @@ class _IssueReportModalState extends State<IssueReportModal> {
         if (_step == 1) _locationStep(),
         if (_step == 2) _issueStep(),
         if (_step == 3) _specificStep(),
+        if (_step == 4) _commentsStep(),
         const SizedBox(height: 18),
         Row(
           children: [
@@ -74,7 +83,7 @@ class _IssueReportModalState extends State<IssueReportModal> {
                 foregroundColor: Colors.white,
               ),
               onPressed: _canContinue ? _next : null,
-              child: Text(_step == 3 ? 'Confirm' : 'Next'),
+              child: Text(_stepLabel),
             ),
           ],
         ),
@@ -82,28 +91,32 @@ class _IssueReportModalState extends State<IssueReportModal> {
     );
   }
 
+  String get _stepLabel {
+    if (_step == 4) return _comment.isEmpty ? 'Skip' : 'Next';
+    return 'Next';
+  }
+
   bool get _canContinue {
     return switch (_step) {
       1 => _where != null,
       2 => _what != null,
-      _ => _specify != null,
+      3 => _specify != null,
+      _ => true,
     };
   }
 
   Widget _locationStep() {
-    return DropdownButtonFormField<String>(
-      initialValue: _where,
-      decoration: const InputDecoration(
-        labelText: 'Where is the issue?',
-        border: OutlineInputBorder(),
+    return DropdownMenu<String>(
+      initialSelection: _where,
+      label: const Text('Where is the issue?'),
+      expandedInsets: EdgeInsets.zero,
+      menuStyle: const MenuStyle(
+        alignment: AlignmentDirectional.bottomStart,
       ),
-      items: _locations
-          .map(
-            (location) =>
-                DropdownMenuItem(value: location, child: Text(location)),
-          )
+      dropdownMenuEntries: _locations
+          .map((l) => DropdownMenuEntry(value: l, label: l))
           .toList(),
-      onChanged: (value) => setState(() {
+      onSelected: (value) => setState(() {
         _where = value;
         _what = null;
         _specify = null;
@@ -113,16 +126,17 @@ class _IssueReportModalState extends State<IssueReportModal> {
 
   Widget _issueStep() {
     final issues = _issuesByLocation[_where] ?? const <String>[];
-    return DropdownButtonFormField<String>(
-      initialValue: _what,
-      decoration: const InputDecoration(
-        labelText: 'What is affected?',
-        border: OutlineInputBorder(),
+    return DropdownMenu<String>(
+      initialSelection: _what,
+      label: const Text('What is affected?'),
+      expandedInsets: EdgeInsets.zero,
+      menuStyle: const MenuStyle(
+        alignment: AlignmentDirectional.bottomStart,
       ),
-      items: issues
-          .map((issue) => DropdownMenuItem(value: issue, child: Text(issue)))
+      dropdownMenuEntries: issues
+          .map((issue) => DropdownMenuEntry(value: issue, label: issue))
           .toList(),
-      onChanged: (value) => setState(() {
+      onSelected: (value) => setState(() {
         _what = value;
         _specify = null;
       }),
@@ -131,21 +145,34 @@ class _IssueReportModalState extends State<IssueReportModal> {
 
   Widget _specificStep() {
     final specifics = _specificsByIssue[_what] ?? const <String>[];
-    return DropdownButtonFormField<String>(
-      initialValue: _specify,
+    return DropdownMenu<String>(
+      initialSelection: _specify,
+      label: const Text('Specify the problem'),
+      expandedInsets: EdgeInsets.zero,
+      menuStyle: const MenuStyle(
+        alignment: AlignmentDirectional.bottomStart,
+      ),
+      dropdownMenuEntries: specifics
+          .map((item) => DropdownMenuEntry(value: item, label: item))
+          .toList(),
+      onSelected: (value) => setState(() => _specify = value),
+    );
+  }
+
+  Widget _commentsStep() {
+    return TextField(
+      controller: _commentCtrl,
+      maxLines: 4,
       decoration: const InputDecoration(
-        labelText: 'Specify the problem',
+        hintText: 'Any additional details? (optional)',
         border: OutlineInputBorder(),
       ),
-      items: specifics
-          .map((item) => DropdownMenuItem(value: item, child: Text(item)))
-          .toList(),
-      onChanged: (value) => setState(() => _specify = value),
+      onChanged: (v) => setState(() => _comment = v),
     );
   }
 
   void _next() {
-    if (_step < 3) {
+    if (_step < 4) {
       setState(() => _step++);
       return;
     }

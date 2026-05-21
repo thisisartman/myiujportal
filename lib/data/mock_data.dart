@@ -871,6 +871,28 @@ String _dateLabel(DateTime date) {
   return '${months[date.month - 1]} ${date.day}, ${date.year}';
 }
 
+final List<({String title, String author, String dueDate, bool overdue})>
+    kMockLibraryLoanHistory = [
+  (
+    title: 'The Japan Times Style Guide',
+    author: 'Japan Times',
+    dueDate: 'Feb 14, 2026',
+    overdue: false,
+  ),
+  (
+    title: 'Cross-Cultural Management',
+    author: 'Peter B. Smith',
+    dueDate: 'Jan 30, 2026',
+    overdue: true,
+  ),
+  (
+    title: 'East Asian Regionalism',
+    author: 'Christopher M. Dent',
+    dueDate: 'Dec 12, 2025',
+    overdue: false,
+  ),
+];
+
 const List<String> kFinancialStatements = [
   'November 2025 Statement',
   'December 2025 Statement',
