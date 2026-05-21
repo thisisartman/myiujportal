@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import '../../data/mock_data.dart';
 import '../../theme/app_colors.dart';
 
+enum _Availability { full, partial, none }
+
 class BookingCalendar extends StatelessWidget {
   final String facilityId;
   final void Function(int day) onDaySelected;
@@ -58,6 +60,14 @@ class BookingCalendar extends StatelessWidget {
     );
   }
 
+  _Availability _slotState(int day, Set<int> availableDays) {
+    if (!availableDays.contains(day)) return _Availability.none;
+    final hash = day * 31 + facilityId.hashCode;
+    if (hash % 7 == 0) return _Availability.none;
+    if (hash % 3 == 0) return _Availability.partial;
+    return _Availability.full;
+  }
+
   Widget _buildGrid(
     int today,
     int daysInMonth,
@@ -70,15 +80,18 @@ class BookingCalendar extends StatelessWidget {
     }
     for (int day = 1; day <= daysInMonth; day++) {
       final isPast = day <= today;
-      final tappable = !isPast && availableDays.contains(day);
-      cells.add(
-        _DayCell(
-          day: day,
-          tappable: tappable,
-          isPast: isPast,
-          onTap: tappable ? () => onDaySelected(day) : null,
-        ),
-      );
+      if (isPast) {
+        cells.add(_DayCell(day: day, availability: null, onTap: null));
+      } else {
+        final avail = _slotState(day, availableDays);
+        cells.add(
+          _DayCell(
+            day: day,
+            availability: avail,
+            onTap: avail != _Availability.none ? () => onDaySelected(day) : null,
+          ),
+        );
+      }
     }
 
     final List<Widget> rows = [];
@@ -97,32 +110,33 @@ class BookingCalendar extends StatelessWidget {
 
 class _DayCell extends StatelessWidget {
   final int day;
-  final bool tappable;
-  final bool isPast;
+  // null = past
+  final _Availability? availability;
   final VoidCallback? onTap;
 
-  const _DayCell({
-    required this.day,
-    required this.tappable,
-    required this.isPast,
-    this.onTap,
-  });
+  const _DayCell({required this.day, required this.availability, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    Color bg = Colors.transparent;
-    Color textColor = AppColors.textPrimary;
+    Color bg;
+    Color textColor;
 
-    if (isPast) {
-      textColor = AppColors.textMuted;
-    } else if (tappable) {
-      bg = AppColors.primaryLight;
-      textColor = AppColors.primary;
-    } else {
-      textColor = AppColors.textMuted;
+    switch (availability) {
+      case _Availability.full:
+        bg = AppColors.successLight;
+        textColor = AppColors.success;
+      case _Availability.partial:
+        bg = AppColors.warningLight;
+        textColor = AppColors.warning;
+      case _Availability.none:
+        bg = AppColors.bgSunken;
+        textColor = AppColors.textMuted;
+      case null: // past
+        bg = Colors.transparent;
+        textColor = AppColors.textMuted;
     }
 
-    return GestureDetector(
+    final cell = GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.all(2),
@@ -143,5 +157,10 @@ class _DayCell extends StatelessWidget {
         ),
       ),
     );
+
+    if (availability == _Availability.none) {
+      return IgnorePointer(child: cell);
+    }
+    return cell;
   }
 }

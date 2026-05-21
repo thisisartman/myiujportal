@@ -18,7 +18,7 @@ import '../providers/auth_provider.dart';
 // Bridges Riverpod auth state into a ChangeNotifier so GoRouter can refresh.
 class _AuthListenable extends ChangeNotifier {
   _AuthListenable(Ref ref) {
-    ref.listen<bool>(authProvider, (prev, next) => notifyListeners());
+    ref.listen<AuthState>(authProvider, (prev, next) => notifyListeners());
   }
 }
 
@@ -29,7 +29,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     refreshListenable: listenable,
     initialLocation: '/',
     redirect: (context, state) {
-      final isLoggedIn = ref.read(authProvider);
+      final isLoggedIn = ref.read(authProvider).isLoggedIn;
       final isOnLogin = state.matchedLocation == '/login';
 
       if (!isLoggedIn && !isOnLogin) return '/login';

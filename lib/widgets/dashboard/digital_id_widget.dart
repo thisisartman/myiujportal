@@ -21,88 +21,93 @@ class DigitalIdWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: () => _showLargeId(context, student),
         child: Container(
-          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(8),
-            border: const Border(
-              left: BorderSide(color: AppColors.primary, width: 4),
-              top: BorderSide(color: AppColors.ruleSoft),
-              right: BorderSide(color: AppColors.ruleSoft),
-              bottom: BorderSide(color: AppColors.ruleSoft),
-            ),
+            border: Border.all(color: AppColors.ruleSoft),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          clipBehavior: Clip.antiAlias,
+          child: Stack(
             children: [
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'International University of Japan',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.textSecondary,
+              Positioned(
+                left: 0, top: 0, bottom: 0,
+                child: Container(width: 4, color: AppColors.primary),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 14, 14, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text(
+                            'International University of Japan',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          student.studentId,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'monospace',
+                            color: AppColors.ink2,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 28,
+                      child: CustomPaint(
+                        painter: Code128Painter(data: student.studentId),
+                        size: Size.infinite,
                       ),
                     ),
-                  ),
-                  Text(
-                    student.studentId,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'monospace',
-                      color: AppColors.ink2,
+                    const SizedBox(height: 14),
+                    Text(
+                      student.fullName,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: 28,
-                width: double.infinity,
-                child: CustomPaint(
-                  painter: BarcodePainter(id: student.studentId),
-                  size: Size.infinite,
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        _MetaCell(label: 'Program', value: student.program),
+                        _MetaCell(label: 'Cohort', value: student.cohort),
+                        _MetaCell(label: 'Dorm', value: student.dorm),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    const Row(
+                      children: [
+                        Text(
+                          'Valid · Spring 2026',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        Spacer(),
+                        Text(
+                          'Tap to enlarge',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.tealInk,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                student.fullName,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  _MetaCell(label: 'Program', value: student.program),
-                  _MetaCell(label: 'Cohort', value: student.cohort),
-                  _MetaCell(label: 'Dorm', value: student.dorm),
-                ],
-              ),
-              const SizedBox(height: 14),
-              const Row(
-                children: [
-                  Text(
-                    'Valid · Spring 2026',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    'Tap to enlarge',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.tealInk,
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
@@ -172,7 +177,7 @@ class _IdEnlargeModal extends StatelessWidget {
           height: 72,
           width: double.infinity,
           child: CustomPaint(
-            painter: BarcodePainter(id: student.studentId),
+            painter: Code128Painter(data: student.studentId),
             size: Size.infinite,
           ),
         ),

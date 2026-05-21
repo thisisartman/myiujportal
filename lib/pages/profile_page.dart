@@ -42,26 +42,85 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
         const PageGreeting(
           title: 'Profile',
           meta: [
-            MetaText('Apoorv Terwadkar · GSIM MBA'),
+            MetaText('GSIM MBA · Spring 2026'),
             MetaDot(),
-            MetaText('Spring 2026 · Valid', emphasis: true),
+            MetaText('Valid', emphasis: true),
           ],
         ),
         const SizedBox(height: 18),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = constraints.maxWidth >= 700;
+            final leftColumn = _buildLeft();
+            final rightColumn = _buildRight();
+
+            if (isWide) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(width: 300, child: leftColumn),
+                  const SizedBox(width: 20),
+                  Expanded(child: rightColumn),
+                ],
+              );
+            }
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                leftColumn,
+                const SizedBox(height: 20),
+                rightColumn,
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLeft() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
         const DigitalIdCard(),
-        const SizedBox(height: 18),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          icon: const Icon(Icons.report_problem_outlined, size: 16),
+          label: const Text('Report an Issue'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.danger,
+            side: const BorderSide(color: AppColors.danger),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          onPressed: () => _showIssueReport(context),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          icon: const Icon(Icons.logout, size: 16),
+          label: const Text('Sign out'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.textSecondary,
+            side: const BorderSide(color: AppColors.ruleSoft),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          onPressed: () => ref.read(authProvider.notifier).logout(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRight() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         TabBar(
           controller: _tabs,
           labelColor: AppColors.textPrimary,
           unselectedLabelColor: AppColors.textSecondary,
-          labelStyle: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-          ),
+          labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+          unselectedLabelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
           indicatorColor: AppColors.primary,
           indicatorSize: TabBarIndicatorSize.label,
           dividerColor: AppColors.ruleSoft,
@@ -73,8 +132,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
         ),
         const SizedBox(height: 18),
         _tabContent(),
-        const SizedBox(height: 24),
-        _reportIssuesButton(),
       ],
     );
   }
@@ -89,37 +146,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
   }
 
   Widget _personalInfoTab() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _infoCard([
-          ('Name', 'Apoorv Terwadkar'),
-          ('Email', 'student@iuj.ac.jp'),
-          ('Campus Address', 'Dorm A, Room 201'),
-          ('Student ID', 'IUJ-2026-0001'),
-        ]),
-        const SizedBox(height: 24),
-        Align(
-          alignment: Alignment.centerRight,
-          child: SizedBox(
-            width: 160,
-            child: OutlinedButton.icon(
-              icon: const Icon(Icons.logout, size: 16),
-              label: const Text('Sign out'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.danger,
-                side: const BorderSide(color: AppColors.danger),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: () => ref.read(authProvider.notifier).logout(),
-            ),
-          ),
-        ),
-      ],
-    );
+    return _infoCard([
+      ('Name', 'Apoorv Terwadkar'),
+      ('Email', 'student@iuj.ac.jp'),
+      ('Campus Address', 'Dorm A, Room 201'),
+      ('Student ID', 'IUJ-2026-0001'),
+    ]);
   }
 
   Widget _academicTab() {
@@ -160,8 +192,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
         ),
         child: const Row(
           children: [
-            Icon(Icons.local_library_outlined,
-                color: AppColors.primary, size: 20),
+            Icon(Icons.local_library_outlined, color: AppColors.primary, size: 20),
             SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,10 +207,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 ),
                 Text(
                   'Loans and library resources',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -254,20 +282,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
     );
   }
 
-  Widget _reportIssuesButton() {
-    return OutlinedButton.icon(
-      icon: const Icon(Icons.report_problem_outlined, size: 16),
-      label: const Text('Report an Issue'),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.danger,
-        side: const BorderSide(color: AppColors.danger),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      onPressed: () => _showIssueReport(context),
-    );
-  }
-
   Future<void> _showIssueReport(BuildContext context) async {
     final submitted = await AppModal.show<bool>(
       context,
@@ -318,6 +332,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 Expanded(
                   child: Text(
                     row.$2,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 13,
                       color: AppColors.textPrimary,
@@ -404,8 +420,7 @@ class _StatementRowState extends State<_StatementRow> {
                 border: Border(top: BorderSide(color: AppColors.border)),
                 color: AppColors.bgSunken,
               ),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 children: [
                   OutlinedButton.icon(

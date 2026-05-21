@@ -134,11 +134,14 @@ class _EventRow extends ConsumerWidget {
                 () => context.go('/calendar'),
               ),
               const SizedBox(width: 6),
-              Text(
-                '${_monthLabel(displayed, event.date)} ${event.date}  ${event.time}',
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: AppColors.textSecondary,
+              Flexible(
+                child: Text(
+                  '${_monthLabel(displayed, event.date)} ${event.date}  ${event.time}',
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
             ],

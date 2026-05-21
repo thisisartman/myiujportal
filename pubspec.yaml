@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.11.1
+  sdk: ^3.10.0
 
 dependencies:
   flutter:
@@ -15,6 +15,7 @@ dependencies:
   google_fonts: ^6.2.1
   intl: ^0.19.0
   url_launcher: ^6.3.2
+  flutter_markdown: ^0.7.6
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +24,20 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/wiki/01-Residential-Life/
+    - assets/wiki/02-Academics/faculty/
+    - assets/wiki/02-Academics/general-procedures/
+    - assets/wiki/02-Academics/gsim/
+    - assets/wiki/02-Academics/gsir/
+    - assets/wiki/03-Campus-Life-and-Organizations/
+    - assets/wiki/04-Administration/
+    - assets/wiki/04-Administration/academic-affairs/
+    - assets/wiki/04-Administration/admissions-enrollment/
+    - assets/wiki/04-Administration/career-support/
+    - assets/wiki/04-Administration/facilities-campus/
+    - assets/wiki/04-Administration/financial/
+    - assets/wiki/04-Administration/immigration/
+    - assets/wiki/04-Administration/library/
+    - assets/wiki/04-Administration/research/
+    - assets/wiki/04-Administration/student-services/

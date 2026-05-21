@@ -108,12 +108,13 @@ class _AlertItemRowState extends State<_AlertItemRow> {
                           ),
                           const SizedBox(width: 8),
                           const Text(
-                            'Read more',
+                            'Read more →',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
                               color: AppColors.tealInk,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
