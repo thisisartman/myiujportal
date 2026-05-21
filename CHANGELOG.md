@@ -2,6 +2,28 @@
 
 ---
 
+## [2026-05-21 14:38] — Session 5: Dashboard Deep-Linking — Full Group 2 Completion
+
+**Tracker items completed:** 2.1, 2.2, 2.3, 2.4, 2.5
+
+### Changed
+- `lib/widgets/dashboard/today_timeline_card.dart` — professor chip now routes to `/facilities/directory?query=<encoded-name>` (removed directorySearchProvider state writes); room chip routes to wiki via `roomWikiRoute`; type chip gains `onTap` and routes to `/calendar?filter=<type.name>`; removed unused `directory_provider` import
+- `lib/widgets/dashboard/upcoming_events_widget.dart` — `_EventRow` simplified to `StatelessWidget` (no longer needs `ref`); professor chips route to directory with `?query=` param; room chips route to wiki; tag chips route to `/calendar?filter=`; type label chip includes filter param; imports `dashboard_event_utils.dart`
+- `lib/widgets/calendar/event_card.dart` — replaced plain `Text(e.detail)` with a parsed `Wrap` of tappable chips using identical classification logic (course code / professor / facility / tag), each routed to the correct destination; imports `go_router` and `dashboard_event_utils.dart`
+- `lib/pages/calendar_page.dart` — converted from `ConsumerWidget` to `ConsumerStatefulWidget`; accepts `initialFilter` param; `initState` applies filter via post-frame callback so the chip is pre-selected on deep-link arrival
+- `lib/router/app_router.dart` — `/calendar` route extracts `filter` query param and passes it to `CalendarPage`; `/facilities/directory` route extracts `query` param and passes it to `CampusDirectoryPage`
+- `lib/pages/facilities/campus_directory_page.dart` — accepts `initialQuery` param; `initState` pre-populates the text field and fires `_launch` via post-frame callback when a query arrives from a deep-link
+
+### Added
+- `lib/widgets/dashboard/dashboard_event_utils.dart` — `courseWikiRoute(code)` and `roomWikiRoute(room)` helpers; room logic maps Library/MLIC to the library-overview wiki article, all other rooms to the facilities-campus wiki article
+
+### Notes
+- Room wiki routing is a best-effort mapping — classrooms like G.11 and P.101 route to the facilities-campus article since no individual room wiki pages exist yet.
+- `_EventRow` in `upcoming_events_widget.dart` no longer needs Riverpod; the tag routing now uses the URL-param approach instead of writing directly to `calendarFilterProvider`.
+- Group 5 (Calendar) is the only remaining group — 11 items, estimated 2 sessions.
+
+---
+
 ## [2026-05-21 14:20] — Session 4: Profile Tabs Part B — Full Group 3 Completion
 
 **Tracker items completed:** 3.3, 3.4, 3.5, 3.6, 3.8, 3.9, 3.10
