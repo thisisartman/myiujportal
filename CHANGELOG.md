@@ -2,6 +2,25 @@
 
 ---
 
+## [2026-05-22 02:08] — Session 6: Calendar Group 5 — Items 5.1–5.6
+
+**Tracker items completed:** 5.1, 5.2, 5.3, 5.4, 5.5, 5.6
+
+### Changed
+- `lib/pages/calendar_page.dart` — replaced hardcoded `'Spring 2026 · Week 6'` with `_semesterLabel()` which computes semester and week number dynamically from `DateTime.now()` (5.2); converted `_CalendarToolbar` from `StatelessWidget` to `ConsumerWidget` so it can watch `displayedMonthProvider` directly; added year `DropdownButton` to toolbar constrained to `kAdmissionYear`–`kGraduationYear` range (5.4)
+- `lib/widgets/calendar/event_card.dart` — removed `go_router` and `dashboard_event_utils` imports; replaced tappable `_Chip` class with static `_StaticChip` (no `GestureDetector`/`MouseRegion`) so chip taps propagate to the parent card GestureDetector, ensuring all interaction goes through `EventDetailModal` (5.5)
+- `lib/widgets/calendar/event_detail_modal.dart` — imported `dashboard_event_utils.dart`; fixed chip routing: course → `courseWikiRoute(normalized)`, location → `roomWikiRoute(part)`, professor → `/facilities/directory?query=<encoded>` (was missing query param and using wrong route for location/course) (5.6)
+
+### Added
+- `lib/data/mock_data.dart` — `kAdmissionYear = 2025` and `kGraduationYear = 2027` constants derived from `kMockStudentInfo.cohort` ('Class of 2027', 2-year MBA program) (5.4)
+
+### Notes
+- **5.1 (filter chips inside card):** Confirmed by code audit — chips were already inside `_eventPanel`'s `PageCard.child` in the current implementation. No layout change was needed; marked complete.
+- **5.3 (month grid hover):** Confirmed by code audit — `_DayCellState` in `month_grid.dart` already had `MouseRegion`, `_hovering` bool, and `AppColors.primaryLight` background on hover. No change needed; marked complete.
+- Items 5.7–5.11 (Add Event enhancements, Group Meeting overhaul, Meeting URL flow) remain for the next session.
+
+---
+
 ## [2026-05-21 14:38] — Session 5: Dashboard Deep-Linking — Full Group 2 Completion
 
 **Tracker items completed:** 2.1, 2.2, 2.3, 2.4, 2.5
