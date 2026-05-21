@@ -2,6 +2,31 @@
 
 ---
 
+## [2026-05-21 14:20] — Session 4: Profile Tabs Part B — Full Group 3 Completion
+
+**Tracker items completed:** 3.3, 3.4, 3.5, 3.6, 3.8, 3.9, 3.10
+
+### Changed
+- `lib/pages/profile_page.dart` — expanded tab bar from 3 to 5 tabs (Personal Info, Academic, Financial, My Library, Settings); tab bar is now scrollable with `tabAlignment: start`
+- `lib/pages/profile_page.dart` — Academic tab: Program field now renders as mixed-widget row with tappable GSIM and MBA chips routing to their respective wiki pages; "Adviser" renamed to "Mentor"; Research Supervisor field added below; both professor names are tappable chips routing to GSIM faculty wiki page
+- `lib/pages/profile_page.dart` — added AnimatedSwitcher (150 ms crossFade) around tab content so switching tabs fades smoothly
+- `lib/pages/profile_page.dart` — Sign Out button now shows AppModal confirmation ("Sign out?" / body text / Cancel left + Confirm right in danger color) before logging out
+- `lib/pages/profile_page.dart` — issue report toast message updated to "Report submitted. The relevant office has been notified."
+- `lib/pages/dashboard_page.dart` — removed `_DashboardControls` and `_ControlPill` classes entirely; `_GreetingSection` simplified to a plain `StatelessWidget` returning only the greeting text
+- `lib/widgets/profile/issue_report_modal.dart` — replaced all three `DropdownButtonFormField` with `DropdownMenu` + `alignment: AlignmentDirectional.bottomStart` to force downward opening; added step 4 comments `TextField`; progress bar now spans 4 steps; bottom button reads "Skip" when field is empty and "Next" once user starts typing; step 4 submission pops `true`
+
+### Added
+- `lib/pages/profile_page.dart` — My Library tab: "My Active Loans" section with inline "Go to My Library →" button routing to `/facilities/library`; "My Loan History" section below it; both sections use a shared `_LibraryLoanRow` widget with left-border color coding (teal/amber/red) and status labels
+- `lib/pages/profile_page.dart` — Settings tab: vertical layout with SegmentedButton controls for column count and quick link style, plus `SwitchListTile` toggles for all 7 widget visibility flags — all read/write `dashboardSettingsProvider`
+- `lib/data/mock_data.dart` — `kMockLibraryLoanHistory` with 3 past loan records (same record type as `kMockLibraryLoans`)
+
+### Notes
+- Settings tab uses `SwitchListTile` instead of a popup menu for visibility toggles — better affordance in a dedicated settings context.
+- Loan history rows reuse the same color/status logic as active loans but always show "RETURNED" as the status label; left-border color reflects whether the return was on-time (teal) or late (red).
+- Groups 2 (Dashboard deep-linking) and 5 (Calendar) remain fully pending.
+
+---
+
 ## [2026-05-20 ~evening] — Sessions 1–3: Global Interactions, Wiki, Facilities, Profile Layout
 
 **Tracker items completed:** 1.1, 1.2, 1.3, 1.4, 3.1, 3.2, 3.7, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 6.1, 6.2, 6.3, 6.4, 6.5
