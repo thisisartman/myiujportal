@@ -2,6 +2,29 @@
 
 ---
 
+## [2026-05-22 02:36] — Session 7: Calendar Group 5 — Items 5.7–5.11 (Full Group 5 Complete)
+
+**Tracker items completed:** 5.7, 5.8, 5.9, 5.10, 5.11
+
+### Changed
+- `lib/pages/calendar_page.dart` — divider text in Add Event modal changed from `'or'` to `'— OR —'` (5.7)
+- `lib/providers/meeting_provider.dart` — added `totalInvitees: int` field to `MeetingData`; pre-seeded `MeetingNotifier.build()` with a mock `SD1SYNC` meeting (creatorId ≠ current user) so receiver view is demo-able without creating a meeting (5.11)
+- `lib/models/calendar_event.dart` — added nullable `meetingCode: String?` field; backward-compatible (all existing events default to null) (5.11)
+- `lib/widgets/calendar/group_meeting_modal.dart` — full overhaul: Step 1 adds `_viewMonth` state with prev/next month nav and correct disabled-day logic (5.8); Step 2 replaces center `Text` with editable `TextField` for direct minute entry, `+/-` buttons sync the controller, duration label updated to `'1 hr 10 min'` format (5.9); Step 3 replaces `SegmentedButton` with `SwitchListTile` for simple on/off weekly toggle (5.10); Step 4 summary wrapped in styled card; `_next()` now creates `MeetingData` using `kMockStudentInfo.studentId` as creatorId, adds a `CalendarEvent` with `meetingCode`, pops modal, and routes to `/meeting/<code>` (5.11)
+- `lib/widgets/calendar/event_card.dart` — converted to `ConsumerWidget`; detects `event.meetingCode != null`; creator (matching `kMockStudentInfo.studentId`) sees pending count subtitle and opens `MeetingCreatorModal` on tap; receiver navigates to `/meeting/<meetingCode>` on tap (5.11)
+- `lib/pages/meeting_page.dart` — full rewrite as `ConsumerStatefulWidget`; receiver view renders `MonthGrid` as background and auto-opens `AppModal` with `_ReceiverPanel` (selectable `FilterChip` slots, submit → toast → back to `/calendar`); creator view shows share link box, responded count pill, and "View responses" button opening `MeetingCreatorModal` (5.11)
+
+### Added
+- `lib/widgets/calendar/meeting_creator_modal.dart` — new `ConsumerStatefulWidget`; shows responded count badge, slot list with `RadioGroup`/`RadioListTile` selection, `CircleAvatar` respondent icons per slot, and "Confirm meeting" button that calls `confirmMeeting()` and shows success toast (5.11)
+
+### Notes
+- 5.7 pre-conditions (date auto-populate, course dropdown, button rename) were already implemented in Session 6; only the divider text update shipped this session.
+- `RadioListTile.groupValue`/`onChanged` deprecated in Flutter 3.32+; replaced with `RadioGroup` ancestor widget.
+- `SwitchListTile.activeColor` deprecated in Flutter 3.31+; replaced with `activeThumbColor`.
+- Demo receiver flow: navigate to `/meeting/SD1SYNC` (pre-seeded) — calendar grid appears in background, invite modal auto-opens. Demo creator flow: create a meeting via "Schedule group meeting" → code generated → creator view on `/meeting/<code>`, or find the event in the calendar event list and click to open `MeetingCreatorModal`.
+
+---
+
 ## [2026-05-22 02:08] — Session 6: Calendar Group 5 — Items 5.1–5.6
 
 **Tracker items completed:** 5.1, 5.2, 5.3, 5.4, 5.5, 5.6
