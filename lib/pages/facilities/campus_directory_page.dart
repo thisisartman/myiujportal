@@ -6,7 +6,9 @@ import '../../../theme/app_colors.dart';
 import '../../widgets/common/page_chrome.dart';
 
 class CampusDirectoryPage extends StatefulWidget {
-  const CampusDirectoryPage({super.key});
+  final String? initialQuery;
+
+  const CampusDirectoryPage({super.key, this.initialQuery});
 
   @override
   State<CampusDirectoryPage> createState() => _CampusDirectoryPageState();
@@ -15,6 +17,18 @@ class CampusDirectoryPage extends StatefulWidget {
 class _CampusDirectoryPageState extends State<CampusDirectoryPage> {
   final _controller = TextEditingController();
   Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    final q = widget.initialQuery;
+    if (q != null && q.isNotEmpty) {
+      _controller.text = q;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _launch(q);
+      });
+    }
+  }
 
   @override
   void dispose() {

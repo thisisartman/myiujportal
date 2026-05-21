@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../models/calendar_event.dart';
 import '../../providers/calendar_provider.dart';
 import '../../theme/app_colors.dart';
+import 'dashboard_event_utils.dart';
 
 class UpcomingEventsWidget extends ConsumerStatefulWidget {
   const UpcomingEventsWidget({super.key});
@@ -112,14 +113,14 @@ class _UpcomingEventsWidgetState extends ConsumerState<UpcomingEventsWidget> {
   }
 }
 
-class _EventRow extends ConsumerWidget {
+class _EventRow extends StatelessWidget {
   final CalendarEvent event;
   final DateTime displayed;
 
   const _EventRow({required this.event, required this.displayed});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Column(
@@ -131,7 +132,7 @@ class _EventRow extends ConsumerWidget {
                 event.type.label,
                 event.type.color,
                 event.type.bgColor,
-                () => context.go('/calendar'),
+                () => context.go('/calendar?filter=${event.type.name}'),
               ),
               const SizedBox(width: 6),
               Flexible(
@@ -159,7 +160,7 @@ class _EventRow extends ConsumerWidget {
           Wrap(
             spacing: 4,
             runSpacing: 4,
-            children: _detailChips(context, ref, event.detail),
+            children: _detailChips(context, event.detail),
           ),
           const Padding(
             padding: EdgeInsets.only(top: 8),
@@ -173,16 +174,10 @@ class _EventRow extends ConsumerWidget {
   String _monthLabel(DateTime displayed, int day) {
     final daysInMonth = DateTime(displayed.year, displayed.month + 1, 0).day;
     final safeDay = day < 1 ? 1 : (day > daysInMonth ? daysInMonth : day);
-    return DateFormat(
-      'MMM',
-    ).format(DateTime(displayed.year, displayed.month, safeDay));
+    return DateFormat('MMM').format(DateTime(displayed.year, displayed.month, safeDay));
   }
 
-  List<Widget> _detailChips(
-    BuildContext context,
-    WidgetRef ref,
-    String detail,
-  ) {
+  List<Widget> _detailChips(BuildContext context, String detail) {
     final parts = detail
         .split('|')
         .map((s) => s.trim())
@@ -200,14 +195,13 @@ class _EventRow extends ConsumerWidget {
       ).hasMatch(part);
       return _chip(part, AppColors.textSecondary, AppColors.background, () {
         if (isCourseCode) {
-          context.go('/wiki/course-${normalized.toLowerCase()}');
+          context.go(courseWikiRoute(normalized));
         } else if (isProfessor) {
-          context.go('/facilities/directory');
+          context.go('/facilities/directory?query=${Uri.encodeComponent(part)}');
         } else if (isFacility) {
-          context.go('/facilities/room-booking');
+          context.go(roomWikiRoute(part));
         } else {
-          ref.read(calendarFilterProvider.notifier).state = event.type.name;
-          context.go('/calendar');
+          context.go('/calendar?filter=${event.type.name}');
         }
       });
     }).toList();

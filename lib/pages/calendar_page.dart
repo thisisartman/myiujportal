@@ -11,11 +11,29 @@ import '../widgets/calendar/group_meeting_modal.dart';
 import '../widgets/common/app_modal.dart';
 import '../widgets/common/page_chrome.dart';
 
-class CalendarPage extends ConsumerWidget {
-  const CalendarPage({super.key});
+class CalendarPage extends ConsumerStatefulWidget {
+  final String? initialFilter;
+
+  const CalendarPage({super.key, this.initialFilter});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CalendarPage> createState() => _CalendarPageState();
+}
+
+class _CalendarPageState extends ConsumerState<CalendarPage> {
+  @override
+  void initState() {
+    super.initState();
+    final f = widget.initialFilter;
+    if (f != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(calendarFilterProvider.notifier).state = f;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final filteredEvents = ref.watch(filteredEventsProvider);
     final selectedDate = ref.watch(selectedDateProvider);
     final displayed = ref.watch(displayedMonthProvider);
