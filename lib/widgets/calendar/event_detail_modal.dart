@@ -5,6 +5,7 @@ import '../../models/calendar_event.dart';
 import '../../providers/calendar_provider.dart';
 import '../../theme/app_colors.dart';
 import '../common/app_modal.dart';
+import '../dashboard/dashboard_event_utils.dart';
 
 class EventDetailModal extends ConsumerWidget {
   final CalendarEvent event;
@@ -101,11 +102,13 @@ class EventDetailModal extends ConsumerWidget {
         onTap: () {
           Navigator.of(context).pop();
           if (isCourse) {
-            context.go('/wiki/course-${normalized.toLowerCase()}');
+            context.go(courseWikiRoute(normalized));
           } else if (isLocation) {
-            context.go('/facilities/room-booking');
+            context.go(roomWikiRoute(part));
           } else if (isProfessor) {
-            context.go('/facilities/directory');
+            context.go(
+              '/facilities/directory?query=${Uri.encodeComponent(part)}',
+            );
           }
         },
       );

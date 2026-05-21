@@ -130,6 +130,9 @@ const kMockStudentInfo = MockStudentInfo(
   dorm: 'SD1',
 );
 
+const kAdmissionYear = 2025; // Sept 2025 (2-year MBA, cohort 'Class of 2027')
+const kGraduationYear = 2027; // Sept 2027
+
 const kMockDashboardWeather = '11°C, light rain';
 
 List<CalendarEvent> getTodayEvents() {
