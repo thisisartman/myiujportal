@@ -47,6 +47,7 @@ class CalendarEvent {
   final String time; // "HH:MM"
   final String title;
   final String detail;
+  final String? meetingCode; // non-null for group meeting events
 
   const CalendarEvent({
     required this.id,
@@ -57,6 +58,7 @@ class CalendarEvent {
     required this.time,
     required this.title,
     required this.detail,
+    this.meetingCode,
   });
 
   CalendarEvent copyWith({
@@ -68,6 +70,7 @@ class CalendarEvent {
     String? time,
     String? title,
     String? detail,
+    String? meetingCode,
   }) {
     return CalendarEvent(
       id: id ?? this.id,
@@ -78,6 +81,7 @@ class CalendarEvent {
       time: time ?? this.time,
       title: title ?? this.title,
       detail: detail ?? this.detail,
+      meetingCode: meetingCode ?? this.meetingCode,
     );
   }
 }
