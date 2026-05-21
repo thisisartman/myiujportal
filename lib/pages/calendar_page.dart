@@ -304,7 +304,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
-                    'or',
+                    '— OR —',
                     style: TextStyle(color: AppColors.textMuted, fontSize: 12),
                   ),
                 ),
