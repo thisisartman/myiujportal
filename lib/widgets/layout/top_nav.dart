@@ -58,7 +58,7 @@ class TopNav extends ConsumerWidget {
           ],
           const Spacer(),
           if (showSearch)
-            Flexible(
+            Expanded(
               flex: 2,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 460),
@@ -250,23 +250,7 @@ class _SearchBox extends StatelessWidget {
                   ref.read(wikiSearchQueryProvider.notifier).state = '',
             )
           else
-            Container(
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: AppColors.ruleSoft),
-              ),
-              child: const Text(
-                '⌘K',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+            const SizedBox(width: 8),
         ],
       ),
     );

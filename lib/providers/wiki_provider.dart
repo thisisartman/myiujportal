@@ -1,25 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/mock_data.dart';
+import '../data/wiki_pages.dart';
+import '../models/wiki_page.dart';
 
 final expandedCategoriesProvider = StateProvider<List<String>>(
-  (ref) => kWikiCategories.map((c) => c.name).toList(),
+  (ref) => ['Residential Life', 'Academics', 'Campus Life', 'Administration'],
 );
 
 final expandedSubcategoriesProvider = StateProvider<List<String>>(
-  (ref) => ['Finance', 'General Management', 'IT & Operations'],
+  (ref) => [],
 );
 
 final wikiSearchQueryProvider = StateProvider<String>((ref) => '');
 
-final wikiSearchResultsProvider = Provider<List<MapEntry<String, dynamic>>>((
-  ref,
-) {
-  final query = ref.watch(wikiSearchQueryProvider);
+final wikiCategoryFilterProvider = StateProvider<String?>((ref) => null);
+
+final wikiSearchResultsProvider =
+    Provider<List<MapEntry<String, WikiPage>>>((ref) {
+  final query = ref.watch(wikiSearchQueryProvider).toLowerCase().trim();
   if (query.isEmpty) return [];
-  return kWikiPages.entries.where((entry) {
-    final page = entry.value;
-    return !page.isLandingPage &&
-        (page.title.toLowerCase().contains(query.toLowerCase()) ||
-            page.category.toLowerCase().contains(query.toLowerCase()));
-  }).toList();
+  return kWikiPages.entries.where((e) {
+    final p = e.value;
+    return p.title.toLowerCase().contains(query) ||
+        p.category.toLowerCase().contains(query) ||
+        (p.subcategory?.toLowerCase().contains(query) ?? false);
+  }).toList()
+    ..sort((a, b) => a.value.title.compareTo(b.value.title));
 });

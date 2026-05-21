@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../models/facility.dart';
 import '../../theme/app_colors.dart';
 import '../../data/mock_data.dart';
-import '../../widgets/facilities/expandable_room_card.dart';
 import '../../widgets/common/page_chrome.dart';
 
 class RoomBookingPage extends ConsumerWidget {
@@ -62,14 +61,9 @@ class RoomBookingPage extends ConsumerWidget {
             final main = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _section(
-                  'Classrooms & Lounges',
-                  classroomsAndLounges,
-                  constraints.maxWidth,
-                  isWide,
-                ),
+                _section('Classrooms & Lounges', classroomsAndLounges, constraints.maxWidth),
                 const SizedBox(height: 24),
-                _section('Gymnasium', gymnasiums, constraints.maxWidth, isWide),
+                _section('Gymnasium', gymnasiums, constraints.maxWidth),
               ],
             );
             final aside = Column(
@@ -147,13 +141,8 @@ class RoomBookingPage extends ConsumerWidget {
     );
   }
 
-  Widget _section(
-    String title,
-    List<Facility> facilities,
-    double width,
-    bool isWide,
-  ) {
-    final columns = isWide ? 2 : 1;
+  Widget _section(String title, List<Facility> facilities, double width) {
+    final isMobile = width < 600;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -179,18 +168,87 @@ class RoomBookingPage extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: facilities.map((facility) {
-            final cardWidth = columns == 1 ? width : (width - 12) / 2;
-            return SizedBox(
-              width: cardWidth.clamp(260.0, 560.0),
-              child: ExpandableRoomCard(facility: facility),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final cols = constraints.maxWidth >= 600 ? 3 : 2;
+            return GridView.count(
+              crossAxisCount: cols,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 2.4,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: facilities
+                  .map((f) => _RoomTile(facility: f, short: isMobile))
+                  .toList(),
             );
-          }).toList(),
+          },
         ),
       ],
+    );
+  }
+}
+
+class _RoomTile extends StatelessWidget {
+  final Facility facility;
+  final bool short;
+
+  const _RoomTile({required this.facility, required this.short});
+
+  static String _shortName(String name) {
+    if (name.startsWith('Classroom ')) return name.substring(10);
+    if (name.startsWith('Seminar Room ')) return name.substring(13);
+    if (name.contains('CNP Snack')) return 'CNP';
+    if (name.contains('BBQ')) return 'BBQ';
+    if (name.contains('Student Lounge')) return 'CNP B1';
+    if (name.contains('Gymnasium')) return 'Gym';
+    return name;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final displayName = short ? _shortName(facility.name) : facility.name;
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.ruleSoft),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          hoverColor: AppColors.tealTint2,
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  displayName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  facility.authority,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

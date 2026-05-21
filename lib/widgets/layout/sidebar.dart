@@ -311,8 +311,9 @@ class _SidebarState extends ConsumerState<Sidebar> {
               const SizedBox(height: 8),
               InkWell(
                 mouseCursor: SystemMouseCursors.click,
+                hoverColor: AppColors.sidebarHover,
                 onTap: () {
-                  context.go('/wiki/${cat.id}');
+                  context.go('/wiki');
                   ref.read(sidebarOpenProvider.notifier).state = false;
                   if (!isExpanded) {
                     ref
@@ -371,8 +372,9 @@ class _SidebarState extends ConsumerState<Sidebar> {
                 ...cat.subcategories.map((sub) {
                   return InkWell(
                     mouseCursor: SystemMouseCursors.click,
+                    hoverColor: AppColors.sidebarHover,
                     onTap: () {
-                      context.go('/wiki/subcategory-${sub.id}');
+                      context.go('/wiki');
                       ref.read(sidebarOpenProvider.notifier).state = false;
                     },
                     child: Padding(
@@ -394,6 +396,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
                 ...(_getCategoryPages(cat.id).map(
                   (pageEntry) => InkWell(
                     mouseCursor: SystemMouseCursors.click,
+                    hoverColor: AppColors.sidebarHover,
                     onTap: () {
                       context.go('/wiki/${pageEntry.key}');
                       ref.read(sidebarOpenProvider.notifier).state = false;

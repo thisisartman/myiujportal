@@ -1,60 +1,55 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../data/mock_data.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../theme/app_colors.dart';
-import '../../providers/directory_provider.dart';
-import '../../widgets/directory/directory_card.dart';
 import '../../widgets/common/page_chrome.dart';
 
-const _filterChips = [
-  'All',
-  'Student',
-  'Faculty',
-  'Staff',
-  'Department',
-  'Organization',
-];
-
-class CampusDirectoryPage extends ConsumerWidget {
+class CampusDirectoryPage extends StatefulWidget {
   const CampusDirectoryPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final query = ref.watch(directorySearchProvider);
-    final filter = ref.watch(directoryFilterProvider);
+  State<CampusDirectoryPage> createState() => _CampusDirectoryPageState();
+}
 
-    final filtered = kMockDirectory.where((e) {
-      final matchesFilter =
-          filter == 'All' ||
-          e.type == filter ||
-          (filter == 'Faculty' && e.type.startsWith('Faculty')) ||
-          (filter == 'Staff' &&
-              (e.type == 'Support' ||
-                  e.type == 'Facility' ||
-                  e.type == 'Satellite Office'));
-      final matchesQuery =
-          query.isEmpty ||
-          e.name.toLowerCase().contains(query.toLowerCase()) ||
-          e.email.toLowerCase().contains(query.toLowerCase());
-      return matchesFilter && matchesQuery;
-    }).toList();
+class _CampusDirectoryPageState extends State<CampusDirectoryPage> {
+  final _controller = TextEditingController();
+  Timer? _debounce;
 
-    final mainEntries = filtered
-        .where((e) => e.type != 'Organization')
-        .toList();
-    final orgs = filtered.where((e) => e.type == 'Organization').toList();
-    final showOrgs = filter == 'All' || filter == 'Organization';
+  @override
+  void dispose() {
+    _controller.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
 
+  void _launch(String query) async {
+    final q = query.trim();
+    if (q.isEmpty) return;
+    final uri = Uri.parse(
+      'https://www2.iuj.ac.jp/directory/?search=${Uri.encodeComponent(q)}',
+    );
+    if (await canLaunchUrl(uri)) {
+      launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  void _onChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 600), () => _launch(value));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         PageGreeting(
           title: 'Campus Directory',
-          meta: [
-            const MetaText('Students, faculty, staff and organizations'),
-            const MetaDot(),
-            MetaText('${filtered.length} visible', emphasis: true),
+          meta: const [
+            MetaText('Students, faculty, staff and organizations'),
+            MetaDot(),
+            MetaText('Powered by IUJ Directory', emphasis: true),
           ],
           actions: OutlinedButton.icon(
             onPressed: () => context.go('/facilities'),
@@ -62,59 +57,75 @@ class CampusDirectoryPage extends ConsumerWidget {
             label: const Text('Facilities'),
           ),
         ),
-        const SizedBox(height: 16),
-        SearchPanel(
-          hint: 'Search by name, email, office, club...',
-          onChanged: (value) =>
-              ref.read(directorySearchProvider.notifier).state = value,
-          trailing: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: _filterChips.map((chip) {
-                final isActive = filter == chip;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: SoftChip(
-                    label: chip,
-                    selected: isActive,
-                    onTap: () {
-                      ref.read(directoryFilterProvider.notifier).state = chip;
-                      ref.read(expandedDirectoryEntryProvider.notifier).state =
-                          null;
-                    },
+        const SizedBox(height: 24),
+        PageCard(
+          header: const PageCardHeader(
+            icon: Icons.people_outline,
+            title: 'Search Directory',
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Search by name, email, or department. Results open in the IUJ online directory.',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      onChanged: _onChanged,
+                      onSubmitted: _launch,
+                      style: const TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                        hintText: 'Name, email, or department…',
+                        hintStyle: const TextStyle(color: AppColors.textMuted),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          size: 18,
+                          color: AppColors.textSecondary,
+                        ),
+                        filled: true,
+                        fillColor: AppColors.bgSunken,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: AppColors.ruleSoft),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: AppColors.ruleSoft),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                        isDense: true,
+                      ),
+                    ),
                   ),
-                );
-              }).toList(),
-            ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.open_in_new, size: 15),
+                    label: const Text('Search'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                    ),
+                    onPressed: () => _launch(_controller.text),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 16),
-        if (mainEntries.isEmpty && orgs.isEmpty)
-          const Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 32),
-              child: Text(
-                'No results found.',
-                style: TextStyle(color: AppColors.textMuted),
-              ),
-            ),
-          )
-        else ...[
-          ...mainEntries.map((e) => DirectoryCard(entry: e)),
-          if (showOrgs && orgs.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            const Text(
-              'Organisations',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            ...orgs.map((e) => DirectoryCard(entry: e)),
-          ],
-        ],
       ],
     );
   }

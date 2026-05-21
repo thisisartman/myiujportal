@@ -6,6 +6,11 @@ class WikiPage {
   final bool isLandingPage;
   final String? parentPage;
   final String lastUpdated;
+  final String? summary;
+  final String? assetPath;   // e.g. 'wiki/01-Residential-Life/dorm-guide.md'
+  final String ownerRole;    // 'admin' | 'faculty-gsim' | 'faculty-gsir' | 'faculty' | 'library-staff' | 'student-body'
+  final List<String> editRoles;
+  final List<String> suggestRoles;
 
   const WikiPage({
     required this.id,
@@ -15,7 +20,18 @@ class WikiPage {
     this.isLandingPage = false,
     this.parentPage,
     required this.lastUpdated,
+    this.summary,
+    this.assetPath,
+    this.ownerRole = 'admin',
+    this.editRoles = const ['admin'],
+    this.suggestRoles = const ['student'],
   });
+
+  /// Whether a given role string can publish edits directly.
+  bool canEdit(String role) => editRoles.contains(role);
+
+  /// Whether a given role string can suggest (moderated) edits.
+  bool canSuggest(String role) => suggestRoles.contains(role) && !canEdit(role);
 }
 
 class WikiCategory {
