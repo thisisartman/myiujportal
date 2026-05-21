@@ -11,6 +11,14 @@ import '../widgets/calendar/group_meeting_modal.dart';
 import '../widgets/common/app_modal.dart';
 import '../widgets/common/page_chrome.dart';
 
+String _semesterLabel() {
+  final now = DateTime.now();
+  final isFall = now.month >= 9;
+  final semStart = DateTime(now.year, isFall ? 9 : 1);
+  final week = (now.difference(semStart).inDays ~/ 7 + 1).clamp(1, 20);
+  return '${isFall ? 'Fall' : 'Spring'} ${now.year} · Week $week';
+}
+
 class CalendarPage extends ConsumerStatefulWidget {
   final String? initialFilter;
 
@@ -45,7 +53,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
         PageGreeting(
           title: 'Calendar',
           meta: [
-            const MetaText('Spring 2026 · Week 6', emphasis: true),
+            MetaText(_semesterLabel(), emphasis: true),
             const MetaDot(),
             MetaText('${filteredEvents.length} items on selected day'),
           ],
@@ -78,7 +86,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                       header: PageCardHeader(
                         icon: Icons.calendar_month_outlined,
                         title: DateFormat('MMMM yyyy').format(displayed),
-                        action: _CalendarToolbar(ref: ref),
+                        action: const _CalendarToolbar(),
                       ),
                       child: const MonthGrid(),
                     ),
@@ -102,7 +110,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                     header: PageCardHeader(
                       icon: Icons.calendar_month_outlined,
                       title: DateFormat('MMMM yyyy').format(displayed),
-                      action: _CalendarToolbar(ref: ref),
+                      action: const _CalendarToolbar(),
                     ),
                     child: const MonthGrid(),
                   ),
@@ -358,13 +366,12 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
   }
 }
 
-class _CalendarToolbar extends StatelessWidget {
-  final WidgetRef ref;
-
-  const _CalendarToolbar({required this.ref});
+class _CalendarToolbar extends ConsumerWidget {
+  const _CalendarToolbar();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final displayed = ref.watch(displayedMonthProvider);
     return Wrap(
       spacing: 6,
       runSpacing: 6,
@@ -373,7 +380,6 @@ class _CalendarToolbar extends StatelessWidget {
         IconButton(
           tooltip: 'Previous month',
           onPressed: () {
-            final displayed = ref.read(displayedMonthProvider);
             ref.read(displayedMonthProvider.notifier).state = DateTime(
               displayed.year,
               displayed.month - 1,
@@ -384,13 +390,28 @@ class _CalendarToolbar extends StatelessWidget {
         IconButton(
           tooltip: 'Next month',
           onPressed: () {
-            final displayed = ref.read(displayedMonthProvider);
             ref.read(displayedMonthProvider.notifier).state = DateTime(
               displayed.year,
               displayed.month + 1,
             );
           },
           icon: const Icon(Icons.chevron_right, size: 18),
+        ),
+        DropdownButton<int>(
+          value: displayed.year,
+          underline: const SizedBox(),
+          style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+          items: [
+            for (int y = kAdmissionYear; y <= kGraduationYear; y++)
+              DropdownMenuItem(value: y, child: Text('$y')),
+          ],
+          onChanged: (y) {
+            if (y == null) return;
+            ref.read(displayedMonthProvider.notifier).state = DateTime(
+              y,
+              displayed.month,
+            );
+          },
         ),
         OutlinedButton(
           onPressed: () {
