@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../data/mock_data.dart';
 import '../providers/calendar_provider.dart';
+import '../providers/dashboard_provider.dart';
 import '../models/calendar_event.dart';
 import '../theme/app_colors.dart';
 import '../widgets/calendar/month_grid.dart';
@@ -33,11 +34,12 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
   void initState() {
     super.initState();
     final f = widget.initialFilter;
-    if (f != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) ref.read(calendarFilterProvider.notifier).state = f;
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(calendarViewModeProvider.notifier).state =
+          ref.read(dashboardSettingsProvider).defaultCalendarView;
+      if (f != null) ref.read(calendarFilterProvider.notifier).state = f;
+    });
   }
 
   @override

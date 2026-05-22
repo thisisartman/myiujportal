@@ -15,7 +15,7 @@ final selectedDateProvider = StateProvider<int>((ref) => DateTime.now().day);
 final calendarFilterProvider = StateProvider<String>((ref) => 'all');
 
 // Calendar view mode
-enum CalendarViewMode { month, week }
+enum CalendarViewMode { month, week, agenda }
 
 final calendarViewModeProvider = StateProvider<CalendarViewMode>(
   (ref) => CalendarViewMode.month,

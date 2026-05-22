@@ -26,7 +26,7 @@ class FacilitiesHubPage extends StatelessWidget {
             final cards = [
               _HubCard(
                 icon: Icons.meeting_room_outlined,
-                iconBg: AppColors.tealTint2,
+                iconBg: AppColors.primaryLight,
                 iconColor: AppColors.primary,
                 title: 'Room Booking',
                 subtitle: 'Reserve classrooms, lounges, and the gymnasium',
@@ -119,7 +119,7 @@ class _HubCard extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          hoverColor: AppColors.tealTint2,
+          hoverColor: AppColors.primaryLight,
           onTap: () => context.go(route),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -159,11 +159,11 @@ class _HubCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.tealInk,
+                    color: AppColors.accentBlue,
                   ),
                 ),
                 SizedBox(width: 4),
-                Icon(Icons.arrow_forward, size: 14, color: AppColors.tealInk),
+                Icon(Icons.arrow_forward, size: 14, color: AppColors.accentBlue),
               ],
             ),
           ],

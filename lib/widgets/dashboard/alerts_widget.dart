@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/alert_item.dart';
 import '../../providers/alerts_provider.dart';
+import '../../providers/notification_prefs_provider.dart';
 import '../../theme/app_colors.dart';
 import '../common/app_modal.dart';
 import '../common/dashboard_card.dart';
@@ -11,7 +12,9 @@ class AlertsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final alerts = ref.watch(alertsProvider);
+    final allAlerts = ref.watch(alertsProvider);
+    final prefs = ref.watch(notificationPrefsProvider);
+    final alerts = prefs.announcementAlerts ? allAlerts : const [];
     return DashboardCard(
       label: const DashboardCardLabel(
         icon: Icons.notifications_none_outlined,
@@ -20,11 +23,19 @@ class AlertsWidget extends ConsumerWidget {
       actionLabel: '${alerts.length} active',
       onAction: () {},
       flushBody: true,
-      child: Column(
-        children: alerts
-            .map((alert) => _AlertItemRow(alert: alert))
-            .toList(growable: false),
-      ),
+      child: alerts.isEmpty
+          ? const Padding(
+              padding: EdgeInsets.symmetric(vertical: 18),
+              child: Text(
+                'Announcements are muted.',
+                style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+              ),
+            )
+          : Column(
+              children: alerts
+                  .map((alert) => _AlertItemRow(alert: alert))
+                  .toList(growable: false),
+            ),
     );
   }
 }
@@ -112,7 +123,7 @@ class _AlertItemRowState extends State<_AlertItemRow> {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.tealInk,
+                              color: AppColors.accentBlue,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),

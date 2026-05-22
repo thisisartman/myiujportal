@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'calendar_provider.dart';
 
 class DashboardSettings {
   final String columnCount;
@@ -10,6 +11,7 @@ class DashboardSettings {
   final bool showIdCard;
   final bool showLibrary;
   final bool showPolls;
+  final CalendarViewMode defaultCalendarView;
 
   const DashboardSettings({
     this.columnCount = '3',
@@ -21,6 +23,7 @@ class DashboardSettings {
     this.showIdCard = true,
     this.showLibrary = true,
     this.showPolls = true,
+    this.defaultCalendarView = CalendarViewMode.month,
   });
 
   DashboardSettings copyWith({
@@ -33,6 +36,7 @@ class DashboardSettings {
     bool? showIdCard,
     bool? showLibrary,
     bool? showPolls,
+    CalendarViewMode? defaultCalendarView,
   }) {
     return DashboardSettings(
       columnCount: columnCount ?? this.columnCount,
@@ -44,6 +48,7 @@ class DashboardSettings {
       showIdCard: showIdCard ?? this.showIdCard,
       showLibrary: showLibrary ?? this.showLibrary,
       showPolls: showPolls ?? this.showPolls,
+      defaultCalendarView: defaultCalendarView ?? this.defaultCalendarView,
     );
   }
 }
@@ -59,6 +64,9 @@ class DashboardSettingsNotifier extends Notifier<DashboardSettings> {
   void setQuickLinkStyle(String value) {
     state = state.copyWith(quickLinkStyle: value);
   }
+
+  void setDefaultCalendarView(CalendarViewMode v) =>
+      state = state.copyWith(defaultCalendarView: v);
 
   void toggle(String key) {
     state = switch (key) {

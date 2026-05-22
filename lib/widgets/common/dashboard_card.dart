@@ -48,7 +48,7 @@ class DashboardCard extends StatelessWidget {
                   TextButton(
                     onPressed: onAction,
                     style: TextButton.styleFrom(
-                      foregroundColor: AppColors.tealInk,
+                      foregroundColor: AppColors.accentBlue,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
                         vertical: 4,
@@ -95,7 +95,7 @@ class DashboardCardLabel extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: AppColors.tealInk),
+        Icon(icon, size: 16, color: AppColors.accentBlue),
         const SizedBox(width: 7),
         Text(
           text,

@@ -101,7 +101,7 @@ class DigitalIdWidget extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.tealInk,
+                            color: AppColors.accentBlue,
                           ),
                         ),
                       ],

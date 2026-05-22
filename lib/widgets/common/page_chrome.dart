@@ -72,7 +72,7 @@ class MetaText extends StatelessWidget {
       style: TextStyle(
         fontSize: 13,
         fontWeight: emphasis ? FontWeight.w700 : FontWeight.w500,
-        color: emphasis ? AppColors.tealInk : AppColors.textSecondary,
+        color: emphasis ? AppColors.accentBlue : AppColors.textSecondary,
       ),
     );
   }
@@ -157,7 +157,7 @@ class PageCardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 15, color: AppColors.tealInk),
+        Icon(icon, size: 15, color: AppColors.accentBlue),
         const SizedBox(width: 8),
         Text(
           title,

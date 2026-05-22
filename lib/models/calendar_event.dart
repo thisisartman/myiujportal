@@ -29,7 +29,7 @@ extension CalendarEventTypeExtension on CalendarEventType {
   Color get bgColor {
     switch (this) {
       case CalendarEventType.class_:
-        return AppColors.tealTint2;
+        return AppColors.primaryLight;
       case CalendarEventType.assignment:
         return AppColors.warningLight;
       case CalendarEventType.event:
