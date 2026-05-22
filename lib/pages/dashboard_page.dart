@@ -128,7 +128,7 @@ class _TermBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: AppColors.tealTint2,
+        color: AppColors.primaryLight,
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: AppColors.primaryLight),
       ),
@@ -138,7 +138,7 @@ class _TermBadge extends StatelessWidget {
           Icon(
             Icons.calendar_today_outlined,
             size: 12,
-            color: AppColors.tealInk,
+            color: AppColors.accentBlue,
           ),
           SizedBox(width: 5),
           Text(
@@ -146,7 +146,7 @@ class _TermBadge extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
-              color: AppColors.tealInk,
+              color: AppColors.accentBlue,
             ),
           ),
         ],

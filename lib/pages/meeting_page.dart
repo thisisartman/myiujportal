@@ -268,7 +268,7 @@ class _ReceiverPanelState extends ConsumerState<_ReceiverPanel> {
                       '${meeting.durationMinutes} min · ${meeting.repetition == 'None' ? 'One-time' : meeting.repetition}',
                       style: const TextStyle(
                         fontSize: 12,
-                        color: AppColors.tealInk,
+                        color: AppColors.accentBlue,
                       ),
                     ),
                   ],

@@ -41,7 +41,7 @@ const _kCategories = [
     title: 'Academics',
     subtitle: 'GSIM, GSIR, programs & procedures',
     icon: Icons.school_outlined,
-    iconBg: AppColors.tealTint2,
+    iconBg: AppColors.primaryLight,
     iconColor: AppColors.primary,
   ),
   _WikiCategoryMeta(
@@ -279,7 +279,7 @@ class _CompactCategoryCardState extends State<_CompactCategoryCard> {
           width: 196,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
           decoration: BoxDecoration(
-            color: active ? AppColors.tealTint2 : AppColors.surface,
+            color: active ? AppColors.primaryLight : AppColors.surface,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: active ? AppColors.primary : AppColors.ruleSoft,

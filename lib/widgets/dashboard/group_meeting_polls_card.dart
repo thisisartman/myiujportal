@@ -97,7 +97,7 @@ class _PollTileState extends State<_PollTile> {
           margin: const EdgeInsets.only(bottom: 10),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: _hovering ? AppColors.tealTint2 : AppColors.surface,
+            color: _hovering ? AppColors.primaryLight : AppColors.surface,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: _hovering ? AppColors.primary : AppColors.ruleSoft,
@@ -250,7 +250,7 @@ class _AvatarStack extends StatelessWidget {
       AppColors.accent,
       AppColors.success,
       AppColors.warning,
-      AppColors.tealInk,
+      AppColors.accentBlue,
     ];
     return colors[label.hashCode.abs() % colors.length];
   }

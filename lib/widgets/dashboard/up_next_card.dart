@@ -28,7 +28,7 @@ class UpNextCard extends ConsumerWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColors.tealTint2, AppColors.surface],
+            colors: [AppColors.primaryLight, AppColors.surface],
             stops: [0.0, 0.62],
           ),
           border: Border(top: BorderSide(color: AppColors.primary, width: 3)),
@@ -76,7 +76,7 @@ class UpNextCard extends ConsumerWidget {
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
-                color: AppColors.tealInk,
+                color: AppColors.accentBlue,
               ),
             ),
             const Spacer(),
@@ -140,7 +140,7 @@ class UpNextCard extends ConsumerWidget {
               icon: const Icon(Icons.explore_outlined, size: 16),
               label: const Text('Directions'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.tealInk,
+                foregroundColor: AppColors.accentBlue,
                 side: const BorderSide(color: AppColors.rule),
               ),
             ),
@@ -256,7 +256,7 @@ class _MetaChip extends StatelessWidget {
               Icon(
                 icon,
                 size: 13,
-                color: solid ? Colors.white : AppColors.tealInk,
+                color: solid ? Colors.white : AppColors.accentBlue,
               ),
               const SizedBox(width: 5),
               Text(

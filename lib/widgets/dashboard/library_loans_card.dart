@@ -27,7 +27,7 @@ class LibraryLoansCard extends StatelessWidget {
             child: OutlinedButton(
               onPressed: () => context.go('/facilities/library'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.tealInk,
+                foregroundColor: AppColors.accentBlue,
                 side: const BorderSide(color: AppColors.rule),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
@@ -134,7 +134,7 @@ class _LoanRow extends StatelessWidget {
 }
 
 enum _LoanStatus {
-  normal('DUE', AppColors.tealInk),
+  normal('DUE', AppColors.accentBlue),
   dueSoon('DUE', AppColors.warning),
   overdue('OVERDUE', AppColors.danger);
 

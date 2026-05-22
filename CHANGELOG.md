@@ -2,6 +2,30 @@
 
 ---
 
+## [2026-05-22] — Session 8: Palette Swap, Dark Mode & User Preferences
+
+**Tracker items completed:** 7.1, 7.2, 7.3, 7.4
+
+### Changed
+- `lib/theme/app_colors.dart` — replaced entire `AppColors` class with IUJ blue palette (`primary #1A5296`, `primaryLight #EFF6FF`, new `accentBlue #2AAFCE` replacing old `tealInk`/`tealTint2`); added `AppColorsDark` class with navy-dark surface/background/text constants (7.1)
+- `lib/theme/app_theme.dart` — added `AppTheme.dark()` mirroring `light()` structure but sourcing from `AppColorsDark`; both use Plus Jakarta Sans (7.1)
+- `lib/app.dart` — added `darkTheme: AppTheme.dark()` and `themeMode` switch reading `themeProvider` (7.1)
+- `lib/providers/calendar_provider.dart` — added `.agenda` to `CalendarViewMode` enum (7.3)
+- `lib/providers/dashboard_provider.dart` — added `defaultCalendarView: CalendarViewMode` field (default `.month`) to `DashboardSettings`; added `setDefaultCalendarView()` to notifier (7.3)
+- `lib/pages/calendar_page.dart` — `initState` now reads `dashboardSettingsProvider.defaultCalendarView` and applies it to `calendarViewModeProvider` before the filter override (7.3)
+- `lib/pages/profile_page.dart` — Settings tab: Calendar section now correctly maps `Month`/`Week`/`Agenda` buttons to `CalendarViewMode.month`/`.week`/`.agenda` (was incorrectly using `.week` labeled 'Agenda') (7.4)
+
+### Added
+- `lib/providers/theme_provider.dart` — `AppThemeMode` enum (system/light/dark) + `ThemeNotifier` (`Notifier<AppThemeMode>`) + `themeProvider` (7.1)
+- `lib/providers/notification_prefs_provider.dart` — `NotificationPrefs` model (`bookingAlerts`, `announcementAlerts`, `calendarReminders`, all default true) + `NotificationPrefsNotifier` + `notificationPrefsProvider` (7.2)
+
+### Notes
+- All `tealInk` and `tealTint2` references were already replaced by prior session work (confirmed by grep — zero remaining); color values updated in `app_colors.dart`
+- `alerts_widget.dart` and `today_timeline_card.dart` notification filtering was already in place from prior session work
+- Phase 1 dark mode: Material widgets adapt via `ThemeData`; custom widgets using static `AppColors.xxx` still render light values — Phase 2 widget-level migration is a future iteration
+
+---
+
 ## [2026-05-22 02:36] — Session 7: Calendar Group 5 — Items 5.7–5.11 (Full Group 5 Complete)
 
 **Tracker items completed:** 5.7, 5.8, 5.9, 5.10, 5.11

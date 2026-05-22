@@ -206,7 +206,7 @@ class _TypeChip extends StatelessWidget {
 
   Color get _color {
     if (type.startsWith('Faculty')) return AppColors.primary;
-    if (type == 'Student') return AppColors.tealInk;
+    if (type == 'Student') return AppColors.accentBlue;
     if (type == 'Organization') return AppColors.success;
     if (type == 'Department') return AppColors.warning;
     return AppColors.textSecondary;

@@ -111,7 +111,7 @@ class WikiArticlePage extends ConsumerWidget {
               _RbacBadge(
                 label: 'You have publish access to this article.',
                 color: AppColors.primary,
-                bgColor: AppColors.tealTint2,
+                bgColor: AppColors.primaryLight,
                 icon: Icons.verified_outlined,
               ),
               const SizedBox(height: 14),
@@ -285,7 +285,7 @@ class _BookSpaceBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.tealTint2,
+        color: AppColors.primaryLight,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
@@ -308,7 +308,7 @@ class _BookSpaceBanner extends StatelessWidget {
                 ),
                 const Text(
                   'Reserve a time slot via the Facilities portal',
-                  style: TextStyle(fontSize: 12, color: AppColors.tealInk),
+                  style: TextStyle(fontSize: 12, color: AppColors.accentBlue),
                 ),
               ],
             ),
@@ -379,7 +379,7 @@ class _MarkdownBody extends StatelessWidget {
         p: const TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.65),
         strong: const TextStyle(fontWeight: FontWeight.w700,
             color: AppColors.textPrimary),
-        code: const TextStyle(fontSize: 13, color: AppColors.tealInk,
+        code: const TextStyle(fontSize: 13, color: AppColors.accentBlue,
             fontFamily: 'monospace'),
         tableHead: const TextStyle(fontWeight: FontWeight.w700,
             color: AppColors.textPrimary),

@@ -106,7 +106,7 @@ class _LinkTileState extends State<_LinkTile> {
             vertical: 8,
           ),
           decoration: BoxDecoration(
-            color: _hovering ? AppColors.tealTint2 : AppColors.bgSunken,
+            color: _hovering ? AppColors.primaryLight : AppColors.bgSunken,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: _hovering ? AppColors.primary : AppColors.ruleSofter,
@@ -131,7 +131,7 @@ class _LinkTileState extends State<_LinkTile> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(widget.link.icon, size: 28, color: AppColors.tealInk),
+        Icon(widget.link.icon, size: 28, color: AppColors.accentBlue),
         if (showLabel) ...[
           const SizedBox(height: 7),
           Text(
@@ -157,10 +157,10 @@ class _LinkTileState extends State<_LinkTile> {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: AppColors.tealTint2,
+            color: AppColors.primaryLight,
             borderRadius: BorderRadius.circular(6),
           ),
-          child: Icon(widget.link.icon, size: 20, color: AppColors.tealInk),
+          child: Icon(widget.link.icon, size: 20, color: AppColors.accentBlue),
         ),
         const SizedBox(width: 10),
         Expanded(

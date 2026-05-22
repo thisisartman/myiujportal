@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/mock_data.dart';
 import '../../models/calendar_event.dart';
 import '../../providers/meeting_provider.dart';
+import '../../providers/notification_prefs_provider.dart';
 import '../../theme/app_colors.dart';
 import '../calendar/event_detail_modal.dart';
 import '../common/app_modal.dart';
@@ -19,6 +20,9 @@ class TodayTimelineCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sorted = [...events]..sort((a, b) => a.time.compareTo(b.time));
     final nowIndex = _currentEventIndex(sorted);
+    final showReminders = ref.watch(
+      notificationPrefsProvider.select((p) => p.calendarReminders),
+    );
     return DashboardCard(
       label: const DashboardCardLabel(
         icon: Icons.timeline_outlined,
@@ -45,10 +49,12 @@ class TodayTimelineCard extends ConsumerWidget {
                 isPast: index < nowIndex,
               );
             }),
-          const SizedBox(height: 14),
-          const _DashedDivider(),
-          const SizedBox(height: 14),
-          const _CalendarUpdatesSection(),
+          if (showReminders) ...[
+            const SizedBox(height: 14),
+            const _DashedDivider(),
+            const SizedBox(height: 14),
+            const _CalendarUpdatesSection(),
+          ],
         ],
       ),
     );
@@ -229,7 +235,7 @@ class _TypeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (type) {
-      CalendarEventType.class_ => ('Class', AppColors.tealInk, AppColors.tealTint2),
+      CalendarEventType.class_ => ('Class', AppColors.accentBlue, AppColors.primaryLight),
       CalendarEventType.assignment => ('Assignment', AppColors.danger, AppColors.dangerLight),
       CalendarEventType.event => ('Event', AppColors.warning, AppColors.warningLight),
     };
@@ -474,7 +480,7 @@ class _InlineAvatarStack extends StatelessWidget {
       AppColors.accent,
       AppColors.success,
       AppColors.warning,
-      AppColors.tealInk,
+      AppColors.accentBlue,
     ];
     return colors[label.hashCode.abs() % colors.length];
   }

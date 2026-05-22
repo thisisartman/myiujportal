@@ -4,7 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../data/mock_data.dart';
 import '../providers/auth_provider.dart';
+import '../providers/calendar_provider.dart';
 import '../providers/dashboard_provider.dart';
+import '../providers/notification_prefs_provider.dart';
+import '../providers/theme_provider.dart';
 import '../theme/app_colors.dart';
 import '../widgets/common/app_modal.dart';
 import '../widgets/common/page_chrome.dart';
@@ -272,7 +275,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
         decoration: BoxDecoration(
-          color: AppColors.tealTint2,
+          color: AppColors.primaryLight,
           borderRadius: BorderRadius.circular(4),
           border: Border.all(color: AppColors.primaryLight),
         ),
@@ -281,7 +284,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: AppColors.tealInk,
+            color: AppColors.accentBlue,
           ),
         ),
       ),
@@ -383,9 +386,94 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
       builder: (context, ref, _) {
         final settings = ref.watch(dashboardSettingsProvider);
         final notifier = ref.read(dashboardSettingsProvider.notifier);
+        final themeMode = ref.watch(themeProvider);
+        final themeNotifier = ref.read(themeProvider.notifier);
+        final prefs = ref.watch(notificationPrefsProvider);
+        final prefsNotifier = ref.read(notificationPrefsProvider.notifier);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ── Appearance ──────────────────────────────────────────────
+            _sectionHeader('Appearance'),
+            const SizedBox(height: 8),
+            _settingGroup(
+              'Theme',
+              SegmentedButton<AppThemeMode>(
+                segments: const [
+                  ButtonSegment(value: AppThemeMode.system, label: Text('System')),
+                  ButtonSegment(value: AppThemeMode.light, label: Text('Light')),
+                  ButtonSegment(value: AppThemeMode.dark, label: Text('Dark')),
+                ],
+                selected: {themeMode},
+                showSelectedIcon: false,
+                onSelectionChanged: (v) => themeNotifier.set(v.first),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Divider(),
+            const SizedBox(height: 20),
+            // ── Notifications ────────────────────────────────────────────
+            _sectionHeader('Notifications'),
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.ruleSoft),
+              ),
+              child: Column(
+                children: [
+                  _toggleTile(
+                    'Booking confirmations',
+                    prefs.bookingAlerts,
+                    () => prefsNotifier.update(
+                      prefs.copyWith(bookingAlerts: !prefs.bookingAlerts),
+                    ),
+                    isFirst: true,
+                  ),
+                  _toggleTile(
+                    'Announcements & news',
+                    prefs.announcementAlerts,
+                    () => prefsNotifier.update(
+                      prefs.copyWith(announcementAlerts: !prefs.announcementAlerts),
+                    ),
+                  ),
+                  _toggleTile(
+                    'Calendar reminders',
+                    prefs.calendarReminders,
+                    () => prefsNotifier.update(
+                      prefs.copyWith(calendarReminders: !prefs.calendarReminders),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Divider(),
+            const SizedBox(height: 20),
+            // ── Calendar ─────────────────────────────────────────────────
+            _sectionHeader('Calendar'),
+            const SizedBox(height: 8),
+            _settingGroup(
+              'Default view',
+              SegmentedButton<CalendarViewMode>(
+                segments: const [
+                  ButtonSegment(value: CalendarViewMode.month, label: Text('Month')),
+                  ButtonSegment(value: CalendarViewMode.week, label: Text('Week')),
+                  ButtonSegment(value: CalendarViewMode.agenda, label: Text('Agenda')),
+                ],
+                selected: {settings.defaultCalendarView},
+                showSelectedIcon: false,
+                onSelectionChanged: (v) =>
+                    notifier.setDefaultCalendarView(v.first),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Divider(),
+            const SizedBox(height: 20),
+            // ── Dashboard ────────────────────────────────────────────────
+            _sectionHeader('Dashboard'),
+            const SizedBox(height: 8),
             _settingGroup(
               'Dashboard columns',
               SegmentedButton<String>(
@@ -444,6 +532,18 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
           ],
         );
       },
+    );
+  }
+
+  Widget _sectionHeader(String label) {
+    return Text(
+      label,
+      style: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textMuted,
+        letterSpacing: 0.5,
+      ),
     );
   }
 
@@ -661,7 +761,7 @@ class _LibraryLoanRow extends StatelessWidget {
     final String statusLabel;
 
     if (isHistory) {
-      accentColor = loan.overdue ? AppColors.danger : AppColors.tealInk;
+      accentColor = loan.overdue ? AppColors.danger : AppColors.accentBlue;
       statusLabel = 'RETURNED';
     } else {
       final due = _parseDueDate(loan.dueDate);
@@ -673,7 +773,7 @@ class _LibraryLoanRow extends StatelessWidget {
         accentColor = AppColors.warning;
         statusLabel = 'DUE';
       } else {
-        accentColor = AppColors.tealInk;
+        accentColor = AppColors.accentBlue;
         statusLabel = 'DUE';
       }
     }

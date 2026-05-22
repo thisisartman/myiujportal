@@ -218,7 +218,7 @@ class _RoomTile extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          hoverColor: AppColors.tealTint2,
+          hoverColor: AppColors.primaryLight,
           onTap: () {},
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
