@@ -2,6 +2,24 @@
 
 ---
 
+## [2026-05-22] — Session 9: Post-Session-8 Bug Fixes
+
+**Tracker items completed:** _(bug fixes — no tracker items; all 45 implementation items remain ✅)_
+
+### Changed
+- `lib/services/wiki_content_service.dart` — prepended `'assets/'` to `rootBundle.loadString` call so wiki markdown files actually load (were failing silently with asset-not-found error)
+- `lib/theme/app_theme.dart` — added `bodyLarge` TextTheme entry to both `AppTheme.light()` and `AppTheme.dark()` so Material 3 TextFields use the correct dark color for typed text instead of falling through to grey system default
+- `lib/widgets/common/app_modal.dart` — `backgroundColor`, title `TextStyle`, and close icon color are now brightness-aware (`AppColorsDark.*` in dark mode); `child` wrapped in `DefaultTextStyle.merge` so plain `Text` inside modals defaults to the correct foreground color
+- `lib/widgets/common/page_chrome.dart` — `PageCard` container surface, border, and header divider are now brightness-aware; child wrapped in `DefaultTextStyle.merge`
+- `lib/widgets/common/dashboard_card.dart` — container surface, border, and both dividers are now brightness-aware
+- `lib/pages/profile_page.dart` — theme `SegmentedButton.onSelectionChanged` now shows a "Theme set to X." success toast alongside the provider write; Save button added at bottom of Settings tab column
+
+### Notes
+- Dark mode is now fully functional for the main card surfaces (PageCard, DashboardCard, AppModal). Custom widgets that use static `AppColors.*` directly (e.g. sidebar, individual chip widgets) remain light-only — Phase 2 widget-level migration is a future iteration.
+- Wiki articles were silently failing due to the missing `assets/` prefix; now loads correctly.
+
+---
+
 ## [2026-05-22] — Session 8: Palette Swap, Dark Mode & User Preferences
 
 **Tracker items completed:** 7.1, 7.2, 7.3, 7.4
