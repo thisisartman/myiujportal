@@ -19,11 +19,15 @@ class DashboardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surface = isDark ? AppColorsDark.surface : AppColors.surface;
+    final borderColor = isDark ? AppColorsDark.border : AppColors.ruleSoft;
+    final dividerColor = isDark ? AppColorsDark.border : AppColors.ruleSofter;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.ruleSoft),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.035),
@@ -42,7 +46,7 @@ class DashboardCard extends StatelessWidget {
               children: [
                 label,
                 const SizedBox(width: 12),
-                const Expanded(child: Divider(color: AppColors.ruleSofter)),
+                Expanded(child: Divider(color: dividerColor)),
                 if (actionLabel != null && onAction != null) ...[
                   const SizedBox(width: 10),
                   TextButton(
@@ -71,7 +75,7 @@ class DashboardCard extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, color: AppColors.ruleSofter),
+          Divider(height: 1, color: dividerColor),
           Padding(
             padding: flushBody
                 ? EdgeInsets.zero

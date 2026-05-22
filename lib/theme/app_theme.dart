@@ -25,6 +25,12 @@ class AppTheme {
         color: AppColorsDark.textPrimary,
         height: 1.3,
       ),
+      bodyLarge: GoogleFonts.plusJakartaSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: AppColorsDark.textPrimary,
+        height: 1.5,
+      ),
       bodyMedium: GoogleFonts.plusJakartaSans(
         fontSize: 14,
         fontWeight: FontWeight.w400,
@@ -146,6 +152,12 @@ class AppTheme {
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
         height: 1.3,
+      ),
+      bodyLarge: GoogleFonts.plusJakartaSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textPrimary,
+        height: 1.5,
       ),
       bodyMedium: GoogleFonts.plusJakartaSans(
         fontSize: 14,
