@@ -110,12 +110,17 @@ class PageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surface = isDark ? AppColorsDark.surface : AppColors.surface;
+    final borderColor = isDark ? AppColorsDark.border : AppColors.ruleSoft;
+    final dividerColor = isDark ? AppColorsDark.border : AppColors.ruleSofter;
+    final textColor = isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
     return Container(
       clipBehavior: clip ? Clip.antiAlias : Clip.none,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.ruleSoft),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.035),
@@ -124,18 +129,21 @@ class PageCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (header != null) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-              child: header!,
-            ),
-            const Divider(height: 1, color: AppColors.ruleSofter),
+      child: DefaultTextStyle.merge(
+        style: TextStyle(color: textColor),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (header != null) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                child: header!,
+              ),
+              Divider(height: 1, color: dividerColor),
+            ],
+            Padding(padding: padding, child: child),
           ],
-          Padding(padding: padding, child: child),
-        ],
+        ),
       ),
     );
   }

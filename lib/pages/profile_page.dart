@@ -406,7 +406,15 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 ],
                 selected: {themeMode},
                 showSelectedIcon: false,
-                onSelectionChanged: (v) => themeNotifier.set(v.first),
+                onSelectionChanged: (v) {
+                  themeNotifier.set(v.first);
+                  final label = switch (v.first) {
+                    AppThemeMode.system => 'System default',
+                    AppThemeMode.light  => 'Light',
+                    AppThemeMode.dark   => 'Dark',
+                  };
+                  showToast(context, 'Theme set to $label.', type: ToastType.success);
+                },
               ),
             ),
             const SizedBox(height: 20),
@@ -527,6 +535,24 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                   _toggleTile('Library', settings.showLibrary, () => notifier.toggle('library')),
                   _toggleTile('Polls', settings.showPolls, () => notifier.toggle('polls')),
                 ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Divider(),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () => showToast(
+                  context,
+                  'Settings saved.',
+                  type: ToastType.success,
+                ),
+                child: const Text('Save settings'),
               ),
             ),
           ],

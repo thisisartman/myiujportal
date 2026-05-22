@@ -28,8 +28,12 @@ class AppModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surface = isDark ? AppColorsDark.surface : AppColors.surface;
+    final titleColor = isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
+    final mutedColor = isDark ? AppColorsDark.textMuted : AppColors.textMuted;
     return Dialog(
-      backgroundColor: AppColors.surface,
+      backgroundColor: surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 448),
@@ -44,10 +48,10 @@ class AppModal extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: titleColor,
                       ),
                     ),
                   ),
@@ -55,17 +59,16 @@ class AppModal extends StatelessWidget {
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
-                      child: const Icon(
-                        Icons.close,
-                        size: 20,
-                        color: AppColors.textMuted,
-                      ),
+                      child: Icon(Icons.close, size: 20, color: mutedColor),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              child,
+              DefaultTextStyle.merge(
+                style: TextStyle(color: titleColor, fontSize: 14, height: 1.5),
+                child: child,
+              ),
               if (actions != null) ...[
                 const SizedBox(height: 24),
                 Row(

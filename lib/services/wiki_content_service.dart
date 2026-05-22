@@ -8,7 +8,7 @@ class WikiContentService {
   /// Loads [assetPath] (e.g. 'wiki/01-Residential-Life/dorm-guide.md'),
   /// strips the YAML frontmatter block, and returns the body.
   Future<String> loadArticleBody(String assetPath) async {
-    final raw = await rootBundle.loadString(assetPath);
+    final raw = await rootBundle.loadString('assets/$assetPath');
     return _stripFrontmatter(raw);
   }
 
